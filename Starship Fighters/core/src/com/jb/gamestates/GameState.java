@@ -2,28 +2,33 @@ package com.jb.gamestates;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.jb.main.GameMain;
+import com.jb.handler.GameStateManager;
+import com.jb.main.Game;
+
 
 public abstract class GameState {
 
-	protected GameState gsm;
-	protected GameMain gameMain;
+	protected GameStateManager gsm;
+	protected Game game;
 	
 	protected SpriteBatch spriteBatch;
 	protected OrthographicCamera cam;
-	protected OrthographicCamera hudcam;
+	protected OrthographicCamera hudCam;
 	
 	
-	public GameState(GameState gsm, GameMain gameMain, SpriteBatch spriteBatch, OrthographicCamera cam,
-			OrthographicCamera hudcam) {
+	public GameState(GameStateManager gsm) {
 		this.gsm = gsm;
-		this.gameMain = gameMain;
-		this.spriteBatch = spriteBatch;
-		this.cam = cam;
-		this.hudcam = hudcam;
+		game = gsm.getGame();
+		spriteBatch = game.getSpriteBatch();
+		cam = game.getCamera();
+		hudCam = game.getHUDCam();
+		
 	}
 	
-	
+	public abstract void handleInput();
+	public abstract void update(float dt);
+	public abstract void render();
+	public abstract void dispose();
 	
 	
 	
