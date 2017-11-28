@@ -2,10 +2,11 @@ package com.jb.main;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.jb.handler.GameStateManager;
+import com.jb.handler.Input;
 
 public class Game extends ApplicationAdapter {
 	
@@ -16,36 +17,40 @@ public class Game extends ApplicationAdapter {
 	private OrthographicCamera cam;
 	private OrthographicCamera HUDcam;
 	
-	// Step Time
-	private static final float STEP = 1 / 60f;
-	private float accum;
-	
 	private GameStateManager gsm;
+	private Input input;
 	
 	
 	@Override
 	public void create () {
 		// When game is started
 		spriteBatch = new SpriteBatch();
+		
 		// Setting Cameras to the size of the game window
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, WIDTH, HEIGHT);
+		cam.translate(new Vector2(WIDTH / 2, HEIGHT / 2)); // Move the camera from 0,0 to site of the game window
+		cam.update(); // commit cam changes from translate
 		HUDcam = new OrthographicCamera();
 		HUDcam.setToOrtho(false, WIDTH, HEIGHT);
+		HUDcam.translate(new Vector2(WIDTH / 2, HEIGHT / 2));
+		HUDcam.update();
+		
+		// Start Game State Manager
 		gsm = new GameStateManager(this);
+		
+		// Start Keyboard Input
+		input = new Input();
+		Gdx.input.setInputProcessor(input);
 		
 	}
 
 	@Override
 	public void render() {
-		// Main Loop in LibGDX
+		
 		// Get time passed, render if only enough time has passed
-		accum += Gdx.graphics.getDeltaTime();
-		while (accum >= STEP) {
-			accum -= STEP;
-			gsm.update(STEP);
-			gsm.render();
-		}
+		gsm.update(Gdx.graphics.getDeltaTime());
+		gsm.render();
 		
 	}
 	
@@ -66,5 +71,9 @@ public class Game extends ApplicationAdapter {
 	
 	public OrthographicCamera getHUDCam() {
 		return HUDcam;
+	}
+	
+	public Input getInput() {
+		return input;
 	}
 }

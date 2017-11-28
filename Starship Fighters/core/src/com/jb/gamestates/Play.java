@@ -1,11 +1,11 @@
 package com.jb.gamestates;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.jb.handler.GameStateManager;
 
 public class Play extends GameState{
 	
-	private BitmapFont font = new BitmapFont();
 
 	public Play(GameStateManager gsm) {
 		super(gsm);
@@ -26,11 +26,14 @@ public class Play extends GameState{
 
 	@Override
 	public void render() {
+		// Clear screen to Black Background
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		// Test for font drawing
+		
+		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-		font.draw(spriteBatch, "Test", 100, 100);
 		spriteBatch.end();
 		
 	}

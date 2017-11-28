@@ -11,11 +11,13 @@ public class GameStateManager {
 	private Game game;
 	private Stack<GameState> gameStates;
 	public static final int PLAY = 100;
+	private Input input;
 	
 	public GameStateManager(Game game) {
 		this.game = game;
 		gameStates = new Stack<GameState>();
 		pushState(PLAY); // Push Play state right away
+		input = game.getInput();
 	}
 	
 	public void update(float dt) {
@@ -56,5 +58,9 @@ public class GameStateManager {
 	
 	public Game getGame() {
 		return game;
+	}
+	
+	public Input getInput() {
+		return input;
 	}
 }
