@@ -36,12 +36,14 @@ public class Game extends ApplicationAdapter {
 		HUDcam.translate(new Vector2(WIDTH / 2, HEIGHT / 2));
 		HUDcam.update();
 		
-		// Start Game State Manager
-		gsm = new GameStateManager(this);
-		
 		// Start Keyboard Input
 		input = new GameInput();
 		Gdx.input.setInputProcessor(input);
+		
+		// Start Game State Manager
+		gsm = new GameStateManager(this);
+		
+		
 		
 	}
 

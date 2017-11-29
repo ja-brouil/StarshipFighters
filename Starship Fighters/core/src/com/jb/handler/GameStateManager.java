@@ -3,7 +3,7 @@ package com.jb.handler;
 import java.util.Stack;
 
 import com.jb.gamestates.GameState;
-import com.jb.gamestates.Play;
+import com.jb.gamestates.PlayState;
 import com.jb.input.GameInput;
 import com.jb.main.Game;
 
@@ -32,7 +32,7 @@ public class GameStateManager {
 	// Get Play State
 	private GameState getState(int state) {
 		if (state == PLAY) {
-			return new Play(this);
+			return new PlayState(this);
 		}
 		
 		return null;
