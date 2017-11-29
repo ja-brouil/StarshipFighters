@@ -3,7 +3,7 @@ package com.jb.gamestates;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.handler.GameStateManager;
-import com.jb.handler.Input;
+import com.jb.input.GameInput;
 import com.jb.main.Game;
 
 
@@ -15,7 +15,7 @@ public abstract class GameState {
 	protected SpriteBatch spriteBatch;
 	protected OrthographicCamera cam;
 	protected OrthographicCamera hudCam;
-	protected Input input;
+	protected GameInput input;
 	
 	
 	public GameState(GameStateManager gsm) {

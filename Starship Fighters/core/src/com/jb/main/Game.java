@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.jb.handler.GameStateManager;
-import com.jb.handler.Input;
+import com.jb.input.GameInput;
 
 public class Game extends ApplicationAdapter {
 	
@@ -18,7 +18,7 @@ public class Game extends ApplicationAdapter {
 	private OrthographicCamera HUDcam;
 	
 	private GameStateManager gsm;
-	private Input input;
+	private GameInput input;
 	
 	
 	@Override
@@ -40,7 +40,7 @@ public class Game extends ApplicationAdapter {
 		gsm = new GameStateManager(this);
 		
 		// Start Keyboard Input
-		input = new Input();
+		input = new GameInput();
 		Gdx.input.setInputProcessor(input);
 		
 	}
@@ -73,7 +73,7 @@ public class Game extends ApplicationAdapter {
 		return HUDcam;
 	}
 	
-	public Input getInput() {
+	public GameInput getInput() {
 		return input;
 	}
 }
