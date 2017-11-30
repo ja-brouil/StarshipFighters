@@ -17,10 +17,7 @@ public class Player extends GameObjects {
 
 	public Player(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
-		
-		// Center Screen, for testing purposes. Change this later
-		x = Game.WIDTH / 2;
-		y = Game.HEIGHT / 2;
+	
 		
 		// Limits
 		maxSpeed = 300;
@@ -39,27 +36,42 @@ public class Player extends GameObjects {
 	// Set Box Vertices
 	private void setShape() {
 		
-		shapeX[0] = 100;
-		shapeY[0] = 100;
+		shapeX[0] = x;
+		shapeY[0] = y;
 		
-		shapeX[1] = 100;
-		shapeY[1] = 110;
+		shapeX[1] = x;
+		shapeY[1] = y + 100;
 		
-		shapeX[2] = 110;
-		shapeY[2] = 100;
+		shapeX[2] = x + 100;
+		shapeY[2] = y;
 		
-		shapeX[3] = 110;
-		shapeY[3] = 110;
+		shapeX[3] = x + 100;
+		shapeY[3] = y + 100;
 	}
 	
+	// Set Direction
 	public void setLeft(boolean b) { left = b;}
 	public void setRight(boolean b) { up = b;}
 	public void setUp(boolean b) { up = b; }
+	public void setDown(boolean b) { down = b; }
 	
+	// Update Player Status
 	public void update(float dt) {
+		
+		
+		if (left) {
+			dx -= 10;
+		}
+		
+		// Update Speed
+		x += dx;
+		y += dy;
+		
+		setShape();
 		
 	}
 	
+	// Render Player
 	public void draw(ShapeRenderer sr) {
 		
 		// White
@@ -68,11 +80,10 @@ public class Player extends GameObjects {
 		// Drawing
 		sr.begin(ShapeType.Line);
 		
-		for (int i = 0, j = 0; i < shapeX.length; j = i++) {
-			
-			sr.line(shapeX[i], shapeY[i], shapeX[j], shapeY[j]);
-			
-		}
+		sr.line(shapeX[0],shapeY[0], shapeX[1], shapeY[1]);
+		sr.line(shapeX[1],shapeY[1], shapeX[3], shapeY[3]);
+		sr.line(shapeX[3],shapeY[3], shapeX[2], shapeY[2]);
+		sr.line(shapeX[2],shapeY[2], shapeX[0], shapeY[0]);
 		
 		sr.end();
 	}

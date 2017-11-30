@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import com.jb.gamestates.GameState;
 import com.jb.gamestates.PlayState;
-import com.jb.input.GameInput;
+import com.jb.input.GameInputProcessor;
 import com.jb.main.Game;
 
 public class GameStateManager {
@@ -12,7 +12,7 @@ public class GameStateManager {
 	private Game game;
 	private Stack<GameState> gameStates;
 	public static final int PLAY = 100;
-	private GameInput input;
+	private GameInputProcessor input;
 	
 	public GameStateManager(Game game) {
 		this.game = game;
@@ -61,7 +61,7 @@ public class GameStateManager {
 		return game;
 	}
 	
-	public GameInput getInput() {
+	public GameInputProcessor getInput() {
 		return input;
 	}
 }
