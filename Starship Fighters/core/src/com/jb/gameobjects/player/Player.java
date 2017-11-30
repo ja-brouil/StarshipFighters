@@ -20,7 +20,7 @@ public class Player extends GameObjects {
 	
 		
 		// Limits
-		maxSpeed = 300;
+		maxSpeed = 30;
 		acceleration = 200;
 		friction = 10;
 		
@@ -51,22 +51,46 @@ public class Player extends GameObjects {
 	
 	// Set Direction
 	public void setLeft(boolean b) { left = b;}
-	public void setRight(boolean b) { up = b;}
+	public void setRight(boolean b) { right = b;}
 	public void setUp(boolean b) { up = b; }
 	public void setDown(boolean b) { down = b; }
 	
 	// Update Player Status
 	public void update(float dt) {
 		
-		
+		// Left
 		if (left) {
-			dx -= 10;
+			dx -= 5;
+			dy = 0;
 		}
+		
+		// Right
+		if (right) {
+			dx += 5;
+			dy = 0;
+		}
+		
+		// Up
+		if (up) {
+			dy -= 5;
+			dx = 0;
+		}
+
+		// Down
+		if (down) {
+			dy += 5;
+			dx = 0;
+		}
+		
+		// Set Maximum Speed
+		clamp(maxSpeed, 0, dx);
+		clamp(maxSpeed, 0, dy);
 		
 		// Update Speed
 		x += dx;
 		y += dy;
 		
+		// Update Shape Coordinates
 		setShape();
 		
 	}

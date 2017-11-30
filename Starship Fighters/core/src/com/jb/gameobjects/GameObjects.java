@@ -1,4 +1,6 @@
-package com.jb.gameobjects;
+package com.jb.gameobjects;import javax.security.auth.x500.X500Principal;
+
+import com.jb.main.Game;
 
 public abstract class GameObjects {
 	
@@ -12,6 +14,31 @@ public abstract class GameObjects {
 		this.dy = dy;
 		this.x = x;
 		this.y = y;
+	}
+	
+	// Clamp + Warp around
+	public void wrap() {
+		// X
+		if (x > Game.WIDTH) { x = 0; }
+		if (x < 0) { x = Game.WIDTH; }
+		
+		// Y
+		if (y > Game.HEIGHT) { y = 0; }
+		if (y < 0) { y = Game.HEIGHT; }
+		
+	}
+	
+	// Cast result to int if needed
+	public static float clamp(float max, float min, float value) {
+		if (value > max) {
+			value = max;
+		}
+		
+		if (value < min) {
+			value = min;
+		}
+		
+		return value;
 	}
 
 	public float getX() {
