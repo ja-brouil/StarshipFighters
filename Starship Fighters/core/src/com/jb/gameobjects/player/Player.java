@@ -3,13 +3,13 @@ package com.jb.gameobjects.player;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.jb.gameobjects.GameObjects;
-import com.jb.main.Game;
 
 public class Player extends GameObjects {
 	
 	private float maxSpeed;
-	private float acceleration;
 	private float friction; 
+	private float offSetAmount;
+	private float minimumSpeed;
 	
 	// Creating a box just as a test
 	private float[] shapeX;
@@ -17,12 +17,12 @@ public class Player extends GameObjects {
 
 	public Player(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
-	
+		offSetAmount = 100;
 		
 		// Limits
 		maxSpeed = 30;
-		acceleration = 200;
-		friction = 10;
+		friction = 2;
+		minimumSpeed = -30;
 		
 		// Start Debug Box
 		shapeX = new float[4];
@@ -58,37 +58,51 @@ public class Player extends GameObjects {
 	// Update Player Status
 	public void update(float dt) {
 		
+		
 		// Left
 		if (left) {
-			dx -= 5;
-			dy = 0;
+			dx -= 5 * dt;
 		}
-		
-		// Right
+		// right
 		if (right) {
-			dx += 5;
-			dy = 0;
+			dx += 5 * dt;	
 		}
-		
 		// Up
 		if (up) {
-			dy -= 5;
-			dx = 0;
+			dy += 5 * dt;
 		}
-
 		// Down
 		if (down) {
-			dy += 5;
-			dx = 0;
+			dy -= 5 * dt;	 
+		}
+		
+		// Apply Friction to the ship
+		// X coordinate
+		if (dx != 0 && dx > 0) {
+			dx -= friction * dt;
+		} else if (dx != 0 && dx < 0) {
+			dx += friction * dt;
+		}
+		// Y coordinate
+		if (dy != 0 && dy > 0) {
+			dy -= friction * dt;
+		} else if (dy != 0 && dy < 0) {
+			dy += friction * dt;
 		}
 		
 		// Set Maximum Speed
-		clamp(maxSpeed, 0, dx);
-		clamp(maxSpeed, 0, dy);
+		if (dx > maxSpeed) { dx = maxSpeed; }
+		if (dx < minimumSpeed) { dx = minimumSpeed; }
+		if (dy > maxSpeed) { dy = maxSpeed; }
+		if (dy < minimumSpeed) { dy = minimumSpeed; }
 		
 		// Update Speed
 		x += dx;
 		y += dy;
+		
+		// Edge of the screen move to the other side
+		wrap((int) offSetAmount);
+		
 		
 		// Update Shape Coordinates
 		setShape();
