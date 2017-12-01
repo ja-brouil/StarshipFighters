@@ -22,7 +22,7 @@ public abstract class GameObjects {
 		
 		// Y
 		if (y > Game.HEIGHT + (offSet * 3)) { y = 0; }
-		if (y < 0) { y = Game.HEIGHT; }
+		if (y < 0) { y = Game.HEIGHT - (offSet * 3); }
 		
 	}
 	
