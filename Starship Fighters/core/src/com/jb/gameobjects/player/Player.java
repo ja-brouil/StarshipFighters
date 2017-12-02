@@ -1,15 +1,24 @@
 package com.jb.gameobjects.player;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
 
 public class Player extends GameObjects {
 	
+	// Physics
 	private float maxSpeed;
 	private float friction; 
 	private float offSetAmount;
 	private float minimumSpeed;
+	
+	// Graphics
+	private String filePath;
+	private float stateTime;
+	private Animator shapeship;
 	
 	// Creating a box just as a test
 	private float[] shapeX;
@@ -17,36 +26,25 @@ public class Player extends GameObjects {
 
 	public Player(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
-		offSetAmount = 100;
+		
+		// Graphics
+		offSetAmount = 64;
+		stateTime = 0f;
 		
 		// Limits
-		maxSpeed = 30;
+		maxSpeed = 10;
 		friction = 2;
-		minimumSpeed = -30;
+		minimumSpeed = -10;
 		
-		// Start Debug Box
-		shapeX = new float[4];
-		shapeY = new float[4];
-		
-		// Set Vertices
-		setShape();
-		
+		init();
 	}
 	
-	// Set Box Vertices
-	private void setShape() {
+	public void init() {
+		// File Path
+		filePath = "data/spaceships/ship.png";
+		stateTime = 0f;
+		shapeship = new Animator(3, 8, filePath);
 		
-		shapeX[0] = x;
-		shapeY[0] = y;
-		
-		shapeX[1] = x;
-		shapeY[1] = y + 100;
-		
-		shapeX[2] = x + 100;
-		shapeY[2] = y;
-		
-		shapeX[3] = x + 100;
-		shapeY[3] = y + 100;
 	}
 	
 	// Set Direction
@@ -100,30 +98,20 @@ public class Player extends GameObjects {
 		x += dx;
 		y += dy;
 		
+		
 		// Edge of the screen move to the other side
 		wrap((int) offSetAmount);
-		
-		
-		// Update Shape Coordinates
-		setShape();
 		
 	}
 	
 	// Render Player
-	public void draw(ShapeRenderer sr) {
+	public void draw(SpriteBatch spriteBatch) {
 		
-		// White
-		sr.setColor(1,1,1,1);
+		stateTime += Gdx.graphics.getDeltaTime();
 		
-		// Drawing
-		sr.begin(ShapeType.Line);
+		TextureRegion currentFrame = shapeship.getAnimationFrames().getKeyFrame(stateTime, true);
+		spriteBatch.draw(currentFrame, 100, 100);
 		
-		sr.line(shapeX[0],shapeY[0], shapeX[1], shapeY[1]);
-		sr.line(shapeX[1],shapeY[1], shapeX[3], shapeY[3]);
-		sr.line(shapeX[3],shapeY[3], shapeX[2], shapeY[2]);
-		sr.line(shapeX[2],shapeY[2], shapeX[0], shapeY[0]);
-		
-		sr.end();
 	}
 	
 
