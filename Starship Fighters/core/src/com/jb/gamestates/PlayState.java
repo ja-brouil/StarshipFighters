@@ -1,6 +1,7 @@
 package com.jb.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.jb.gameobjects.player.Player;
@@ -26,7 +27,12 @@ public class PlayState extends GameState{
 
 	@Override
 	public void handleInput() {
-
+		
+		// Escape to quit to exit faster. Remember to remove this later!
+		if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+			System.exit(0);
+		}
+		
 		GameKeys.update();
 	}
 
@@ -57,7 +63,7 @@ public class PlayState extends GameState{
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-		player.draw(sRenderer);
+		player.draw(spriteBatch);
 		spriteBatch.end();
 		
 	}

@@ -18,12 +18,12 @@ public abstract class GameObjects {
 	// Clamp + Warp around
 	public void wrap(int offSet) {
 		// X
-		if (x > Game.WIDTH + (offSet * 3)) { x = 0; }
-		if (x < 0) { x = Game.WIDTH; }
+		if (x > (Game.WIDTH * 2) + offSet) { x = 0; }
+		if (x < 0 - offSet) { x = Game.WIDTH * 2; }
 		
 		// Y
-		if (y > Game.HEIGHT + (offSet * 3)) { y = 0; }
-		if (y < 0) { y = Game.HEIGHT - (offSet * 3); }
+		if (y > (Game.HEIGHT * 2)) { y = 0; }
+		if (y < 0 - offSet) { y = (Game.HEIGHT * 2); }
 		
 	}
 	
