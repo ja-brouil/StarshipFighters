@@ -6,6 +6,7 @@ public abstract class GameObjects {
 	protected float dx, dy;
 	protected int xBound, yBound;
 	protected boolean left, right, up, down;
+	protected int healthbar;
 	
 	public GameObjects(float x, float y, float dx, float dy) {
 		this.dx = dx;
