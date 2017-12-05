@@ -7,11 +7,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.jb.gameobjects.player.Player;
 import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
-import com.jb.main.Game;
 
 public class PlayState extends GameState{
 	
-	private ShapeRenderer sRenderer;
 	private Player player;
 
 	public PlayState(GameStateManager gsm) {
@@ -22,7 +20,7 @@ public class PlayState extends GameState{
 	
 	@Override
 	public void init() {
-		sRenderer = new ShapeRenderer();
+		new ShapeRenderer();
 		player = new Player(300, 150, 0, 0);
 		
 	}

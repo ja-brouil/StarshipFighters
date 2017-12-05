@@ -1,8 +1,8 @@
 package com.jb.gameobjects.player;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.jb.assetmanagers.ImageManager;
+import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
 
@@ -14,15 +14,14 @@ public class Player extends GameObjects {
 	private float minimumSpeed;
 
 	// Graphics
-	private ImageManager playerSpaceShip;
 	private String pathname;
-	private TextureRegion spaceship;
+	private Animator shipAnimation;
+	private float animationTime;
 
 	public Player(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
 
 		// Graphics
-		playerSpaceShip = Game.getImageManager();
 		pathname = "data/spaceships/ship.png";
 
 		// Limits
@@ -35,12 +34,9 @@ public class Player extends GameObjects {
 	}
 
 	public void init() {
-		// Add SpaceShip to texture database
 		// Note: Ship size is 64 x 64 pixels
-		playerSpaceShip.loadTexture(pathname, "spaceship");
-
-		// Get Spaceship
-		spaceship = new TextureRegion(playerSpaceShip.getTexture("spaceship"), 64, 0, 64, 64);
+		// Start Animation
+		shipAnimation = new Animator(3, 8, pathname, 3, 1, 1f/70f);
 
 	}
 
@@ -92,21 +88,23 @@ public class Player extends GameObjects {
 
 	// Render Player
 	public void draw(SpriteBatch spriteBatch) {
-
-		spriteBatch.draw(spaceship, x, y);
+		
+		animationTime += Gdx.graphics.getDeltaTime();
+		spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
 
 	}
 
 	// Wrap Around + Prevent out of bounds for Y
 	private void wrap() {
-
+		// Wrap Around for X Coordinate
 		if (x > Game.WIDTH) {
 			x = -10;
 		}
 		if (x < -50) {
 			x = Game.WIDTH;
 		}
-
+		
+		// Wrap Around for Y Coordinate
 		if (y > 740) {
 			y = 740;
 		}

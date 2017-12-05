@@ -1,7 +1,5 @@
 package com.jb.animation;
 
-import javax.xml.soap.Text;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -10,19 +8,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Animator {
 	
 	private Texture spriteSheet;
-	private int frameCols, frameRows;
+	private int frameCols, frameRows, columnCutOff, rowCutOff;
 	private int spriteHeight, spriteWidth;
 	private String filePath;
 	private TextureRegion[] animationSprites;
 	private Animation<TextureRegion> animationTextureRegion;
-
+	private float frameLengthTime;
 	
-	public Animator(int frameCols, int frameRows, String filePath) {
+	public Animator(int frameCols, int frameRows, String filePath, int columnCutOff, int rowCutOff, float frameLengthTime) {
 	
 		this.frameCols = frameCols;
 		this.frameRows = frameRows;
 		this.filePath = filePath;
-		
+		this.columnCutOff = columnCutOff;
+		this.rowCutOff = rowCutOff;
+		this.frameLengthTime = frameLengthTime;
 		initialize();
 	}
 	
@@ -37,20 +37,16 @@ public class Animator {
 		// Place into 1D array
 		animationSprites = new TextureRegion[3];
 		int index = 0;
-		for (int i = 0; i < 1; i++) {
-			for (int j = 0; j < 3; j++) {
+		for (int i = 0; i < rowCutOff; i++) {
+			for (int j = 0; j < columnCutOff; j++) {
 				animationSprites[index++] = tmp[i][j];
 			}
 		}
 		
 		// Load animation frames
-		animationTextureRegion = new Animation<TextureRegion>(10f, animationSprites);
-
+		animationTextureRegion = new Animation<TextureRegion>(frameLengthTime, animationSprites);
 		
 	}
-	
-
-
 
 	public Texture getSpriteSheet() {
 		return spriteSheet;
