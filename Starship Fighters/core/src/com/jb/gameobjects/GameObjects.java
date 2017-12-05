@@ -1,11 +1,11 @@
-package com.jb.gameobjects;import com.jb.main.Game;
+package com.jb.gameobjects;
 
 public abstract class GameObjects {
 	
 	protected float x,y;
 	protected float dx, dy;
 	protected int xBound, yBound;
-	protected boolean left, right, up, down;
+	protected boolean left, right, up, down, shoot, missile;
 	protected int healthbar;
 	
 	public GameObjects(float x, float y, float dx, float dy) {
@@ -15,17 +15,6 @@ public abstract class GameObjects {
 		this.y = y;
 	}
 	
-	// Clamp + Warp around
-	public void wrap(int offSet) {
-		// X
-		if (x > (Game.WIDTH * 2) + offSet) { x = 0; }
-		if (x < 0 - offSet) { x = Game.WIDTH * 2; }
-		
-		// Y
-		if (y > (Game.HEIGHT * 2)) { y = 0; }
-		if (y < 0 - offSet) { y = (Game.HEIGHT * 2); }
-		
-	}
 	
 	// Cast result to int if needed
 	public static float clamp(float max, float min, float value) {

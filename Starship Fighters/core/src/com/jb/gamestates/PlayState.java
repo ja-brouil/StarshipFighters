@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.jb.gameobjects.player.Player;
 import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
+import com.jb.main.Game;
 
 public class PlayState extends GameState{
 	
@@ -22,7 +23,8 @@ public class PlayState extends GameState{
 	@Override
 	public void init() {
 		sRenderer = new ShapeRenderer();
-		player = new Player(100, 100, 0, 0);
+		player = new Player(300, 150, 0, 0);
+		
 	}
 
 	@Override
@@ -44,12 +46,17 @@ public class PlayState extends GameState{
 		player.setRight(GameKeys.isDown(GameKeys.RIGHT));
 		player.setUp(GameKeys.isDown(GameKeys.UP));
 		player.setDown(GameKeys.isDown(GameKeys.DOWN));
+		player.setShoot(GameKeys.isDown(GameKeys.SPACE));
+		player.setMissile(GameKeys.isPressed(GameKeys.SHIFT));
 		
 		// Check Input
 		handleInput();
 		
 		// Update Player
 		player.update(dt);
+		
+		// Update Level
+		
 		
 	}
 
@@ -73,6 +80,5 @@ public class PlayState extends GameState{
 		spriteBatch.dispose();
 		
 	}
-
 	
 }
