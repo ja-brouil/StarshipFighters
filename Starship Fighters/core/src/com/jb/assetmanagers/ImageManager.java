@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class ImageManager {
 	
-	private  HashMap<String, Texture> textureDatabase;
+	private HashMap<String, Texture> textureDatabase;
 
 	public ImageManager() {
 		textureDatabase = new HashMap<String, Texture>();

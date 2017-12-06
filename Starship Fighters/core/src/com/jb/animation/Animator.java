@@ -35,7 +35,7 @@ public class Animator {
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / frameCols, spriteSheet.getHeight() / frameRows);
 		
 		// Place into 1D array
-		animationSprites = new TextureRegion[3];
+		animationSprites = new TextureRegion[columnCutOff * rowCutOff];
 		int index = 0;
 		for (int i = 0; i < rowCutOff; i++) {
 			for (int j = 0; j < columnCutOff; j++) {
@@ -51,11 +51,18 @@ public class Animator {
 	public Texture getSpriteSheet() {
 		return spriteSheet;
 	}
+	
+	public TextureRegion getTextureRegion(int value) {
+		return animationSprites[value];
+	}
 
 	public Animation<TextureRegion> getAnimationFrames(){
 		return animationTextureRegion;
 	}
-
+	
+	public float getFrameLengthTime() {
+		return frameLengthTime;
+	}
 
 	public int getFrameCols() {
 		return frameCols;

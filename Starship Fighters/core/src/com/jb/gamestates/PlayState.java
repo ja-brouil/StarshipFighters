@@ -3,14 +3,17 @@ package com.jb.gamestates;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.jb.gameobjects.player.Player;
+import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
 
 public class PlayState extends GameState{
 	
 	private Player player;
+	private Array<PlayerBullets> shipBullets;
+	private PlayerBullets playerBullets;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -20,9 +23,8 @@ public class PlayState extends GameState{
 	
 	@Override
 	public void init() {
-		new ShapeRenderer();
 		player = new Player(300, 150, 0, 0);
-		
+		playerBullets = new PlayerBullets(player.getX(), player.getY(), 0, 10);
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class PlayState extends GameState{
 		
 		// Escape to quit to exit faster. Remember to remove this later!
 		if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
-			System.exit(0);
+			Gdx.app.exit();
 		}
 		
 		GameKeys.update();
@@ -52,6 +54,7 @@ public class PlayState extends GameState{
 		
 		// Update Player
 		player.update(dt);
+		playerBullets.update(dt);
 		
 		// Update Level
 		
@@ -69,6 +72,7 @@ public class PlayState extends GameState{
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
 		player.draw(spriteBatch);
+		playerBullets.draw(spriteBatch);
 		spriteBatch.end();
 		
 	}

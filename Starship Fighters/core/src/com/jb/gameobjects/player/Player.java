@@ -1,7 +1,9 @@
 package com.jb.gameobjects.player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
@@ -16,13 +18,20 @@ public class Player extends GameObjects {
 	// Graphics
 	private String pathname;
 	private Animator shipAnimation;
+	private Animator allAnimations;
+	private Animation<TextureRegion> leftAnimation;
+	private Animation<TextureRegion> rightAnimation;
+	private TextureRegion[] shipAnimationLeft;
+	private TextureRegion[] shipAnimationRight;
 	private float animationTime;
+	private float animationFrameDuration;
 
 	public Player(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
 
 		// Graphics
-		pathname = "data/spaceships/ship.png";
+		pathname = "data/spaceships/ship1.png";
+		animationFrameDuration = 1f/40f;
 
 		// Limits
 		maxSpeed = 10;
@@ -36,8 +45,20 @@ public class Player extends GameObjects {
 	public void init() {
 		// Note: Ship size is 64 x 64 pixels
 		// Start Animation
-		shipAnimation = new Animator(3, 8, pathname, 3, 1, 1f/70f);
-
+		shipAnimation = new Animator(3, 8, pathname, 3, 1, animationFrameDuration);
+		allAnimations = new Animator(3, 8, pathname, 3, 8, animationFrameDuration);
+		
+		shipAnimationLeft = new TextureRegion[3];
+		for (int i = 0; i < shipAnimationLeft.length; i++) {
+			shipAnimationLeft[i] = allAnimations.getTextureRegion(i + 3);
+		}
+		leftAnimation = new Animation<TextureRegion>(animationFrameDuration, shipAnimationLeft);
+		
+		shipAnimationRight = new TextureRegion[3];
+		for (int i = 0; i < shipAnimationLeft.length; i++) {
+			shipAnimationRight[i] = allAnimations.getTextureRegion(12 + i);
+		}
+		rightAnimation = new Animation<TextureRegion>(animationFrameDuration, shipAnimationRight);
 	}
 
 	// Key Input
@@ -83,30 +104,43 @@ public class Player extends GameObjects {
 
 		// Edge of the screen move to the other side
 		wrap();
+		
 
 	}
 
 	// Render Player
 	public void draw(SpriteBatch spriteBatch) {
 		
+		// Draw Ship
+		// Get Time frame for animation
 		animationTime += Gdx.graphics.getDeltaTime();
-		spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
-
+		// Orientation
+		if (left && up) {
+			spriteBatch.draw(rightAnimation.getKeyFrame(animationTime, true), x, y);
+		} else if (left && down) {
+			spriteBatch.draw(leftAnimation.getKeyFrame(animationTime, true), x, y);
+		} else if (right && up) {
+			spriteBatch.draw(leftAnimation.getKeyFrame(animationTime, true), x, y);
+		} else if (right && down) {
+			spriteBatch.draw(rightAnimation.getKeyFrame(animationTime, true), x, y);
+		} else {
+			spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
+		}
 	}
 
 	// Wrap Around + Prevent out of bounds for Y
 	private void wrap() {
 		// Wrap Around for X Coordinate
 		if (x > Game.WIDTH) {
-			x = -10;
+			x = 0;
 		}
-		if (x < -50) {
+		if (x < 0) {
 			x = Game.WIDTH;
 		}
 		
 		// Wrap Around for Y Coordinate
-		if (y > 740) {
-			y = 740;
+		if (y > Game.HEIGHT - 64) {
+			y = Game.HEIGHT - 64;
 		}
 		if (y < 0) {
 			y = 0;
@@ -173,6 +207,7 @@ public class Player extends GameObjects {
 		// Missile
 		if (missile) {
 			System.out.println("Shooting a missile!");
+			new PlayerBullets(this.getX(), this.getY(), 0, 10);
 		}
 	}
 
