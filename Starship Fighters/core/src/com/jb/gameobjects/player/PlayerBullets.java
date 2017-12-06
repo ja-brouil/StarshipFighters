@@ -2,9 +2,16 @@ package com.jb.gameobjects.player;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.jb.assetmanagers.ImageManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
+
+/*
+ * Extra Info:
+ * Bullet Size for Sprite: 8 width, 16 height
+ */
+
 
 public class PlayerBullets extends GameObjects{
 	
@@ -14,7 +21,7 @@ public class PlayerBullets extends GameObjects{
 	// Graphics
 	private String pathname;
 	private ImageManager bulletImageManager;
-	private TextureRegion bulletTexture;
+	private TextureRegion[] bulletTexture;
 	
 	// Removal and Collision
 	private boolean isOffScreen;
@@ -33,6 +40,8 @@ public class PlayerBullets extends GameObjects{
 	public void init() {
 		bulletImageManager = new ImageManager();
 		bulletImageManager.loadTexture(pathname, "Bullet");
+		TextureRegion[][] tmp = TextureRegion.split(bulletImageManager.getTexture("Bullet"), 4, 11);
+		bulletTexture = new TextureRegion[2];
 		
 	}
 	

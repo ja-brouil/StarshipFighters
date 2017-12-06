@@ -13,7 +13,6 @@ public class PlayState extends GameState{
 	
 	private Player player;
 	private Array<PlayerBullets> shipBullets;
-	private PlayerBullets playerBullets;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -24,7 +23,6 @@ public class PlayState extends GameState{
 	@Override
 	public void init() {
 		player = new Player(300, 150, 0, 0);
-		playerBullets = new PlayerBullets(player.getX(), player.getY(), 0, 10);
 	}
 
 	@Override
@@ -54,7 +52,7 @@ public class PlayState extends GameState{
 		
 		// Update Player
 		player.update(dt);
-		playerBullets.update(dt);
+		
 		
 		// Update Level
 		
@@ -72,7 +70,6 @@ public class PlayState extends GameState{
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
 		player.draw(spriteBatch);
-		playerBullets.draw(spriteBatch);
 		spriteBatch.end();
 		
 	}
