@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
+import com.jb.gameobjects.enemies.BasicAlien;
+import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.handler.GameStateManager;
@@ -13,6 +15,8 @@ public class PlayState extends GameState{
 	
 	private Player player;
 	private Array<PlayerBullets> shipBullets;
+	private BasicAlien basicAlienTest;
+	private Array<EnemyBullets> enemyBulletList;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -23,7 +27,9 @@ public class PlayState extends GameState{
 	@Override
 	public void init() {
 		shipBullets = new Array<>();
+		enemyBulletList = new Array<>();
 		player = new Player(300, 150, 0, 0, shipBullets);
+		basicAlienTest = new BasicAlien(500, 700, 3, 0, 1000L, -15, enemyBulletList);
 	}
 
 	@Override
@@ -61,9 +67,10 @@ public class PlayState extends GameState{
 				shipBullets.removeIndex(i);
 			}
 		}
+		basicAlienTest.update(dt);
 		
 		// Update Level
-		System.out.println(shipBullets.size);
+		
 		
 	}
 
@@ -81,6 +88,7 @@ public class PlayState extends GameState{
 		for (int i = 0; i < shipBullets.size; i++) {
 			shipBullets.get(i).draw(spriteBatch);
 		}
+		basicAlienTest.render(spriteBatch);
 		spriteBatch.end();
 		
 	}

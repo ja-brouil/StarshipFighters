@@ -62,6 +62,7 @@ public class PlayerBullets extends GameObjects{
 		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 2, allTexture.getHeight() / 1);
 		bulletTexture = new TextureRegion[1];
 		bulletTexture[0] = tmp[0][0];
+		
 	}
 	
 	// Update Bullet Positions
@@ -87,6 +88,9 @@ public class PlayerBullets extends GameObjects{
 			spriteBatch.draw(bulletTexture[0], x + 10, y);
 		} else {
 			spriteBatch.draw(bulletTexture[0], x, y);
+			
+			//spriteBatch.draw(bulletTexture[0], x - 32, y - 32);
+			//spriteBatch.draw(bulletTexture[0], x + 32, y - 32);
 		}
 		
 	}
