@@ -1,9 +1,14 @@
 package com.jb.gameobjects.player;
 
+import javax.xml.soap.Text;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
@@ -19,15 +24,28 @@ public class Player extends GameObjects {
 	private String pathname;
 	private Animator shipAnimation;
 	private Animator allAnimations;
-	private Animation<TextureRegion> leftAnimation;
-	private Animation<TextureRegion> rightAnimation;
 	private TextureRegion[] shipAnimationLeft;
 	private TextureRegion[] shipAnimationRight;
+	private Animation<TextureRegion> leftAnimation;
+	private Animation<TextureRegion> rightAnimation;
 	private float animationTime;
 	private float animationFrameDuration;
+	
+	// GamePlay 
+	private Array<PlayerBullets> listOfBullets;
+	private float bulletSpeed;
+	private long bulletcooldown;
 
-	public Player(float x, float y, float dx, float dy) {
+	public Player(float x, float y, float dx, float dy, Array<PlayerBullets> listOfBullets) {
 		super(x, y, dx, dy);
+		
+		// GamePlay
+		this.x = x;
+		this.y = y;
+		this.dx = dx;
+		this.dy = dy;
+		this.listOfBullets = listOfBullets;
+		bulletcooldown = TimeUtils.millis();
 
 		// Graphics
 		pathname = "data/spaceships/ship1.png";
@@ -37,6 +55,7 @@ public class Player extends GameObjects {
 		maxSpeed = 10;
 		friction = 2;
 		minimumSpeed = -10;
+		bulletSpeed = 15;
 
 		// Start Player Loading
 		init();
@@ -59,6 +78,7 @@ public class Player extends GameObjects {
 			shipAnimationRight[i] = allAnimations.getTextureRegion(12 + i);
 		}
 		rightAnimation = new Animation<TextureRegion>(animationFrameDuration, shipAnimationRight);
+		
 	}
 
 	// Key Input
@@ -117,13 +137,13 @@ public class Player extends GameObjects {
 		// Orientation
 		if (left && up) {
 			spriteBatch.draw(rightAnimation.getKeyFrame(animationTime, true), x, y);
-		} else if (left && down) {
+		} //else if (left && down) {
+			//spriteBatch.draw(leftAnimation.getKeyFrame(animationTime, true), x, y);
+		 else if (right && up) {
 			spriteBatch.draw(leftAnimation.getKeyFrame(animationTime, true), x, y);
-		} else if (right && up) {
-			spriteBatch.draw(leftAnimation.getKeyFrame(animationTime, true), x, y);
-		} else if (right && down) {
-			spriteBatch.draw(rightAnimation.getKeyFrame(animationTime, true), x, y);
-		} else {
+		} //else if (right && down) {
+			//spriteBatch.draw(rightAnimation.getKeyFrame(animationTime, true), x, y);
+		 else {
 			spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
 		}
 	}
@@ -200,15 +220,22 @@ public class Player extends GameObjects {
 		if (down) {
 			dy -= 8 * dt;
 		}
-		// Shoot
+		// Shoot | Note: This will add a bullet to the array which is passed back to the playstate
 		if (shoot) {
-			System.out.println("You are shooting!");
+			if (TimeUtils.timeSinceMillis(bulletcooldown) > 200) {
+				listOfBullets.add(new PlayerBullets(getX() + 32, getY() + 64, 0, bulletSpeed));
+				bulletcooldown = TimeUtils.millis();
+			}
+			
 		}
-		// Missile
+		// Missile | Note: This will add a missile to the array which is passed back to the playstate
 		if (missile) {
-			System.out.println("Shooting a missile!");
-			new PlayerBullets(this.getX(), this.getY(), 0, 10);
+			// Code for shooting missiles
 		}
+	}
+	
+	public Array<PlayerBullets> getBulletList() {
+		return listOfBullets;
 	}
 
 }

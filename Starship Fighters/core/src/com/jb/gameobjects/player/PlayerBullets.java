@@ -1,9 +1,9 @@
 package com.jb.gameobjects.player;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.jb.assetmanagers.ImageManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
 
@@ -17,11 +17,15 @@ public class PlayerBullets extends GameObjects{
 	
 	// Physics
 	private float maxSpeed;
+	private float dy;
 	
 	// Graphics
 	private String pathname;
-	private ImageManager bulletImageManager;
+	private Texture allTexture;
 	private TextureRegion[] bulletTexture;
+	
+	// Game Mechanics
+	private boolean doubleBullets, tripleBullets;
 	
 	// Removal and Collision
 	private boolean isOffScreen;
@@ -29,25 +33,40 @@ public class PlayerBullets extends GameObjects{
 	public PlayerBullets(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
 		
+		this.x = x;
+		this.y = y;
+		this.dx = dx;
+		this.dy = dy;
+		
 		// Pathname for Graphics
-		pathname = "data/ammo/bullet.gif";
+		pathname = "data/ammo/bulletfinal.png";
 		
 		// Initial Boolean Status 
 		isOffScreen = false;
+		maxSpeed = 50;
+		
+		// Initialize
+		init();
 	}
 	
 	// Initialize Bullets
 	public void init() {
-		bulletImageManager = new ImageManager();
-		bulletImageManager.loadTexture(pathname, "Bullet");
-		TextureRegion[][] tmp = TextureRegion.split(bulletImageManager.getTexture("Bullet"), 4, 11);
-		bulletTexture = new TextureRegion[2];
 		
+		// Bullet Upgrades
+		doubleBullets = false;
+		tripleBullets = false;
+		
+		// Graphics || Might rewrite this later if it lags too much. Create a static method for this? Or have a permanent object
+		// with all the variables already.
+		allTexture = new Texture(Gdx.files.internal(pathname));
+		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 2, allTexture.getHeight() / 1);
+		bulletTexture = new TextureRegion[1];
+		bulletTexture[0] = tmp[0][0];
 	}
 	
 	// Update Bullet Positions
 	public void update(float dt) {
-		
+
 		// Bullets going only up
 		y += dy;
 		
@@ -58,7 +77,18 @@ public class PlayerBullets extends GameObjects{
 	
 	// Draw Bullets
 	public void draw(SpriteBatch spriteBatch){
-		spriteBatch.draw(bulletTexture, x, y);
+		
+		if (doubleBullets) {
+			spriteBatch.draw(bulletTexture[0], x, y);
+			spriteBatch.draw(bulletTexture[0], x + 5, y);
+		} else if (tripleBullets) {
+			spriteBatch.draw(bulletTexture[0], x, y);
+			spriteBatch.draw(bulletTexture[0], x + 5, y);
+			spriteBatch.draw(bulletTexture[0], x + 10, y);
+		} else {
+			spriteBatch.draw(bulletTexture[0], x, y);
+		}
+		
 	}
 	
 	// Limits
@@ -81,4 +111,6 @@ public class PlayerBullets extends GameObjects{
 	public boolean getRemovalStatus() {
 		return isOffScreen;
 	}
+	
+	
 }

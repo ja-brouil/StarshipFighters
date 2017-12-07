@@ -22,7 +22,8 @@ public class PlayState extends GameState{
 	
 	@Override
 	public void init() {
-		player = new Player(300, 150, 0, 0);
+		shipBullets = new Array<>();
+		player = new Player(300, 150, 0, 0, shipBullets);
 	}
 
 	@Override
@@ -33,6 +34,7 @@ public class PlayState extends GameState{
 			Gdx.app.exit();
 		}
 		
+		// Update Keys
 		GameKeys.update();
 	}
 
@@ -50,12 +52,18 @@ public class PlayState extends GameState{
 		// Check Input
 		handleInput();
 		
-		// Update Player
+		// Update Player | Bullets | Missiles
 		player.update(dt);
-		
+		for (int i = 0; i < shipBullets.size; i++) {
+			shipBullets.get(i).update(dt);
+			// Remove Bullets
+			if (shipBullets.get(i).getRemovalStatus()) {
+				shipBullets.removeIndex(i);
+			}
+		}
 		
 		// Update Level
-		
+		System.out.println(shipBullets.size);
 		
 	}
 
@@ -70,6 +78,9 @@ public class PlayState extends GameState{
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
 		player.draw(spriteBatch);
+		for (int i = 0; i < shipBullets.size; i++) {
+			shipBullets.get(i).draw(spriteBatch);
+		}
 		spriteBatch.end();
 		
 	}
@@ -79,5 +90,6 @@ public class PlayState extends GameState{
 		spriteBatch.dispose();
 		
 	}
+
 	
 }

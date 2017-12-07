@@ -9,10 +9,7 @@ public abstract class GameObjects {
 	protected int healthbar;
 	
 	public GameObjects(float x, float y, float dx, float dy) {
-		this.dx = dx;
-		this.dy = dy;
-		this.x = x;
-		this.y = y;
+		// No need to extra stuff in the constructor here
 	}
 	
 	
