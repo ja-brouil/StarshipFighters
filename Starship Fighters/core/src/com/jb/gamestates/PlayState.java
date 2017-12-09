@@ -68,9 +68,23 @@ public class PlayState extends GameState{
 			}
 		}
 		basicAlienTest.update(dt);
+		for (int i = 0; i < enemyBulletList.size; i++) {
+			enemyBulletList.get(i).update(dt);
+			// Remove Bullets
+			if (enemyBulletList.get(i).getRemovalStatus()) {
+				enemyBulletList.removeIndex(i);
+			}
+		}
+		
+		// Check Collisions
+		checkCollision();
 		
 		// Update Level
 		
+	}
+	
+	// Collision and Bullets
+	private void checkCollision() {
 		
 	}
 
@@ -89,6 +103,9 @@ public class PlayState extends GameState{
 			shipBullets.get(i).draw(spriteBatch);
 		}
 		basicAlienTest.render(spriteBatch);
+		for (int i = 0; i < enemyBulletList.size; i++) {
+			enemyBulletList.get(i).render(spriteBatch);
+		}
 		spriteBatch.end();
 		
 	}

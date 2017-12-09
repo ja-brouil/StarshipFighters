@@ -1,5 +1,7 @@
 package com.jb.gameobjects;
 
+import com.badlogic.gdx.math.Rectangle;
+
 public abstract class GameObjects {
 	
 	protected float x,y;
@@ -7,6 +9,7 @@ public abstract class GameObjects {
 	protected int xBound, yBound;
 	protected boolean left, right, up, down, shoot, missile;
 	protected int healthbar;
+	protected Rectangle collisionBounds;
 	
 	public GameObjects(float x, float y, float dx, float dy) {
 		// No need to extra stuff in the constructor here
@@ -74,6 +77,9 @@ public abstract class GameObjects {
 		this.yBound = yBound;
 	}
 	
+	public Rectangle getBoundingBox() {
+		return collisionBounds;
+	}
 	
 
 }

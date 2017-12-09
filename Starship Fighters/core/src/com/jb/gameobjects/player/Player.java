@@ -2,6 +2,9 @@ package com.jb.gameobjects.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
@@ -20,12 +23,14 @@ public class Player extends GameObjects {
 	private Animator shipAnimation;
 	private float animationTime;
 	private float animationFrameDuration;
+	private long flashingTimer;
 	
 	// GamePlay 
 	private Array<PlayerBullets> listOfBullets;
 	private float bulletSpeed;
 	private long bulletcooldown;
 	private long bulletShootSpeed;
+	private int healthPoints;
 
 	public Player(float x, float y, float dx, float dy, Array<PlayerBullets> listOfBullets) {
 		super(x, y, dx, dy);
@@ -51,12 +56,20 @@ public class Player extends GameObjects {
 
 		// Start Player Loading
 		init();
+		
 	}
 
 	public void init() {
+		// HealthPoints
+		healthPoints = 100;
+		
 		// Note: Ship size is 64 x 64 pixels
 		// Start Animation
 		shipAnimation = new Animator(3, 8, pathname, 3, 1, animationFrameDuration);
+		
+		// Start Rectangle Box
+		
+		
 	}
 
 	// Key Input
@@ -99,6 +112,9 @@ public class Player extends GameObjects {
 		// Update Speed
 		x += dx;
 		y += dy;
+		
+		// Update Rectangle Bounds
+		updateRectangle(x, y);
 
 		// Edge of the screen move to the other side
 		wrap();
@@ -112,7 +128,9 @@ public class Player extends GameObjects {
 		// Draw Ship
 		// Get Time frame for animation
 		animationTime += Gdx.graphics.getDeltaTime();
+		
 		spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
+		
 		
 	}
 
@@ -122,7 +140,7 @@ public class Player extends GameObjects {
 		if (x > Game.WIDTH) {
 			x = 0;
 		}
-		if (x < 0) {
+		if (x < 0 - 64) {
 			x = Game.WIDTH;
 		}
 		
@@ -174,28 +192,28 @@ public class Player extends GameObjects {
 	private void playerHandleInput(float dt) {
 		// Left
 		if (left) {
-			dx -= 8 * dt;
+			dx -= 15 * dt;
 		}
 		// right
 		if (right) {
-			dx += 8 * dt;
+			dx += 15 * dt;
 		}
 		// Up
 		if (up) {
-			dy += 8 * dt;
+			dy += 15 * dt;
 		}
 		// Down
 		if (down) {
-			dy -= 8 * dt;
+			dy -= 15 * dt;
 		}
-		// Shoot | Note: This will add a bullet to the array which is passed back to the playstate
+		// Shoot | Note: This will add a bullet to the array which is passed back to the PlayState
 		if (shoot) {
 			if (TimeUtils.timeSinceMillis(bulletcooldown) > bulletShootSpeed) {
 				addBullets(32, 64);		
 			}
 			
 		}
-		// Missile | Note: This will add a missile to the array which is passed back to the playstate
+		// Missile | Note: This will add a missile to the array which is passed back to the PlayState
 		if (missile) {
 			// Code for shooting missiles
 		}
@@ -207,8 +225,21 @@ public class Player extends GameObjects {
 		bulletcooldown = TimeUtils.millis();
 	}
 	
+	// Update Rectangle 
+	private void updateRectangle(float x, float y) {
+		collisionBounds.set(x, y, x + 64, y + 64);
+	}
+	
 	public Array<PlayerBullets> getBulletList() {
 		return listOfBullets;
+	}
+	
+	public void setHP(int healthPoints) {
+		this.healthPoints = healthPoints;
+	}
+	
+	public int getHP() {
+		return healthPoints;
 	}
 
 }

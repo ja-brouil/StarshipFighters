@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.GameObjects;
@@ -23,7 +24,7 @@ public class BasicAlien extends GameObjects{
 	private Array<EnemyBullets> listofEnemyBullets;
 	private float enemyBulletSpeed;
 	private long bulletCooldown;
-	private float bulletShootSpeed;
+	private long randomAttackCooldown;
 
 	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed, Array<EnemyBullets> listOfEnemyBullets) {
 		super(x, y, dx, dy);
@@ -34,7 +35,7 @@ public class BasicAlien extends GameObjects{
 		this.dx = dx;
 		this.dy = dy;
 		this.bulletCooldown = bulletCooldown;
-		this.bulletShootSpeed = bulletShootSpeed;
+		this.enemyBulletSpeed = bulletShootSpeed;
 		this.listofEnemyBullets = listOfEnemyBullets;
 		
 		// Graphics
@@ -53,7 +54,8 @@ public class BasicAlien extends GameObjects{
 		
 		// Start Shooting
 		bulletCooldown = TimeUtils.millis();
-		bulletShootSpeed = -15;
+		enemyBulletSpeed = 5;
+		randomAttackCooldown = MathUtils.random(200, 1000);
 		
 		// Start Sprites
 		Texture allTexture = new Texture(Gdx.files.internal(pathName));
@@ -75,8 +77,9 @@ public class BasicAlien extends GameObjects{
 		wrap();
 		
 		// Update Shoot
-		if (TimeUtils.timeSinceMillis(bulletCooldown) > 1000) {
-			addEnemyBullets(0, 0);
+		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown) {
+			addEnemyBullets(16, 0);
+			randomAttackCooldown = MathUtils.random(200, 1000);
 		}
 		
 		
@@ -84,7 +87,6 @@ public class BasicAlien extends GameObjects{
 	
 	// Draw Enemies
 	public void render(SpriteBatch spriteBatch) {
-		//spriteBatch.draw(rolls[0], x, y);
 		spriteBatch.draw(rolls[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
 	}
 	
