@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.GameObjects;
@@ -25,6 +26,7 @@ public class BasicAlien extends GameObjects{
 	private float enemyBulletSpeed;
 	private long bulletCooldown;
 	private long randomAttackCooldown;
+	private Rectangle rectangle;
 
 	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed, Array<EnemyBullets> listOfEnemyBullets) {
 		super(x, y, dx, dy);
@@ -65,6 +67,9 @@ public class BasicAlien extends GameObjects{
 			rolls[i] = tmp[0][i];
 		}
 		
+		// Start rectangle
+		rectangle = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());
+		
 		
 	}
 	
@@ -73,6 +78,7 @@ public class BasicAlien extends GameObjects{
 		
 		// Update Movement
 		x += dx;
+		rectangle.set(x, y, (96f / 3f), 33);
 		setLimits();
 		wrap();
 		

@@ -68,7 +68,7 @@ public class Player extends GameObjects {
 		shipAnimation = new Animator(3, 8, pathname, 3, 1, animationFrameDuration);
 		
 		// Start Rectangle Box
-		
+		collisionBounds = new Rectangle(x, y, x + 64, y + 64);
 		
 	}
 

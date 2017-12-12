@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
 
@@ -26,6 +27,7 @@ public class PlayerBullets extends GameObjects{
 	
 	// Game Mechanics
 	private boolean doubleBullets, tripleBullets;
+	private Rectangle rectangle;
 	
 	// Removal and Collision
 	private boolean isOffScreen;
@@ -63,6 +65,10 @@ public class PlayerBullets extends GameObjects{
 		bulletTexture = new TextureRegion[1];
 		bulletTexture[0] = tmp[0][0];
 		
+		// Rectangle
+		rectangle = new Rectangle();
+		rectangle.set(x, y, 4f, 9f);
+		
 	}
 	
 	// Update Bullet Positions
@@ -70,6 +76,9 @@ public class PlayerBullets extends GameObjects{
 
 		// Bullets going only up
 		y += dy;
+		
+		// Update HitBox
+		rectangle.set(x, y, 4f, 9f);
 		
 		// Prevent bullet speed
 		setLimits();
