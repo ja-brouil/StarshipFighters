@@ -80,6 +80,9 @@ public class PlayerBullets extends GameObjects{
 		// Update HitBox
 		rectangle.set(x, y, 4f, 9f);
 		
+		// Check if bullet has hit an enemy
+		checkCollisions();
+		
 		// Prevent bullet speed
 		setLimits();
 		
@@ -119,6 +122,11 @@ public class PlayerBullets extends GameObjects{
 	// Remove bullets from out of screen
 	public void removeBullets() {
 		isOffScreen = true;
+	}
+	
+	// Collision Detection
+	public void collisionDetection() {
+		
 	}
 	
 	public boolean getRemovalStatus() {

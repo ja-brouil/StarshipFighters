@@ -85,7 +85,15 @@ public class PlayState extends GameState{
 	
 	// Collision and Bullets
 	private void checkCollision() {
+		// Check Player Bullets
 		
+		for (int i = 0; i < shipBullets.size; i++) {
+			
+		}
+		
+		// Check Player
+		
+		// Check Enemy Bullets
 	}
 
 	@Override
