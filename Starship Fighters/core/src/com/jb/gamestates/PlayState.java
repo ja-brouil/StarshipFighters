@@ -11,8 +11,8 @@ import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
 
-public class PlayState extends GameState{
-	
+public class PlayState extends GameState {
+
 	private Player player;
 	private Array<PlayerBullets> shipBullets;
 	private BasicAlien basicAlienTest;
@@ -21,9 +21,9 @@ public class PlayState extends GameState{
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
 		init();
-		
+
 	}
-	
+
 	@Override
 	public void init() {
 		shipBullets = new Array<>();
@@ -34,19 +34,19 @@ public class PlayState extends GameState{
 
 	@Override
 	public void handleInput() {
-		
+
 		// Escape to quit to exit faster. Remember to remove this later!
-		if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			Gdx.app.exit();
 		}
-		
+
 		// Update Keys
 		GameKeys.update();
 	}
 
 	@Override
 	public void update(float dt) {
-		
+
 		// Set Game Keys
 		player.setLeft(GameKeys.isDown(GameKeys.LEFT));
 		player.setRight(GameKeys.isDown(GameKeys.RIGHT));
@@ -54,10 +54,10 @@ public class PlayState extends GameState{
 		player.setDown(GameKeys.isDown(GameKeys.DOWN));
 		player.setShoot(GameKeys.isDown(GameKeys.SPACE));
 		player.setMissile(GameKeys.isPressed(GameKeys.SHIFT));
-		
+
 		// Check Input
 		handleInput();
-		
+
 		// Update Player | Bullets | Missiles
 		player.update(dt);
 		for (int i = 0; i < shipBullets.size; i++) {
@@ -75,34 +75,33 @@ public class PlayState extends GameState{
 				enemyBulletList.removeIndex(i);
 			}
 		}
-		
+
 		// Check Collisions
 		checkCollision();
 		
-		// Update Level
 		
+		// Update Level
+
 	}
-	
+
 	// Collision and Bullets
 	private void checkCollision() {
 		// Check Player Bullets
-		
 		for (int i = 0; i < shipBullets.size; i++) {
-			
+				if (shipBullets.get(i).getBoundingBox().overlaps(basicAlienTest.getBoundingBox())) {
+					shipBullets.get(i).removeBullets();
+				}
 		}
-		
-		// Check Player
-		
-		// Check Enemy Bullets
+
 	}
 
 	@Override
 	public void render() {
-		
+
 		// Clear screen to Black Background
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
@@ -115,14 +114,13 @@ public class PlayState extends GameState{
 			enemyBulletList.get(i).render(spriteBatch);
 		}
 		spriteBatch.end();
-		
+
 	}
 
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		
+
 	}
 
-	
 }

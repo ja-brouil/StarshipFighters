@@ -20,13 +20,13 @@ public class BasicAlien extends GameObjects{
 	// Graphics
 	private String pathName;
 	private TextureRegion[] rolls; // 0 = normal, 1 = left, 2 = right
+	private boolean isHit;
 	
 	// GamePlay
 	private Array<EnemyBullets> listofEnemyBullets;
 	private float enemyBulletSpeed;
 	private long bulletCooldown;
 	private long randomAttackCooldown;
-	private Rectangle rectangle;
 
 	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed, Array<EnemyBullets> listOfEnemyBullets) {
 		super(x, y, dx, dy);
@@ -39,9 +39,11 @@ public class BasicAlien extends GameObjects{
 		this.bulletCooldown = bulletCooldown;
 		this.enemyBulletSpeed = bulletShootSpeed;
 		this.listofEnemyBullets = listOfEnemyBullets;
+		healthbar = 100;
 		
 		// Graphics
 		pathName = "data/spaceships/BasicEnemy.png";
+		isHit = false;
 		
 		// Limits
 		maxSpeed = 10;
@@ -68,7 +70,7 @@ public class BasicAlien extends GameObjects{
 		}
 		
 		// Start rectangle
-		rectangle = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());
+		collisionBounds = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());
 		
 		
 	}
@@ -78,7 +80,7 @@ public class BasicAlien extends GameObjects{
 		
 		// Update Movement
 		x += dx;
-		rectangle.set(x, y, (96f / 3f), 33);
+		collisionBounds.set(x, y, (96f / 3f), 33);
 		setLimits();
 		wrap();
 		
@@ -93,7 +95,10 @@ public class BasicAlien extends GameObjects{
 	
 	// Draw Enemies
 	public void render(SpriteBatch spriteBatch) {
+		// Draw Enemy
 		spriteBatch.draw(rolls[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
+		
+		// Draw Explosion if hit
 	}
 	
 	// Prevent out of bounds

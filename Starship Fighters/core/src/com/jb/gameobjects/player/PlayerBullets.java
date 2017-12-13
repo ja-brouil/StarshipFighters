@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.gameobjects.GameObjects;
+import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.main.Game;
 
 /*
@@ -27,7 +28,6 @@ public class PlayerBullets extends GameObjects{
 	
 	// Game Mechanics
 	private boolean doubleBullets, tripleBullets;
-	private Rectangle rectangle;
 	
 	// Removal and Collision
 	private boolean isOffScreen;
@@ -66,8 +66,8 @@ public class PlayerBullets extends GameObjects{
 		bulletTexture[0] = tmp[0][0];
 		
 		// Rectangle
-		rectangle = new Rectangle();
-		rectangle.set(x, y, 4f, 9f);
+		collisionBounds = new Rectangle();
+		collisionBounds.set(x, y, 4f, 9f);
 		
 	}
 	
@@ -77,11 +77,9 @@ public class PlayerBullets extends GameObjects{
 		// Bullets going only up
 		y += dy;
 		
-		// Update HitBox
-		rectangle.set(x, y, 4f, 9f);
+		// Update collisionBounds
+		collisionBounds.set(x, y, 4f, 9f);
 		
-		// Check if bullet has hit an enemy
-		checkCollisions();
 		
 		// Prevent bullet speed
 		setLimits();
@@ -124,9 +122,8 @@ public class PlayerBullets extends GameObjects{
 		isOffScreen = true;
 	}
 	
-	// Collision Detection
-	public void collisionDetection() {
-		
+	public Rectangle getcollisionBounds() {
+		return collisionBounds;
 	}
 	
 	public boolean getRemovalStatus() {
