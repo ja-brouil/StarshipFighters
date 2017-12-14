@@ -98,9 +98,6 @@ public class PlayerBullets extends GameObjects{
 			spriteBatch.draw(bulletTexture[0], x + 10, y);
 		} else {
 			spriteBatch.draw(bulletTexture[0], x, y);
-			
-			//spriteBatch.draw(bulletTexture[0], x - 32, y - 32);
-			//spriteBatch.draw(bulletTexture[0], x + 32, y - 32);
 		}
 		
 	}

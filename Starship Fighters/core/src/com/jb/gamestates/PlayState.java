@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
+import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.handler.GameStateManager;
@@ -17,6 +19,7 @@ public class PlayState extends GameState {
 	private Array<PlayerBullets> shipBullets;
 	private Array<BasicAlien> basicAliens;
 	private Array<EnemyBullets> enemyBulletList;
+	private Array<Explosion> explosionList;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -31,6 +34,10 @@ public class PlayState extends GameState {
 		player = new Player(300, 150, 0, 0, shipBullets);
 		basicAliens = new Array<BasicAlien>();
 		basicAliens.add(new BasicAlien(500, 700, 3, 0, 1000L, -15, enemyBulletList));
+		basicAliens.add(new BasicAlien(550, 750, 3, 0, 1000L, 15, enemyBulletList));
+		basicAliens.add(new BasicAlien(450, 650, 3, 0, 1000L, -15, enemyBulletList));
+		basicAliens.add(new BasicAlien(400, 600, 3, 0, 1000L, 15, enemyBulletList));
+		explosionList = new Array<>();
 	}
 
 	@Override
@@ -73,6 +80,7 @@ public class PlayState extends GameState {
 		for (int i = 0; i < basicAliens.size; i++) {
 			basicAliens.get(i).update(dt);
 			if (basicAliens.get(i).getHP() == 0) {
+				explosionList.add(new Explosion(basicAliens.get(i).getX(), basicAliens.get(i).getY(), 0, 0));
 				basicAliens.removeIndex(i);
 			}
 		}
@@ -83,6 +91,14 @@ public class PlayState extends GameState {
 			// Remove Bullets
 			if (enemyBulletList.get(i).getRemovalStatus()) {
 				enemyBulletList.removeIndex(i);
+			}
+		}
+		
+		// Remove Explosions
+		for (int i = 0; i < explosionList.size; i++) {
+			explosionList.get(i).update(dt);
+			if (explosionList.get(i).getExplosionStatus()) {
+				explosionList.removeIndex(i);
 			}
 		}
 
@@ -136,6 +152,13 @@ public class PlayState extends GameState {
 		for (int i = 0; i < enemyBulletList.size; i++) {
 			enemyBulletList.get(i).render(spriteBatch);
 		}
+		
+		// Explosions | Hit Animations
+		for (int i = 0; i < explosionList.size; i++) {
+			explosionList.get(i).draw(spriteBatch);
+		}
+		
+		// Close Spritebatch
 		spriteBatch.end();
 
 	}
@@ -143,7 +166,6 @@ public class PlayState extends GameState {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-
 	}
 
 }

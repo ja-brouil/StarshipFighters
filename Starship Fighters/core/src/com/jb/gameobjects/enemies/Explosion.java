@@ -1,9 +1,7 @@
 package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
 
@@ -11,9 +9,9 @@ public class Explosion extends GameObjects {
 	
 	// Graphics
 	private String pathName;
-	private TextureRegion[] explosionTexture;
 	private Animator explosionAnimation;
-	private Texture allTexture;
+	private float animationTimer;
+	private boolean explosionIsDone;
 
 	public Explosion(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
@@ -24,7 +22,7 @@ public class Explosion extends GameObjects {
 		this.dy = dy;
 		
 		// Pathname for graphics
-		pathName = "data/hit_and_explosions/";
+		pathName = "data/hit_and_explosions/explosion.png";
 		
 		// Start Explosion
 		init();
@@ -33,14 +31,33 @@ public class Explosion extends GameObjects {
 	
 	// Initialize
 	private void init() {
-		allTexture = new Texture(Gdx.files.internal(pathName));
-		TextureRegion tmp[][] = TextureRegion.split(allTexture, allTexture.getWidth() / 4, allTexture.getHeight() / 2);
-		//for (int i = 0; i < )
+		// Start explosion animation
+		explosionAnimation = new Animator(4, 2, pathName, 4, 2, 1f/5f);
+		
+		// Set Initial Boolean to false
+		explosionIsDone = false;
+	}
+	
+	public void update(float dt) {
+		// Check if animation is done playing
+		if (explosionAnimation.getAnimationFrames().isAnimationFinished(animationTimer)) {
+			explosionIsDone = true;
+		}
 	}
 	
 	// Draw Explosion
 	public void draw(SpriteBatch spriteBatch) {
-		
+		animationTimer += Gdx.graphics.getDeltaTime();
+		spriteBatch.draw(explosionAnimation.getAnimationFrames().getKeyFrame(animationTimer, false), x, y);
+	}
+	
+	// Getters and Setters
+	public void setExplosionStatus(boolean b) {
+		explosionIsDone = b;
+	}
+	
+	public boolean getExplosionStatus() {
+		return explosionIsDone;
 	}
 
 }
