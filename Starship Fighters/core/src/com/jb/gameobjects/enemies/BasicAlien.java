@@ -20,7 +20,6 @@ public class BasicAlien extends GameObjects{
 	// Graphics
 	private String pathName;
 	private TextureRegion[] rolls; // 0 = normal, 1 = left, 2 = right
-	private boolean isHit;
 	
 	// GamePlay
 	private Array<EnemyBullets> listofEnemyBullets;
@@ -43,7 +42,6 @@ public class BasicAlien extends GameObjects{
 		
 		// Graphics
 		pathName = "data/spaceships/BasicEnemy.png";
-		isHit = false;
 		
 		// Limits
 		maxSpeed = 10;
@@ -129,6 +127,15 @@ public class BasicAlien extends GameObjects{
 	private void addEnemyBullets(int xOffset, int yOffset) {
 		listofEnemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed));
 		bulletCooldown = TimeUtils.millis();
+	}
+	
+	// Set HP
+	public void setHP(int hp, boolean replaceHP) {
+		if (replaceHP) {
+			healthbar = hp;
+		} else {
+			healthbar += hp;
+		}
 	}
 
 }

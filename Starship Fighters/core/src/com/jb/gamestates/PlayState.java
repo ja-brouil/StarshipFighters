@@ -15,7 +15,7 @@ public class PlayState extends GameState {
 
 	private Player player;
 	private Array<PlayerBullets> shipBullets;
-	private BasicAlien basicAlienTest;
+	private Array<BasicAlien> basicAliens;
 	private Array<EnemyBullets> enemyBulletList;
 
 	public PlayState(GameStateManager gsm) {
@@ -29,7 +29,8 @@ public class PlayState extends GameState {
 		shipBullets = new Array<>();
 		enemyBulletList = new Array<>();
 		player = new Player(300, 150, 0, 0, shipBullets);
-		basicAlienTest = new BasicAlien(500, 700, 3, 0, 1000L, -15, enemyBulletList);
+		basicAliens = new Array<BasicAlien>();
+		basicAliens.add(new BasicAlien(500, 700, 3, 0, 1000L, -15, enemyBulletList));
 	}
 
 	@Override
@@ -67,7 +68,16 @@ public class PlayState extends GameState {
 				shipBullets.removeIndex(i);
 			}
 		}
-		basicAlienTest.update(dt);
+		
+		//  Update Enemies	
+		for (int i = 0; i < basicAliens.size; i++) {
+			basicAliens.get(i).update(dt);
+			if (basicAliens.get(i).getHP() == 0) {
+				basicAliens.removeIndex(i);
+			}
+		}
+
+		// Enemy Bullets
 		for (int i = 0; i < enemyBulletList.size; i++) {
 			enemyBulletList.get(i).update(dt);
 			// Remove Bullets
@@ -88,9 +98,12 @@ public class PlayState extends GameState {
 	private void checkCollision() {
 		// Check Player Bullets
 		for (int i = 0; i < shipBullets.size; i++) {
-				if (shipBullets.get(i).getBoundingBox().overlaps(basicAlienTest.getBoundingBox())) {
+			for (int j = 0; j < basicAliens.size; j++) {
+				if (shipBullets.get(i).getBoundingBox().overlaps(basicAliens.get(j).getBoundingBox()) ) {
 					shipBullets.get(i).removeBullets();
+					basicAliens.get(j).setHP(-20, false);
 				}
+			}
 		}
 
 	}
@@ -105,11 +118,21 @@ public class PlayState extends GameState {
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
+		
+		// Player Render
 		player.draw(spriteBatch);
+		
+		// Bullet Render
 		for (int i = 0; i < shipBullets.size; i++) {
 			shipBullets.get(i).draw(spriteBatch);
 		}
-		basicAlienTest.render(spriteBatch);
+		
+		// Enemy Aliens
+		for (int i = 0; i < basicAliens.size; i++) {
+			basicAliens.get(i).render(spriteBatch);
+		}
+		
+		// Enemy Bullets
 		for (int i = 0; i < enemyBulletList.size; i++) {
 			enemyBulletList.get(i).render(spriteBatch);
 		}

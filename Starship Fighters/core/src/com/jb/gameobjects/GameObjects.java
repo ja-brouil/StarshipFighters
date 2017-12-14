@@ -81,5 +81,8 @@ public abstract class GameObjects {
 		return collisionBounds;
 	}
 	
+	public int getHP() {
+		return healthbar;
+	}
 
 }
