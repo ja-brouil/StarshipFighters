@@ -34,9 +34,9 @@ public class PlayState extends GameState {
 		player = new Player(300, 150, 0, 0, shipBullets);
 		basicAliens = new Array<BasicAlien>();
 		basicAliens.add(new BasicAlien(500, 700, 3, 0, 1000L, -15, enemyBulletList));
-		basicAliens.add(new BasicAlien(550, 750, 3, 0, 1000L, 15, enemyBulletList));
+		basicAliens.add(new BasicAlien(550, 750, -3, 0, 1000L, -15, enemyBulletList));
 		basicAliens.add(new BasicAlien(450, 650, 3, 0, 1000L, -15, enemyBulletList));
-		basicAliens.add(new BasicAlien(400, 600, 3, 0, 1000L, 15, enemyBulletList));
+		basicAliens.add(new BasicAlien(400, 600, -3, 0, 1000L, -15, enemyBulletList));
 		explosionList = new Array<>();
 	}
 
