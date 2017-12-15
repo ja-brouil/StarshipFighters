@@ -92,7 +92,7 @@ public class BasicAlien extends GameObjects{
 	}
 	
 	// Draw Enemies
-	public void render(SpriteBatch spriteBatch) {
+	public void draw(SpriteBatch spriteBatch) {
 		// Draw Enemy
 		spriteBatch.draw(rolls[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
 		

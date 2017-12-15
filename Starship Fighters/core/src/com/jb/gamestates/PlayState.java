@@ -4,22 +4,29 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
+import com.jb.gamestates.levels.Level1;
+import com.jb.gamestates.levels.MasterLevel;
 import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
 
 public class PlayState extends GameState {
 
+	// Game Objects
 	private Player player;
 	private Array<PlayerBullets> shipBullets;
-	private Array<BasicAlien> basicAliens;
+	private Array<GameObjects> basicAliens;
 	private Array<EnemyBullets> enemyBulletList;
 	private Array<Explosion> explosionList;
+	
+	// Level Objects
+	private MasterLevel[] levelList;
+	private int levelNumber;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -32,12 +39,12 @@ public class PlayState extends GameState {
 		shipBullets = new Array<>();
 		enemyBulletList = new Array<>();
 		player = new Player(300, 150, 0, 0, shipBullets);
-		basicAliens = new Array<BasicAlien>();
-		basicAliens.add(new BasicAlien(500, 700, 3, 0, 1000L, -15, enemyBulletList));
-		basicAliens.add(new BasicAlien(550, 750, -3, 0, 1000L, -15, enemyBulletList));
-		basicAliens.add(new BasicAlien(450, 650, 3, 0, 1000L, -15, enemyBulletList));
-		basicAliens.add(new BasicAlien(400, 600, -3, 0, 1000L, -15, enemyBulletList));
+		basicAliens = new Array<GameObjects>();
 		explosionList = new Array<>();
+		
+		levelList = new MasterLevel[5];
+		levelList[0] = new Level1(basicAliens, explosionList, enemyBulletList, 1, this);
+		levelNumber = 0;
 	}
 
 	@Override
@@ -65,6 +72,9 @@ public class PlayState extends GameState {
 
 		// Check Input
 		handleInput();
+		
+		// Update Level
+		levelList[levelNumber].update(dt);
 
 		// Update Player | Bullets | Missiles
 		player.update(dt);
@@ -104,9 +114,6 @@ public class PlayState extends GameState {
 
 		// Check Collisions
 		checkCollision();
-		
-		
-		// Update Level
 
 	}
 
@@ -117,7 +124,7 @@ public class PlayState extends GameState {
 			for (int j = 0; j < basicAliens.size; j++) {
 				if (shipBullets.get(i).getBoundingBox().overlaps(basicAliens.get(j).getBoundingBox()) ) {
 					shipBullets.get(i).removeBullets();
-					basicAliens.get(j).setHP(-20, false);
+					((BasicAlien) basicAliens.get(j)).setHP(-100, false);
 				}
 			}
 		}
@@ -145,18 +152,21 @@ public class PlayState extends GameState {
 		
 		// Enemy Aliens
 		for (int i = 0; i < basicAliens.size; i++) {
-			basicAliens.get(i).render(spriteBatch);
+			basicAliens.get(i).draw(spriteBatch);
 		}
 		
 		// Enemy Bullets
 		for (int i = 0; i < enemyBulletList.size; i++) {
-			enemyBulletList.get(i).render(spriteBatch);
+			enemyBulletList.get(i).draw(spriteBatch);
 		}
 		
 		// Explosions | Hit Animations
 		for (int i = 0; i < explosionList.size; i++) {
 			explosionList.get(i).draw(spriteBatch);
 		}
+		
+		// Draw Extra Level stuff
+		levelList[levelNumber].draw(spriteBatch);
 		
 		// Close Spritebatch
 		spriteBatch.end();
@@ -166,6 +176,10 @@ public class PlayState extends GameState {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
+	}
+	
+	public void setLevel(int levelNumber) {
+		this.levelNumber = levelNumber;
 	}
 
 }

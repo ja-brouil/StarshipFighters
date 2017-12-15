@@ -1,5 +1,6 @@
 package com.jb.gameobjects;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public abstract class GameObjects {
@@ -28,6 +29,10 @@ public abstract class GameObjects {
 		
 		return value;
 	}
+	
+	// All Objects Require Update + Render
+	public abstract void update(float dt);
+	public abstract void draw(SpriteBatch spriteBatch);
 
 	public float getX() {
 		return x;

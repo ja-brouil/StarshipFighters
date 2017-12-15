@@ -23,7 +23,6 @@ public class Player extends GameObjects {
 	private Animator shipAnimation;
 	private float animationTime;
 	private float animationFrameDuration;
-	private long flashingTimer;
 	
 	// GamePlay 
 	private Array<PlayerBullets> listOfBullets;
@@ -98,6 +97,7 @@ public class Player extends GameObjects {
 	}
 
 	// Update Player Status
+	@Override
 	public void update(float dt) {
 
 		// Player Input
@@ -123,6 +123,7 @@ public class Player extends GameObjects {
 	}
 
 	// Render Player
+	@Override
 	public void draw(SpriteBatch spriteBatch) {
 		
 		// Draw Ship

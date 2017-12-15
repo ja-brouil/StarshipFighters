@@ -32,7 +32,7 @@ public class Explosion extends GameObjects {
 	// Initialize
 	private void init() {
 		// Start explosion animation
-		explosionAnimation = new Animator(4, 2, pathName, 4, 2, 1f/5f);
+		explosionAnimation = new Animator(4, 2, pathName, 4, 2, 1f/40f);
 		
 		// Set Initial Boolean to false
 		explosionIsDone = false;

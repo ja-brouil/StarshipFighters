@@ -69,7 +69,7 @@ public class EnemyBullets extends GameObjects{
 	}
 	
 	// Render
-	public void render(SpriteBatch spriteBatch) {
+	public void draw(SpriteBatch spriteBatch) {
 		
 		spriteBatch.draw(enemyBulletTexture[0].getTexture(), x, y, 4, 11, 0, 0, 4, 11, false, true );
 		
