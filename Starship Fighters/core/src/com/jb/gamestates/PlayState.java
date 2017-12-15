@@ -128,6 +128,9 @@ public class PlayState extends GameState {
 				}
 			}
 		}
+		
+		// Check for Enemy Bullets
+		
 
 	}
 

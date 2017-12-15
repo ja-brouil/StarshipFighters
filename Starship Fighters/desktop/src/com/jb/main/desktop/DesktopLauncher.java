@@ -10,7 +10,7 @@ public class DesktopLauncher {
 	public static final int HEIGHT = 800;
 	public static String title = "Starship Fighters";
 	
-	public static void main (String[] arg) {
+	public static void main (String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = title;
 		config.width = WIDTH;

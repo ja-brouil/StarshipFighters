@@ -63,7 +63,7 @@ public class Game extends ApplicationAdapter {
 	
 	@Override
 	public void dispose() {
-		
+		spriteBatch.dispose();
 	}
 	
 	// Update Viewport to adjust the screen size
