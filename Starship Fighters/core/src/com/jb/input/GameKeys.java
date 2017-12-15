@@ -15,6 +15,7 @@ public class GameKeys {
 	public static final int SPACE = 6; // Shoot
 	public static final int SHIFT = 7; // Shoot Special
 	
+	// Initialize
 	static {
 		keys = new boolean[NUM_KEYS];
 		previousKeys = new boolean[NUM_KEYS];

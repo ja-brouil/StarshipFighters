@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
+import com.jb.HUD.HUD;
+import com.jb.HUD.HealthBar;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
@@ -27,6 +29,9 @@ public class PlayState extends GameState {
 	// Level Objects
 	private MasterLevel[] levelList;
 	private int levelNumber;
+	
+	// HUD Elements
+	private Array<HUD> allHUDElements;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -36,15 +41,23 @@ public class PlayState extends GameState {
 
 	@Override
 	public void init() {
+		
+		// Start Game Objects
 		shipBullets = new Array<>();
 		enemyBulletList = new Array<>();
 		player = new Player(300, 150, 0, 0, shipBullets);
 		basicAliens = new Array<GameObjects>();
 		explosionList = new Array<>();
 		
+		// Start Level
 		levelList = new MasterLevel[5];
 		levelList[0] = new Level1(basicAliens, explosionList, enemyBulletList, 1, this);
 		levelNumber = 0;
+		
+		// Start the HUD
+		allHUDElements = new Array<HUD>();
+		allHUDElements.add(new HealthBar(100, 100, 100, 50, true));
+		
 	}
 
 	@Override
@@ -114,6 +127,8 @@ public class PlayState extends GameState {
 
 		// Check Collisions
 		checkCollision();
+		
+		// Update HUD if needed
 
 	}
 
@@ -145,6 +160,11 @@ public class PlayState extends GameState {
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
 		
+		// Draw HUD
+		for (int i = 0; i < allHUDElements.size; i++) {
+			allHUDElements.get(i).draw(spriteBatch);
+		}
+		
 		// Player Render
 		player.draw(spriteBatch);
 		
@@ -171,7 +191,8 @@ public class PlayState extends GameState {
 		// Draw Extra Level stuff
 		levelList[levelNumber].draw(spriteBatch);
 		
-		// Close Spritebatch
+		
+		// Close SpriteBatch
 		spriteBatch.end();
 
 	}
