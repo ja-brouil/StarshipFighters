@@ -3,16 +3,25 @@ package com.jb.gamestates.levels;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.jb.assetmanagers.music.MusicManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gamestates.PlayState;
+import com.jb.images.Background;
 
 public class Level1 extends MasterLevel {
+	
+	// Background
+	private Background level1Background;
 
 	// Time
 	private long timer = 3000;
+	
+	// Music and Sounds
+	private String level1MusicPathName = "data/audio/music/Level1Music.mp3";
+	private String level1Music = "Level 1 Music";
 
 	// GamePlay
 	// Boolean Switches
@@ -29,9 +38,13 @@ public class Level1 extends MasterLevel {
 		this.enemyBulletList = enemyBulletList;
 		this.levelNumber = levelNumber;
 		this.playState = playState;
+		
+		// Start Background
+		initializeBackground();
 
 		// Update Timer
 		timeSinceLevelBegan = TimeUtils.millis();
+		
 
 		// Initialize the switches
 		gameplaySwitch = new boolean[10];
@@ -39,11 +52,29 @@ public class Level1 extends MasterLevel {
 			gameplaySwitch[i] = false;
 		}
 		gameplaySwitch[0] = true;
-		switchCounter = 0;
+		switchCounter = 0;	
+		
+		// Start Music
+		startMusic();
+		
+	}
+	
+	// Background load
+	private void initializeBackground() {
+		level1Background = new Background(0, 0, 640, 800, true, "data/background/level1background.jpg");
+	}
+	
+	// Start Music
+	private void startMusic() {
+		MusicManager.addMusic(level1MusicPathName, level1Music);
+		MusicManager.loopMusic(level1Music);
 	}
 
 	@Override
 	public void update(float dt) {
+		
+		// Update the background
+		level1Background.update(dt);
 		
 		// Start Level 1 after 3 seconds have passed or we have reached the 5 fifth wave
 		if(TimeUtils.timeSinceMillis(timeSinceLevelBegan) < timer || switchCounter == 5) {
@@ -96,8 +127,11 @@ public class Level1 extends MasterLevel {
 		}
 	}
 
+	// Draw Extra stuff if needed
 	@Override
 	public void draw(SpriteBatch spriteBatch) {
+		// Draw Background
+		level1Background.draw(spriteBatch);
 	}
 
 	// Add Initial Enemies
@@ -128,5 +162,6 @@ public class Level1 extends MasterLevel {
 		enemyList.add(new BasicAlien(450, 650, -3, 0, 1000L, -15, enemyBulletList));
 		enemyList.add(new BasicAlien(400, 600, 4, 0, 1000L, -15, enemyBulletList));
 	}
+
 
 }

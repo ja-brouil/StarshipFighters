@@ -7,28 +7,26 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class HealthBar extends HUD {
 	
-	private Color healthBarColor, healthBarOutline;
+	private Color healthBarColor;
 	private ShapeRenderer shapeRenderer;
-	private float width, height, healthLeft;
+	private float height, healthLeft, width;
 
-	public HealthBar(float x, float y, float width, float height, boolean showHUDElement) {
+	public HealthBar(float x, float y, float healthLeft, float height, boolean showHUDElement) {
 		super(x, y, showHUDElement);
 		
 		this.x = x;
 		this.y = y;
 		this.showHUDElement = showHUDElement;
 		this.height = height;
-		this.width = width;
+		this.healthLeft = healthLeft;
+		width = healthLeft;
 		
-		// Start the box
-		shapeRenderer = new ShapeRenderer();
 
 		// Start Color
 		healthBarColor = new Color(Color.GREEN);
-		healthBarOutline = new Color(Color.WHITE);
 		
-		// Start HP
-		healthLeft = width;
+		// Shape Renderer
+		shapeRenderer = new ShapeRenderer();
 		
 		
 	}
@@ -44,25 +42,25 @@ public class HealthBar extends HUD {
 
 	}
 
-	@Override
+	// This Method should be used but I don't have any custom HUD elements so we will just use LibGDX box + font capabilities
 	public void draw(SpriteBatch spriteBatch) {
 		
 		// Draw HUD Element if it needs to be drawn
 		if (showHUDElement) {
-			// Draw Outline
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor(healthBarOutline);
-			shapeRenderer.rect(x, y, width, height);
+
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(healthBarColor);
+			shapeRenderer.rect(x, y, healthLeft - 1, height);
 			shapeRenderer.end();
 			
-			// Fill Rectangle
-			shapeRenderer.begin(ShapeType.Filled);;
-			shapeRenderer.setColor(healthBarColor);
-			shapeRenderer.rect(x, y, healthLeft - 1, height - 1);
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(Color.WHITE);
+			shapeRenderer.rect(x, y, width, height);
 			shapeRenderer.end();
 		}
 		
 	}
+	
 	
 	// Width to fill is the amount of HP left
 	public void setHealthLeft(float healthLeft) {

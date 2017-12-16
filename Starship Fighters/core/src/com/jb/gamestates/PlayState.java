@@ -3,7 +3,6 @@ package com.jb.gamestates;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.jb.HUD.HUD;
 import com.jb.HUD.HealthBar;
@@ -17,9 +16,8 @@ import com.jb.gamestates.levels.Level1;
 import com.jb.gamestates.levels.MasterLevel;
 import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
-import com.jb.main.Game;
 
-public class PlayState extends GameState {
+public class PlayState extends GameState { 
 
 	// Game Objects
 	private Player player;
@@ -27,7 +25,6 @@ public class PlayState extends GameState {
 	private Array<GameObjects> basicAliens;
 	private Array<EnemyBullets> enemyBulletList;
 	private Array<Explosion> explosionList;
-	private Texture background;
 
 	// Level Objects
 	private MasterLevel[] levelList;
@@ -35,10 +32,6 @@ public class PlayState extends GameState {
 
 	// HUD Elements
 	private HUD[] allHUDElements;
-	
-	// BackGround
-	private float x, y;
-	private float dx, dy;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -64,14 +57,7 @@ public class PlayState extends GameState {
 		// Start the HUD
 		// 0 = Health Bar |
 		allHUDElements = new HUD[1];
-		allHUDElements[0] = new HealthBar(10, 770, 200, 25, true);
-		
-		// Initialize Background
-		String pathName = "data/background/background.jpg";
-		background = new Texture(Gdx.files.internal(pathName));
-		x = 0;
-		y = 0;
-		dy = -2f;
+		allHUDElements[0] = new HealthBar(10, 760, 200, 25, true);
 
 	}
 
@@ -147,14 +133,6 @@ public class PlayState extends GameState {
 		for (int i = 0; i < allHUDElements.length; i++) {
 			allHUDElements[i].update(dt);
 		}
-		
-		// Update Background
-		y += dy;
-		
-		if  (y < -576) {
-			y = Game.HEIGHT;
-		}
-		
 
 	}
 
@@ -190,6 +168,11 @@ public class PlayState extends GameState {
 
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
+		spriteBatch.begin();
+
+		// Draw Background
+		levelList[levelNumber].draw(spriteBatch);	
+		spriteBatch.end();
 
 		// Draw HUD
 		// NOTICE: THIS SHOULD NORMALLY BE UNDER THE SPRITEBATCH BEGIN BUT I DONT HAVE
@@ -198,12 +181,8 @@ public class PlayState extends GameState {
 			allHUDElements[i].draw(spriteBatch);
 		}
 
-		spriteBatch.begin();
-		
-		// Draw Background
-		spriteBatch.draw(background, x, y);
-
 		// Player Render
+		spriteBatch.begin();
 		player.draw(spriteBatch);
 
 		// Bullet Render
@@ -226,10 +205,7 @@ public class PlayState extends GameState {
 			explosionList.get(i).draw(spriteBatch);
 		}
 
-		// Draw Extra Level stuff
-		levelList[levelNumber].draw(spriteBatch);
-
-		// Close SpriteBatch
+		// Close SpriteBatch and Shape Renderer
 		spriteBatch.end();
 
 	}
