@@ -67,7 +67,7 @@ public class Player extends GameObjects {
 		shipAnimation = new Animator(3, 8, pathname, 3, 1, animationFrameDuration);
 		
 		// Start Rectangle Box
-		collisionBounds = new Rectangle(x, y, x + 64, y + 64);
+		collisionBounds = new Rectangle(x, y, 64, 64);
 		
 	}
 
@@ -228,7 +228,7 @@ public class Player extends GameObjects {
 	
 	// Update Rectangle 
 	private void updateRectangle(float x, float y) {
-		collisionBounds.set(x, y, x + 64, y + 64);
+		collisionBounds.set(x, y, 64,64);
 	}
 	
 	public Array<PlayerBullets> getBulletList() {

@@ -27,11 +27,19 @@ public class HealthBar extends HUD {
 		healthBarColor = new Color(Color.GREEN);
 		healthBarOutline = new Color(Color.WHITE);
 		
+		// Start HP
+		healthLeft = width;
+		
 	}
 
 	@Override
 	public void update(float dt) {
 		
+		// Set Limit
+		// Health Bar is offset by 20 pixels
+		if (healthLeft < 0) {
+			healthLeft = 0;
+		}
 
 	}
 
@@ -49,16 +57,15 @@ public class HealthBar extends HUD {
 			// Fill Rectangle
 			shapeRenderer.begin(ShapeType.Filled);;
 			shapeRenderer.setColor(healthBarColor);
-			shapeRenderer.rect(x, y, healthLeft, height);
+			shapeRenderer.rect(x, y, healthLeft - 1, height - 1);
 			shapeRenderer.end();
-			//shapeRenderer.dispose(); Read up when/where should this be disposed	
 		}
 		
 	}
 	
 	// Width to fill is the amount of HP left
 	public void setHealthLeft(float healthLeft) {
-		this.healthLeft = healthLeft;
+		this.healthLeft += healthLeft;
 	}
 
 }

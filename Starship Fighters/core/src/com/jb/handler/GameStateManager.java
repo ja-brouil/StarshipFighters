@@ -3,6 +3,7 @@ package com.jb.handler;
 import java.util.Stack;
 
 import com.jb.gamestates.GameState;
+import com.jb.gamestates.MenuState;
 import com.jb.gamestates.PlayState;
 import com.jb.input.GameInputProcessor;
 import com.jb.main.Game;
@@ -11,13 +12,14 @@ public class GameStateManager {
 
 	private Game game;
 	private Stack<GameState> gameStates;
-	public static final int PLAY = 100;
+	public static final int PLAY = 1;
+	public static final int MENU = 0;
 	private GameInputProcessor input;
 	
 	public GameStateManager(Game game) {
 		this.game = game;
 		gameStates = new Stack<GameState>();
-		pushState(PLAY); // Push Play state right away
+		pushState(MENU); 
 		input = game.getInput();
 	}
 	
@@ -31,6 +33,11 @@ public class GameStateManager {
 	
 	// Get Play State
 	private GameState getState(int state) {
+		
+		if (state == MENU) {
+			return new MenuState(this);
+		}
+		
 		if (state == PLAY) {
 			return new PlayState(this);
 		}

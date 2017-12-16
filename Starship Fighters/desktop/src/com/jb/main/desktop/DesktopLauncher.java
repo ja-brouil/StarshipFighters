@@ -4,7 +4,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.jb.main.Game;
 
-public class DesktopLauncher {
+public class DesktopLauncher{
 	
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 800;

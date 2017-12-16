@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.jb.gameobjects.GameObjects;
 
 public class EnemyBullets extends GameObjects{
@@ -57,12 +58,18 @@ public class EnemyBullets extends GameObjects{
 		enemyBulletTexture = new TextureRegion[2];
 		enemyBulletTexture[0] = tmp[0][0];
 		enemyBulletTexture[1] = tmp[0][1];
+		
+		// HitBox
+		collisionBounds = new Rectangle(x, y, 4f, 9f);
 	}
 	
 	// Update
 	public void update(float dt) {
 		// Bullets are going down only
 		y -= dy;
+		
+		// Update HitBox
+		collisionBounds.set(x, y, 4f, 9f);
 		
 		// Prevent Bullet max speed
 		setLimits();

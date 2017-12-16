@@ -3,6 +3,7 @@ package com.jb.gamestates;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.jb.HUD.HUD;
 import com.jb.HUD.HealthBar;
@@ -16,6 +17,7 @@ import com.jb.gamestates.levels.Level1;
 import com.jb.gamestates.levels.MasterLevel;
 import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
+import com.jb.main.Game;
 
 public class PlayState extends GameState {
 
@@ -25,13 +27,18 @@ public class PlayState extends GameState {
 	private Array<GameObjects> basicAliens;
 	private Array<EnemyBullets> enemyBulletList;
 	private Array<Explosion> explosionList;
-	
+	private Texture background;
+
 	// Level Objects
 	private MasterLevel[] levelList;
 	private int levelNumber;
-	
+
 	// HUD Elements
-	private Array<HUD> allHUDElements;
+	private HUD[] allHUDElements;
+	
+	// BackGround
+	private float x, y;
+	private float dx, dy;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -41,23 +48,31 @@ public class PlayState extends GameState {
 
 	@Override
 	public void init() {
-		
+
 		// Start Game Objects
 		shipBullets = new Array<>();
 		enemyBulletList = new Array<>();
 		player = new Player(300, 150, 0, 0, shipBullets);
 		basicAliens = new Array<GameObjects>();
 		explosionList = new Array<>();
-		
+
 		// Start Level
 		levelList = new MasterLevel[5];
 		levelList[0] = new Level1(basicAliens, explosionList, enemyBulletList, 1, this);
 		levelNumber = 0;
-		
+
 		// Start the HUD
-		allHUDElements = new Array<HUD>();
-		allHUDElements.add(new HealthBar(100, 100, 100, 50, true));
+		// 0 = Health Bar |
+		allHUDElements = new HUD[1];
+		allHUDElements[0] = new HealthBar(10, 770, 200, 25, true);
 		
+		// Initialize Background
+		String pathName = "data/background/background.jpg";
+		background = new Texture(Gdx.files.internal(pathName));
+		x = 0;
+		y = 0;
+		dy = -2f;
+
 	}
 
 	@Override
@@ -85,7 +100,7 @@ public class PlayState extends GameState {
 
 		// Check Input
 		handleInput();
-		
+
 		// Update Level
 		levelList[levelNumber].update(dt);
 
@@ -98,8 +113,8 @@ public class PlayState extends GameState {
 				shipBullets.removeIndex(i);
 			}
 		}
-		
-		//  Update Enemies	
+
+		// Update Enemies
 		for (int i = 0; i < basicAliens.size; i++) {
 			basicAliens.get(i).update(dt);
 			if (basicAliens.get(i).getHP() == 0) {
@@ -116,7 +131,7 @@ public class PlayState extends GameState {
 				enemyBulletList.removeIndex(i);
 			}
 		}
-		
+
 		// Remove Explosions
 		for (int i = 0; i < explosionList.size; i++) {
 			explosionList.get(i).update(dt);
@@ -127,8 +142,19 @@ public class PlayState extends GameState {
 
 		// Check Collisions
 		checkCollision();
-		
+
 		// Update HUD if needed
+		for (int i = 0; i < allHUDElements.length; i++) {
+			allHUDElements[i].update(dt);
+		}
+		
+		// Update Background
+		y += dy;
+		
+		if  (y < -576) {
+			y = Game.HEIGHT;
+		}
+		
 
 	}
 
@@ -137,15 +163,21 @@ public class PlayState extends GameState {
 		// Check Player Bullets
 		for (int i = 0; i < shipBullets.size; i++) {
 			for (int j = 0; j < basicAliens.size; j++) {
-				if (shipBullets.get(i).getBoundingBox().overlaps(basicAliens.get(j).getBoundingBox()) ) {
+				if (shipBullets.get(i).getBoundingBox().overlaps(basicAliens.get(j).getBoundingBox())) {
 					shipBullets.get(i).removeBullets();
 					((BasicAlien) basicAliens.get(j)).setHP(-100, false);
 				}
 			}
 		}
-		
+
 		// Check for Enemy Bullets
-		
+		for (int i = 0; i < enemyBulletList.size; i++) {
+			if (enemyBulletList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
+				enemyBulletList.get(i).removeBullets();
+				HealthBar tempHP = (HealthBar) allHUDElements[0];
+				tempHP.setHealthLeft(-20);
+			}
+		}
 
 	}
 
@@ -158,40 +190,45 @@ public class PlayState extends GameState {
 
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
+
+		// Draw HUD
+		// NOTICE: THIS SHOULD NORMALLY BE UNDER THE SPRITEBATCH BEGIN BUT I DONT HAVE
+		// CUSTOM HUD ELEMENTS YET
+		for (int i = 0; i < allHUDElements.length; i++) {
+			allHUDElements[i].draw(spriteBatch);
+		}
+
 		spriteBatch.begin();
 		
-		// Draw HUD
-		for (int i = 0; i < allHUDElements.size; i++) {
-			allHUDElements.get(i).draw(spriteBatch);
-		}
-		
+		// Draw Background
+		spriteBatch.draw(background, x, y);
+
 		// Player Render
 		player.draw(spriteBatch);
-		
+
 		// Bullet Render
 		for (int i = 0; i < shipBullets.size; i++) {
 			shipBullets.get(i).draw(spriteBatch);
 		}
-		
+
 		// Enemy Aliens
 		for (int i = 0; i < basicAliens.size; i++) {
 			basicAliens.get(i).draw(spriteBatch);
 		}
-		
+
 		// Enemy Bullets
 		for (int i = 0; i < enemyBulletList.size; i++) {
 			enemyBulletList.get(i).draw(spriteBatch);
 		}
-		
+
 		// Explosions | Hit Animations
 		for (int i = 0; i < explosionList.size; i++) {
 			explosionList.get(i).draw(spriteBatch);
 		}
-		
+
 		// Draw Extra Level stuff
 		levelList[levelNumber].draw(spriteBatch);
-		
-		
+
 		// Close SpriteBatch
 		spriteBatch.end();
 
@@ -201,7 +238,7 @@ public class PlayState extends GameState {
 	public void dispose() {
 		spriteBatch.dispose();
 	}
-	
+
 	public void setLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
 	}
