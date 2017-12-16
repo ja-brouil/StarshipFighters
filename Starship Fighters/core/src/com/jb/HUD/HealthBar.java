@@ -30,6 +30,7 @@ public class HealthBar extends HUD {
 		// Start HP
 		healthLeft = width;
 		
+		
 	}
 
 	@Override
