@@ -1,4 +1,4 @@
-package com.jb.assetmanagers.music;
+package com.jb.assetmanagers.audio;
 
 import java.util.HashMap;
 
@@ -11,7 +11,7 @@ public class MusicManager {
 
 	// Start Music
 	static {
-		musicManager = new HashMap<>();
+		musicManager = new HashMap<String, Music>();
 	}
 	
 	// Add Music

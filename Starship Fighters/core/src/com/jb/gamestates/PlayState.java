@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.jb.HUD.HUD;
 import com.jb.HUD.HealthBar;
+import com.jb.assetmanagers.audio.MusicManager;
+import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
@@ -14,7 +16,6 @@ import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.gamestates.levels.Level1;
 import com.jb.gamestates.levels.MasterLevel;
-import com.jb.handler.GameStateManager;
 import com.jb.input.GameKeys;
 
 public class PlayState extends GameState { 
@@ -43,11 +44,11 @@ public class PlayState extends GameState {
 	public void init() {
 
 		// Start Game Objects
-		shipBullets = new Array<>();
-		enemyBulletList = new Array<>();
+		shipBullets = new Array<PlayerBullets>();
+		enemyBulletList = new Array<EnemyBullets>();
 		player = new Player(300, 150, 0, 0, shipBullets);
 		basicAliens = new Array<GameObjects>();
-		explosionList = new Array<>();
+		explosionList = new Array<Explosion>();
 
 		// Start Level
 		levelList = new MasterLevel[5];
@@ -213,6 +214,8 @@ public class PlayState extends GameState {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
+		SoundManager.disposeAllSound();
+		MusicManager.disposeAllMusic();
 	}
 
 	public void setLevel(int levelNumber) {

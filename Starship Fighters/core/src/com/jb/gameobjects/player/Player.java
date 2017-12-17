@@ -1,6 +1,7 @@
 package com.jb.gameobjects.player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
+import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
 
@@ -23,6 +25,10 @@ public class Player extends GameObjects {
 	private Animator shipAnimation;
 	private float animationTime;
 	private float animationFrameDuration;
+	
+	// Sound Effects
+	private String bulletShotSoundPathName;
+	private String bulletShotSoundName;
 	
 	// GamePlay 
 	private Array<PlayerBullets> listOfBullets;
@@ -45,10 +51,14 @@ public class Player extends GameObjects {
 		// Graphics
 		pathname = "data/spaceships/ship1.png";
 		animationFrameDuration = 1f/40f;
+		
+		// SFX
+		bulletShotSoundPathName = "data/audio/sound/Basic Shot.wav";
+		bulletShotSoundName = "Shoot1";
 
 		// Limits
 		maxSpeed = 10;
-		friction = 2;
+		friction = 5;
 		minimumSpeed = -10;
 		bulletSpeed = 15;
 		bulletShootSpeed = 200;
@@ -68,6 +78,9 @@ public class Player extends GameObjects {
 		
 		// Start Rectangle Box
 		collisionBounds = new Rectangle(x, y, 64, 64);
+		
+		// Start Sound
+		SoundManager.addSound(bulletShotSoundPathName, bulletShotSoundName);
 		
 	}
 
@@ -110,8 +123,8 @@ public class Player extends GameObjects {
 		setLimits();
 
 		// Update Speed
-		x += dx;
-		y += dy;
+		this.x += dx;
+		this.y += dy;
 		
 		// Update Rectangle Bounds
 		updateRectangle(x, y);
@@ -133,6 +146,19 @@ public class Player extends GameObjects {
 		spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
 		
 		
+	}
+	
+	// Use this update method for cutscenes | Add additional stuff as needed
+	public void updateActor(float dt, boolean acceleration) {
+		if (acceleration) {
+			dx *= dx * dt * 1.2;
+			dy *= dy * dt * 1.2;
+			x += dx;
+			y += dy;
+		} else {
+			x += dx;
+			y += dy;
+		}
 	}
 
 	// Wrap Around + Prevent out of bounds for Y
@@ -191,26 +217,22 @@ public class Player extends GameObjects {
 
 	// Handle input
 	private void playerHandleInput(float dt) {
-		// Left
+		// Left | Right | Up | Down
 		if (left) {
-			dx -= 15 * dt;
-		}
-		// right
-		if (right) {
+			dx += -15 * dt;
+		} else if (right) {
 			dx += 15 * dt;
-		}
-		// Up
-		if (up) {
+		} else if (up) {
 			dy += 15 * dt;
+		} else if (down) {
+			dy += -15 * dt;
 		}
-		// Down
-		if (down) {
-			dy -= 15 * dt;
-		}
+		
 		// Shoot | Note: This will add a bullet to the array which is passed back to the PlayState
 		if (shoot) {
 			if (TimeUtils.timeSinceMillis(bulletcooldown) > bulletShootSpeed) {
-				addBullets(32, 64);		
+				addBullets(32, 64);	
+				SoundManager.playSound(bulletShotSoundName);
 			}
 			
 		}
@@ -218,6 +240,8 @@ public class Player extends GameObjects {
 		if (missile) {
 			// Code for shooting missiles
 		}
+		
+		
 	}
 	
 	// Shoot Code
@@ -241,6 +265,15 @@ public class Player extends GameObjects {
 	
 	public int getHP() {
 		return healthPoints;
+	}
+	
+	// Setters + Getters
+	public void setDX(float dx) {
+		this.dx = dx;
+	}
+	
+	public void setDY(float dy) {
+		this.dy = dy;
 	}
 
 }

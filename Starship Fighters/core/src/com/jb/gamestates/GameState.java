@@ -2,7 +2,6 @@ package com.jb.gamestates;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.jb.handler.GameStateManager;
 import com.jb.input.GameInputProcessor;
 import com.jb.main.Game;
 

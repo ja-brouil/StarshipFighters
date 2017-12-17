@@ -82,10 +82,10 @@ public class BasicAlien extends GameObjects{
 		setLimits();
 		wrap();
 		
-		// Update Shoot
-		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown) {
+		// Update Shoot | Don't shoot if out of the screen
+		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < Game.WIDTH && x > 0 && y < Game.HEIGHT && y > 0) {
 			addEnemyBullets(16, 0);
-			randomAttackCooldown = MathUtils.random(200, 1000);
+			randomAttackCooldown = MathUtils.random(1000, 2000);
 		}
 		
 		

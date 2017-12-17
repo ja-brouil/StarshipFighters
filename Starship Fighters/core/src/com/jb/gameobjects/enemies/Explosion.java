@@ -1,8 +1,10 @@
 package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.animation.Animator;
+import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 
 public class Explosion extends GameObjects {
@@ -12,6 +14,14 @@ public class Explosion extends GameObjects {
 	private Animator explosionAnimation;
 	private float animationTimer;
 	private boolean explosionIsDone;
+	
+	// SFX
+	private static String explosionSoundPathName = "data/audio/sound/Bomb Explosion.wav";
+	private static String explosionSoundName = "Explosion Hit";
+	
+	static {
+		SoundManager.addSound(explosionSoundPathName, explosionSoundName);
+	}
 
 	public Explosion(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
@@ -36,6 +46,9 @@ public class Explosion extends GameObjects {
 		
 		// Set Initial Boolean to false
 		explosionIsDone = false;
+		
+		// Start SFX
+		SoundManager.playSound(explosionSoundName);
 	}
 	
 	public void update(float dt) {

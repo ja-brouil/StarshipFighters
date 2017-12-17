@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jb.assetmanagers.ImageManager;
-import com.jb.assetmanagers.music.MusicManager;
-import com.jb.handler.GameStateManager;
+import com.jb.assetmanagers.audio.MusicManager;
+import com.jb.assetmanagers.audio.SoundManager;
+import com.jb.gamestates.GameStateManager;
 import com.jb.input.GameInputProcessor;
 
 public class Game extends ApplicationAdapter {
@@ -66,6 +67,7 @@ public class Game extends ApplicationAdapter {
 	public void dispose() {
 		spriteBatch.dispose();
 		MusicManager.disposeAllMusic();
+		SoundManager.disposeAllSound();
 	}
 	
 	// Update Viewport to adjust the screen size

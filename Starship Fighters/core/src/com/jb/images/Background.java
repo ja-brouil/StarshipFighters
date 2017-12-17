@@ -68,7 +68,7 @@ public class Background{
 	// Limits
 	private void checkLimits() {
 		if (x >= maxX) {
-			x = 0;
+			x = minX;
 		}
 		
 		if (x <= minX) {
@@ -105,6 +105,121 @@ public class Background{
 		}
 		
 	}
+
+	// Setters and Getters
+	
+	public float getX() {
+		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	public float getDx() {
+		return dx;
+	}
+
+	public void setDx(float dx) {
+		this.dx = dx;
+	}
+
+	public float getDy() {
+		return dy;
+	}
+
+	public void setDy(float dy) {
+		this.dy = dy;
+	}
+
+	public float getWidth() {
+		return width;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
+
+	public float getMaxX() {
+		return maxX;
+	}
+
+	public void setMaxX(float maxX) {
+		this.maxX = maxX;
+	}
+
+	public float getMaxY() {
+		return maxY;
+	}
+
+	public void setMaxY(float maxY) {
+		this.maxY = maxY;
+	}
+
+	public float getMinX() {
+		return minX;
+	}
+
+	public void setMinX(float minX) {
+		this.minX = minX;
+	}
+
+	public float getMinY() {
+		return minY;
+	}
+
+	public void setMinY(float minY) {
+		this.minY = minY;
+	}
+
+	public boolean isBeingShown() {
+		return isBeingShown;
+	}
+
+	public void setBeingShown(boolean isBeingShown) {
+		this.isBeingShown = isBeingShown;
+	}
+
+	public boolean isMovingBackgroundEnabled() {
+		return movingBackgroundEnabled;
+	}
+
+	public void setMovingBackgroundEnabled(boolean movingBackgroundEnabled) {
+		this.movingBackgroundEnabled = movingBackgroundEnabled;
+	}
+
+	public Texture getTexture() {
+		return texture;
+	}
+
+	public void setTexture(Texture texture) {
+		this.texture = texture;
+	}
+
+	public String getPathName() {
+		return pathName;
+	}
+
+	public void setPathName(String pathName) {
+		this.pathName = pathName;
+	}
+	
 	
 	
 	

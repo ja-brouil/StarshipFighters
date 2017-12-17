@@ -3,13 +3,14 @@ package com.jb.gamestates.levels;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.jb.assetmanagers.music.MusicManager;
+import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
+import com.jb.main.Game;
 
 public class Level1 extends MasterLevel {
 	
@@ -61,7 +62,8 @@ public class Level1 extends MasterLevel {
 	
 	// Background load
 	private void initializeBackground() {
-		level1Background = new Background(0, 0, 640, 800, true, "data/background/level1background.jpg");
+	//level1Background = new Background(0, 0, 640, 800, true, "data/background/level1background.jpg");
+	level1Background = new Background(0, 0, 0, 0.25f, 640, 800, true, "data/background/level1background.jpg", Game.WIDTH, Game.HEIGHT, 0, 0);
 	}
 	
 	// Start Music
