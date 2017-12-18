@@ -13,13 +13,13 @@ import com.jb.images.Background;
 import com.jb.main.Game;
 
 public class Level1 extends MasterLevel {
-	
+
 	// Background
-	private Background level1Background;
+	private Background level1Background, level1background2;
 
 	// Time
 	private long timer = 3000;
-	
+
 	// Music and Sounds
 	private String level1MusicPathName = "data/audio/music/Level1Music.mp3";
 	private String level1Music = "Level 1 Music";
@@ -39,13 +39,12 @@ public class Level1 extends MasterLevel {
 		this.enemyBulletList = enemyBulletList;
 		this.levelNumber = levelNumber;
 		this.playState = playState;
-		
+
 		// Start Background
 		initializeBackground();
 
 		// Update Timer
 		timeSinceLevelBegan = TimeUtils.millis();
-		
 
 		// Initialize the switches
 		gameplaySwitch = new boolean[10];
@@ -53,19 +52,21 @@ public class Level1 extends MasterLevel {
 			gameplaySwitch[i] = false;
 		}
 		gameplaySwitch[0] = true;
-		switchCounter = 0;	
-		
+		switchCounter = 0;
+
 		// Start Music
 		startMusic();
-		
+
 	}
-	
+
 	// Background load
 	private void initializeBackground() {
-	//level1Background = new Background(0, 0, 640, 800, true, "data/background/level1background.jpg");
-	level1Background = new Background(0, 0, 0, 0.25f, 640, 800, true, "data/background/level1background.jpg", Game.WIDTH, Game.HEIGHT, 0, 0);
+
+		level1Background = new Background(0, 0, 0, 5f, 640, 2400, true, "data/background/level1background.jpg");
+		level1background2 = new Background(0, -400, 0, 5f, 640, 800, true, "data/background/level1background.jpg");
+
 	}
-	
+
 	// Start Music
 	private void startMusic() {
 		MusicManager.addMusic(level1MusicPathName, level1Music);
@@ -74,22 +75,23 @@ public class Level1 extends MasterLevel {
 
 	@Override
 	public void update(float dt) {
-		
+
 		// Update the background
 		level1Background.update(dt);
-		
+		level1background2.update(dt);
+
 		// Start Level 1 after 3 seconds have passed or we have reached the 5 fifth wave
-		if(TimeUtils.timeSinceMillis(timeSinceLevelBegan) < timer || switchCounter == 5) {
+		if (TimeUtils.timeSinceMillis(timeSinceLevelBegan) < timer || switchCounter == 5) {
 			return;
 		}
-		
+
 		// 0
 		if (gameplaySwitch[switchCounter]) {
-				addInitalEnemies();
-				gameplaySwitch[switchCounter] = false;
-				switchCounter++;
+			addInitalEnemies();
+			gameplaySwitch[switchCounter] = false;
+			switchCounter++;
 		}
-		
+
 		// 1
 		if (gameplaySwitch[switchCounter]) {
 			addSecondEnemies();
@@ -97,7 +99,7 @@ public class Level1 extends MasterLevel {
 			switchCounter++;
 
 		}
-		
+
 		// 2
 		if (gameplaySwitch[switchCounter]) {
 			addThirdEnemies();
@@ -105,16 +107,16 @@ public class Level1 extends MasterLevel {
 			switchCounter++;
 
 		}
-		
-		//3
+
+		// 3
 		if (gameplaySwitch[switchCounter]) {
 			addFourthEnemies();
 			gameplaySwitch[switchCounter] = false;
 			switchCounter++;
 
 		}
-		
-		//4
+
+		// 4
 		if (gameplaySwitch[switchCounter]) {
 			addInitalEnemies();
 			gameplaySwitch[switchCounter] = false;
@@ -134,6 +136,7 @@ public class Level1 extends MasterLevel {
 	public void draw(SpriteBatch spriteBatch) {
 		// Draw Background
 		level1Background.draw(spriteBatch);
+		level1background2.draw(spriteBatch);
 	}
 
 	// Add Initial Enemies
@@ -164,6 +167,5 @@ public class Level1 extends MasterLevel {
 		enemyList.add(new BasicAlien(450, 650, -3, 0, 1000L, -15, enemyBulletList));
 		enemyList.add(new BasicAlien(400, 600, 4, 0, 1000L, -15, enemyBulletList));
 	}
-
 
 }

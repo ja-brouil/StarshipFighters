@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Background{
 	
 	private float x, y, dx, dy, width, height;
-	private float maxX, maxY, minX, minY;
 	private boolean isBeingShown, movingBackgroundEnabled ;
 	private Texture texture;
 	private String pathName;
@@ -38,7 +37,7 @@ public class Background{
 	}
 	
 	// Moving Background
-	public Background(float x, float y, float dx, float dy, float width, float height, boolean isBeingShown, String pathName, float maxX, float maxY, float minX, float minY) {
+	public Background(float x, float y, float dx, float dy, float width, float height, boolean isBeingShown, String pathName) {
 		
 		this.x = x;
 		this.y = y;
@@ -48,10 +47,6 @@ public class Background{
 		this.height = height;
 		this.pathName = pathName;
 		this.isBeingShown = isBeingShown;
-		this.maxX = maxX;
-		this.maxY = maxY;
-		this.minX = minX;
-		this.minY = minY;
 		
 		movingBackgroundEnabled = true;
 		
@@ -66,22 +61,8 @@ public class Background{
 	}
 	
 	// Limits
-	private void checkLimits() {
-		if (x >= maxX) {
-			x = minX;
-		}
+	public void checkLimits() {
 		
-		if (x <= minX) {
-			x = maxX;
-		}
-		
-		if (y >= maxY) {
-			y = minY;
-		}
-		
-		if (y <= minY) {
-			y = maxY;
-		}
 	}
 
 	
@@ -156,37 +137,6 @@ public class Background{
 		this.height = height;
 	}
 
-	public float getMaxX() {
-		return maxX;
-	}
-
-	public void setMaxX(float maxX) {
-		this.maxX = maxX;
-	}
-
-	public float getMaxY() {
-		return maxY;
-	}
-
-	public void setMaxY(float maxY) {
-		this.maxY = maxY;
-	}
-
-	public float getMinX() {
-		return minX;
-	}
-
-	public void setMinX(float minX) {
-		this.minX = minX;
-	}
-
-	public float getMinY() {
-		return minY;
-	}
-
-	public void setMinY(float minY) {
-		this.minY = minY;
-	}
 
 	public boolean isBeingShown() {
 		return isBeingShown;
