@@ -76,8 +76,7 @@ public class IntroState extends GameState{
 		// SpriteBatch
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-		
-		spriteBatch.draw(texture, (Game.WIDTH / 2) - 200 , Game.HEIGHT  / 2 - 50, 500, 200);
+		spriteBatch.draw(texture, Game.WIDTH - (texture.getWidth() / 1.85f) , Game.HEIGHT  / 2 - 50, 500, 200);
 		
 		spriteBatch.end();
 		

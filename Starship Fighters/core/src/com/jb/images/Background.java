@@ -2,6 +2,7 @@ package com.jb.images;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /*
@@ -61,10 +62,26 @@ public class Background{
 	}
 	
 	// Limits
-	public void checkLimits() {
+	public void checkLimits(float xMax, float yMax, float xMin, float yMin, float xOffSet, float yOffset) {
 		
+		// x
+		if (x + xOffSet > xMax) {
+			x = xMin;
+		}
+		
+		if (x + xOffSet < xMin) {
+			x = xMax;
+		}
+		
+		// y
+		if (y + yOffset > yMax) {
+			y = yMin;
+		}
+		
+		if (y + yOffset < yMin) {
+			y = yMax;
+		}	
 	}
-
 	
 	// Update
 	public void update(float dt) {
@@ -72,7 +89,6 @@ public class Background{
 		if (movingBackgroundEnabled) {
 			x += dx;
 			y += dy;
-			checkLimits();
 		}
 		
 	}
@@ -85,6 +101,14 @@ public class Background{
 			spriteBatch.draw(texture, x, y, width, height);
 		}
 		
+	}
+	
+	// Draw Inverted | We won't need this when have a correct background image
+	public void drawInverted(SpriteBatch spriteBatch, boolean horizontal, boolean vertical) {
+		// Draw if needed to be drawn
+		if (isBeingShown) {
+			spriteBatch.draw(texture, x, y, width, height, 0, 0, 640, 800, horizontal, vertical);
+		}
 	}
 
 	// Setters and Getters
@@ -168,9 +192,5 @@ public class Background{
 
 	public void setPathName(String pathName) {
 		this.pathName = pathName;
-	}
-	
-	
-	
-	
+	}	
 }

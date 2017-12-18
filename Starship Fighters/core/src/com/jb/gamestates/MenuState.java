@@ -57,9 +57,7 @@ public class MenuState extends GameState {
 
 		// Background
 		menuBackgroundPath = "data/background/menuBackground.png";
-		// menuBackground = new Background(0, 0, 640, 800, true, menuBackgroundPath);
-		menuBackground = new Background(Game.WIDTH, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath, Game.WIDTH, 0,
-				0, 0);
+		menuBackground = new Background(Game.WIDTH, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
 
 		// Start Actor Player
 		actorPlayer = new Player(Game.WIDTH + (Game.WIDTH / 2) - 32, Game.HEIGHT / 2, -0.75f, 0, null);
@@ -169,6 +167,7 @@ public class MenuState extends GameState {
 		// Clear Screen to Black Background
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 
 		// SpriteBatch
 		spriteBatch.setProjectionMatrix(cam.combined);

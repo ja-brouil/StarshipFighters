@@ -62,8 +62,8 @@ public class Level1 extends MasterLevel {
 	// Background load
 	private void initializeBackground() {
 
-		level1Background = new Background(0, 0, 0, 5f, 640, 2400, true, "data/background/level1background.jpg");
-		level1background2 = new Background(0, -400, 0, 5f, 640, 800, true, "data/background/level1background.jpg");
+		level1Background = new Background(0, 0, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg");
+		level1background2 = new Background(0, -800, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg");
 
 	}
 
@@ -78,8 +78,11 @@ public class Level1 extends MasterLevel {
 
 		// Update the background
 		level1Background.update(dt);
+		level1Background.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
 		level1background2.update(dt);
-
+		level1background2.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
+		
+		// Gameplay Checks
 		// Start Level 1 after 3 seconds have passed or we have reached the 5 fifth wave
 		if (TimeUtils.timeSinceMillis(timeSinceLevelBegan) < timer || switchCounter == 5) {
 			return;
@@ -136,7 +139,7 @@ public class Level1 extends MasterLevel {
 	public void draw(SpriteBatch spriteBatch) {
 		// Draw Background
 		level1Background.draw(spriteBatch);
-		level1background2.draw(spriteBatch);
+		level1background2.drawInverted(spriteBatch, false, true);
 	}
 
 	// Add Initial Enemies
