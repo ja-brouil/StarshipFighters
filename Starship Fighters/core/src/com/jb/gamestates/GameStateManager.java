@@ -12,6 +12,7 @@ public class GameStateManager {
 	public static final int INTRO = 2;
 	public static final int PLAY = 1;
 	public static final int MENU = 0;
+	public static final int GAMEOVER = 3;
 	private GameInputProcessor input;
 	
 	public GameStateManager(Game game) {
@@ -42,6 +43,10 @@ public class GameStateManager {
 		
 		if (state == INTRO) {
 			return new IntroState(this);
+		}
+		
+		if (state == GAMEOVER) {
+			return new GameOverState(this);
 		}
 		
 		return null;

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.Array;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.player.Player;
@@ -118,6 +117,7 @@ public class MenuState extends GameState {
 			// Remove Sound Effect
 			SoundManager.removeSound(choiceOptionName);
 
+			// Delete actor player
 			actorPlayer = null;
 
 		} else if (currentOption == 1) {

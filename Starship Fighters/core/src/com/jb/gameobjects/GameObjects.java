@@ -33,7 +33,17 @@ public abstract class GameObjects {
 	// All Objects Require Update + Render
 	public abstract void update(float dt);
 	public abstract void draw(SpriteBatch spriteBatch);
-
+	
+	// Use this to change HP
+	public void setHP(int hp, boolean replaceHP) {
+		if (replaceHP) {
+			healthbar = hp;
+		} else {
+			healthbar += hp;
+		}
+	}
+	
+	// Setters | Getters
 	public float getX() {
 		return x;
 	}
@@ -89,5 +99,7 @@ public abstract class GameObjects {
 	public int getHP() {
 		return healthbar;
 	}
+	
+	
 
 }

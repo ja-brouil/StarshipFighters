@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.gameobjects.GameObjects;
-import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.main.Game;
 
 /*
@@ -28,6 +27,7 @@ public class PlayerBullets extends GameObjects{
 	
 	// Game Mechanics
 	private boolean doubleBullets, tripleBullets;
+	private int damageValue;
 	
 	// Removal and Collision
 	private boolean isOffScreen;
@@ -57,6 +57,9 @@ public class PlayerBullets extends GameObjects{
 		// Bullet Upgrades
 		doubleBullets = false;
 		tripleBullets = false;
+		
+		// GamePlay
+		damageValue = -100;
 		
 		// Graphics || Might rewrite this later if it lags too much. Create a static method for this? Or have a permanent object
 		// with all the variables already.
@@ -127,5 +130,8 @@ public class PlayerBullets extends GameObjects{
 		return isOffScreen;
 	}
 	
+	public int getDamageValue() {
+		return damageValue;
+	}
 	
 }

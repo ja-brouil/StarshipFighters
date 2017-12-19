@@ -26,8 +26,10 @@ public class BasicAlien extends GameObjects{
 	private float enemyBulletSpeed;
 	private long bulletCooldown;
 	private long randomAttackCooldown;
+	private float initialX, initialY;
+	private int damageValue;
 
-	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed, Array<EnemyBullets> listOfEnemyBullets) {
+	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed, Array<EnemyBullets> listOfEnemyBullets, int damageValue) {
 		super(x, y, dx, dy);
 		
 		// GamePlay
@@ -38,7 +40,12 @@ public class BasicAlien extends GameObjects{
 		this.bulletCooldown = bulletCooldown;
 		this.enemyBulletSpeed = bulletShootSpeed;
 		this.listofEnemyBullets = listOfEnemyBullets;
+		this.damageValue = damageValue;
 		healthbar = 100;
+		
+		// GamePlay Starting Positions
+		initialX = x;
+		initialY = y;
 		
 		// Graphics
 		pathName = "data/spaceships/BasicEnemy.png";
@@ -75,12 +82,27 @@ public class BasicAlien extends GameObjects{
 	
 	// Update Enemy Status
 	public void update(float dt) {
+		wrapXBound();
+		
+	}
+	
+	public void update(float dt, boolean xWrap, boolean yWrap) {
 		
 		// Update Movement
 		x += dx;
+		y += dy;
 		collisionBounds.set(x, y, (96f / 3f), 33);
 		setLimits();
-		wrap();
+		
+		// Wraps
+		if (xWrap) {
+			wrapXBound();
+		}
+		
+		if (yWrap) {
+			wrapYBound();
+		}
+		
 		
 		// Update Shoot | Don't shoot if out of the screen
 		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < Game.WIDTH && x > 0 && y < Game.HEIGHT && y > 0) {
@@ -95,12 +117,11 @@ public class BasicAlien extends GameObjects{
 	public void draw(SpriteBatch spriteBatch) {
 		// Draw Enemy
 		spriteBatch.draw(rolls[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
-		
-		// Draw Explosion if hit
+
 	}
 	
 	// Prevent out of bounds
-	private void wrap() {
+	private void wrapXBound() {
 		// Flip speed if reached the end of the screen
 		if ( x > (Game.WIDTH - 32)) {
 			dx *= -1;
@@ -108,6 +129,16 @@ public class BasicAlien extends GameObjects{
 		
 		if (x < 0) {
 			dx *= -1;
+		}
+	}
+	
+	private void wrapYBound() {
+		if (y > (Game.HEIGHT - 32)) {
+			dy *= -1;
+		}
+		
+		if (y < 0) {
+			dy *= -1;
 		}
 	}
 	
@@ -125,17 +156,18 @@ public class BasicAlien extends GameObjects{
 	
 	// Add Bullets from enemies
 	private void addEnemyBullets(int xOffset, int yOffset) {
-		listofEnemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed));
+		listofEnemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed, damageValue));
 		bulletCooldown = TimeUtils.millis();
 	}
-	
-	// Set HP
-	public void setHP(int hp, boolean replaceHP) {
-		if (replaceHP) {
-			healthbar = hp;
-		} else {
-			healthbar += hp;
-		}
+
+	// Get initial starting x and y
+	public float getInitialX() {
+		return initialX;
 	}
+	
+	public float getInitialY() {
+		return initialY;
+	}
+	
 
 }

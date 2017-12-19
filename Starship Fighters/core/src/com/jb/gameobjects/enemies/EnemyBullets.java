@@ -24,13 +24,14 @@ public class EnemyBullets extends GameObjects{
 	// Removal and Collision
 	private boolean isOffScreen;
 
-	public EnemyBullets(float x, float y, float dx, float dy) {
+	public EnemyBullets(float x, float y, float dx, float dy, int damageValue) {
 		super(x, y, dx, dy);
 		
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
+		this.damageValue = damageValue;
 		
 		// Pathname for graphics
 		pathName = "data/ammo/enemyBullet.png";
@@ -46,9 +47,6 @@ public class EnemyBullets extends GameObjects{
 	
 	// Initialize
 	private void init() {
-		
-		// GamePlay
-		damageValue = 5;
 		
 		// Graphics || Might rewrite this later if it lags too much. Create a static method for this? Or have a permanent object
 		// with all the variables already.
@@ -102,6 +100,11 @@ public class EnemyBullets extends GameObjects{
 	
 	public boolean getRemovalStatus() {
 		return isOffScreen;
+	}
+	
+	// Get bullet damage
+	public int getDamageValue() {
+		return damageValue;
 	}
 
 }

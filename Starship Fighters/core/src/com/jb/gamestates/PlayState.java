@@ -26,6 +26,9 @@ public class PlayState extends GameState {
 	private Array<GameObjects> basicAliens;
 	private Array<EnemyBullets> enemyBulletList;
 	private Array<Explosion> explosionList;
+	
+	// GamePlay
+	private boolean inputAllowed = true;
 
 	// Level Objects
 	private MasterLevel[] levelList;
@@ -69,6 +72,17 @@ public class PlayState extends GameState {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			Gdx.app.exit();
 		}
+		
+		// Set Game Keys
+		if (inputAllowed) {
+			player.setLeft(GameKeys.isDown(GameKeys.LEFT));
+			player.setRight(GameKeys.isDown(GameKeys.RIGHT));
+			player.setUp(GameKeys.isDown(GameKeys.UP));
+			player.setDown(GameKeys.isDown(GameKeys.DOWN));
+			player.setShoot(GameKeys.isDown(GameKeys.SPACE));
+			player.setMissile(GameKeys.isPressed(GameKeys.SHIFT));
+		}
+		
 
 		// Update Keys
 		GameKeys.update();
@@ -76,14 +90,6 @@ public class PlayState extends GameState {
 
 	@Override
 	public void update(float dt) {
-
-		// Set Game Keys
-		player.setLeft(GameKeys.isDown(GameKeys.LEFT));
-		player.setRight(GameKeys.isDown(GameKeys.RIGHT));
-		player.setUp(GameKeys.isDown(GameKeys.UP));
-		player.setDown(GameKeys.isDown(GameKeys.DOWN));
-		player.setShoot(GameKeys.isDown(GameKeys.SPACE));
-		player.setMissile(GameKeys.isPressed(GameKeys.SHIFT));
 
 		// Check Input
 		handleInput();
@@ -103,7 +109,7 @@ public class PlayState extends GameState {
 
 		// Update Enemies
 		for (int i = 0; i < basicAliens.size; i++) {
-			basicAliens.get(i).update(dt);
+			((BasicAlien) basicAliens.get(i)).update(dt, true, false);
 			if (basicAliens.get(i).getHP() == 0) {
 				explosionList.add(new Explosion(basicAliens.get(i).getX(), basicAliens.get(i).getY(), 0, 0));
 				basicAliens.removeIndex(i);
@@ -144,7 +150,7 @@ public class PlayState extends GameState {
 			for (int j = 0; j < basicAliens.size; j++) {
 				if (shipBullets.get(i).getBoundingBox().overlaps(basicAliens.get(j).getBoundingBox())) {
 					shipBullets.get(i).removeBullets();
-					((BasicAlien) basicAliens.get(j)).setHP(-100, false);
+					basicAliens.get(j).setHP(shipBullets.get(i).getDamageValue(), false);
 				}
 			}
 		}
@@ -154,7 +160,7 @@ public class PlayState extends GameState {
 			if (enemyBulletList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
 				enemyBulletList.get(i).removeBullets();
 				HealthBar tempHP = (HealthBar) allHUDElements[0];
-				tempHP.setHealthLeft(-20);
+				tempHP.setHealthLeft(enemyBulletList.get(i).getDamageValue());
 			}
 		}
 
@@ -220,6 +226,14 @@ public class PlayState extends GameState {
 
 	public void setLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
+	}
+	
+	public boolean getInputAllowed() {
+		return inputAllowed;
+	}
+	
+	public void setInputALlowed(boolean inputAllowed) {
+		this.inputAllowed = inputAllowed;
 	}
 
 }
