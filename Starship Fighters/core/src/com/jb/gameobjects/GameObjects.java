@@ -7,7 +7,6 @@ public abstract class GameObjects {
 	
 	protected float x,y;
 	protected float dx, dy;
-	protected int xBound, yBound;
 	protected boolean left, right, up, down, shoot, missile;
 	protected int healthbar;
 	protected Rectangle collisionBounds;
@@ -74,22 +73,6 @@ public abstract class GameObjects {
 
 	public void setVelY(float dy) {
 		this.dy = dy;
-	}
-
-	public int getxBound() {
-		return xBound;
-	}
-
-	public void setxBound(int xBound) {
-		this.xBound = xBound;
-	}
-
-	public int getyBound() {
-		return yBound;
-	}
-
-	public void setyBound(int yBound) {
-		this.yBound = yBound;
 	}
 	
 	public Rectangle getBoundingBox() {

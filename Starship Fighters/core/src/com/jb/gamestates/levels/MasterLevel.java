@@ -18,7 +18,7 @@ public abstract class MasterLevel {
 	protected long timeSinceLevelBegan;
 
 	public MasterLevel(Array<GameObjects> enemyList, Array<Explosion> explosionList, Array<EnemyBullets> enemyBulletList, int levelNumber, PlayState playState) {
-		
+		this.playState = playState;
 	}
 	
 	public abstract void update(float dt);
@@ -40,6 +40,10 @@ public abstract class MasterLevel {
 	
 	public void setLevelNumber(int levelNumber) {
 		this.levelNumber = levelNumber;
+	}
+	
+	public PlayState getPlayState() {
+		return playState;
 	}
 
 }

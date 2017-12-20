@@ -232,7 +232,7 @@ public class Player extends GameObjects {
 		if (shoot) {
 			if (TimeUtils.timeSinceMillis(bulletcooldown) > bulletShootSpeed) {
 				addBullets(32, 64);	
-				SoundManager.playSound(bulletShotSoundName);
+				SoundManager.playSound(bulletShotSoundName, 1.0f);
 			}
 			
 		}

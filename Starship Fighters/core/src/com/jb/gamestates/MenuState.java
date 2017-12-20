@@ -82,14 +82,14 @@ public class MenuState extends GameState {
 		if (GameKeys.isPressed(GameKeys.UP)) {
 			if (currentOption > 0) {
 				currentOption--;
-				SoundManager.playSound(choiceOptionName);
+				SoundManager.playSound(choiceOptionName, 1.0f);
 			}
 		}
 
 		if (GameKeys.isPressed(GameKeys.DOWN)) {
 			if (currentOption < menuChoices.length - 1) {
 				currentOption++;
-				SoundManager.playSound(choiceOptionName);
+				SoundManager.playSound(choiceOptionName, 1.0f);
 			}
 		}
 

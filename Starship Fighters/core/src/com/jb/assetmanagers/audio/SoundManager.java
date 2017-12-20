@@ -8,6 +8,7 @@ import com.badlogic.gdx.audio.Sound;
 public class SoundManager {
 
 	private static HashMap<String, Sound> soundManager;
+	private static Sound currentSound;
 
 	static {
 		soundManager = new HashMap<String, Sound>();
@@ -26,13 +27,19 @@ public class SoundManager {
 
 	// Play sound | Use Sound if you need this to play constantly
 	// through
-	public static void playSound(String name) {
-		soundManager.get(name).play();
+	public static void playSound(String name, float volume) {
+		soundManager.get(name).play(volume);
+		currentSound = soundManager.get(name);
 	}
 
 	// Stop Sound
 	public static void stopSound(String name) {
 		soundManager.get(name).stop();
+	}
+	
+	// Get Sound Loaded
+	public static Sound getSound(String name) {
+		return currentSound;
 	}
 
 	// Dispose of Sound asset

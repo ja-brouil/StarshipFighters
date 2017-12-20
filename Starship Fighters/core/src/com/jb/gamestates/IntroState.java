@@ -26,13 +26,13 @@ public class IntroState extends GameState{
 	public IntroState(GameStateManager gsm) {
 		super(gsm);
 		init();
-		
-		timer = TimeUtils.millis();
-		
 	}
 
 	@Override
 	public void init() {
+		
+		// Timer
+		timer = TimeUtils.millis();
 		
 		// Strings
 		segaPathname = "data/audio/sound/Sega.wav";
@@ -45,14 +45,11 @@ public class IntroState extends GameState{
 		// Texture
 		texture = new Texture(Gdx.files.internal(segaLogoPathName));
 		
-		SoundManager.playSound(segaSoundName);
+		SoundManager.playSound(segaSoundName, 1.0f);
 	}
 
-	@Override
-	public void handleInput() {
-		
-		
-	}
+	@Override // Not Needed
+	public void handleInput() {}
 	
 
 	@Override
@@ -77,7 +74,6 @@ public class IntroState extends GameState{
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
 		spriteBatch.draw(texture, Game.WIDTH - (texture.getWidth() / 1.85f) , Game.HEIGHT  / 2 - 50, 500, 200);
-		
 		spriteBatch.end();
 		
 	}

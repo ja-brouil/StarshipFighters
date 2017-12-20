@@ -9,6 +9,7 @@ import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
+import com.jb.gameobjects.enemies.SamusShipBoss;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
 import com.jb.main.Game;
@@ -33,7 +34,8 @@ public class Level1 extends MasterLevel {
 	private boolean[] gameplaySwitch;
 	private int switchCounter;
 	private int enemyWavesCounter = 0;
-	private boolean bossSpawnEnabled = false;
+	private boolean bossSpawnEnabled = true;
+	private SamusShipBoss samusShipBoss;
 
 	public Level1(Array<GameObjects> enemyList, Array<Explosion> explosionList, Array<EnemyBullets> enemyBulletList,
 			int levelNumber, PlayState playState) {
@@ -95,6 +97,7 @@ public class Level1 extends MasterLevel {
 			return;
 		}
 
+		
 		// Spawn Enemies
 		if (enemyWavesCounter < 20) {
 			// Spawn Enemies
@@ -144,18 +147,20 @@ public class Level1 extends MasterLevel {
 				waveTimer = TimeUtils.millis();
 				updateTimerEnabled = false;
 			}
-			
 			// Switch Level
 			if (!gameplaySwitch[switchCounter]) {
 				gameplaySwitch[switchCounter] = true;
 			}
 		}
 
+		
 		// Check if Boss needs to be spawned
 		if (enemyWavesCounter == 20 && bossSpawnEnabled) {
 			bossSpawnEnabled = false;
-			System.out.println("Spawn the boss!");
+			spawnBoss();
 		}
+		
+		
 	}
 
 	// Draw Extra stuff if needed
@@ -228,6 +233,12 @@ public class Level1 extends MasterLevel {
 		}
 		enemyWavesCounter++;
 		updateTimerEnabled = true;
+	}
+	
+	// Boss 
+	private void spawnBoss() {
+		samusShipBoss = new SamusShipBoss(100, 675, 2, 0, enemyBulletList);
+		getPlayState().setNewBoss(samusShipBoss); 
 	}
 
 }
