@@ -1,10 +1,13 @@
 package com.jb.gamestates;
 
+import java.sql.Time;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.HUD.HUD;
 import com.jb.HUD.HealthBar;
 import com.jb.assetmanagers.audio.MusicManager;
@@ -32,6 +35,7 @@ public class PlayState extends GameState {
 
 	// GamePlay
 	private boolean inputAllowed = true;
+	private boolean gameOver = false;
 
 	// Level Objects
 	private MasterLevel[] levelList;
@@ -39,6 +43,9 @@ public class PlayState extends GameState {
 
 	// HUD Elements
 	private HUD[] allHUDElements;
+	
+	// Timer
+	private long deathTimer;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -52,11 +59,10 @@ public class PlayState extends GameState {
 		// Start Game Objects
 		shipBullets = new Array<PlayerBullets>();
 		enemyBulletList = new Array<EnemyBullets>();
-		player = new Player(300, 150, 0, 0, shipBullets);
+		player = new Player(300, 150, 0, 0, shipBullets, this);
 		basicAliens = new Array<GameObjects>();
 		explosionList = new Array<Explosion>();
-		//samusShipBoss = new SamusShipBoss(50, 975, 0, -2, enemyBulletList, explosionList, basicAliens);
-
+		
 		// Start Level
 		levelList = new MasterLevel[5];
 		levelList[0] = new Level1(basicAliens, explosionList, enemyBulletList, 1, this);
@@ -66,6 +72,9 @@ public class PlayState extends GameState {
 		// 0 = Health Bar |
 		allHUDElements = new HUD[1];
 		allHUDElements[0] = new HealthBar(10, 760, 200, 25, true);
+		
+		// Timers
+		deathTimer = TimeUtils.millis();
 
 	}
 
@@ -94,6 +103,19 @@ public class PlayState extends GameState {
 	@Override
 	public void update(float dt) {
 
+		// If Game over, return/draw death animation
+		if (gameOver) {
+			// Add Player Explosions
+			if (!player.getDeathStatus()) {
+				for (int i = 0; i < 10; i++) {
+					explosionList.add(new Explosion(player.getX() + (MathUtils.random(0, 32)), player.getY() + MathUtils.random(0, 32), 0, 0));
+				}
+				player.setDeathStatus(true);
+			}
+			
+			return;
+		}
+		
 		// Check Input
 		handleInput();
 
@@ -229,6 +251,7 @@ public class PlayState extends GameState {
 		// Clear screen to Black Background
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
@@ -271,8 +294,16 @@ public class PlayState extends GameState {
 
 		// Explosions | Hit Animations
 		for (int i = 0; i < explosionList.size; i++) {
-			explosionList.get(i).draw(spriteBatch);
+			if (player.getDeathStatus()) {
+				if (TimeUtils.timeSinceMillis(deathTimer) > 200) {
+					explosionList.get(i).draw(spriteBatch);
+					deathTimer = TimeUtils.millis();
+				}
+			} else {
+				explosionList.get(i).draw(spriteBatch);
+			}
 		}
+		
 
 		// Close SpriteBatch and Shape Renderer
 		spriteBatch.end();
@@ -308,6 +339,10 @@ public class PlayState extends GameState {
 	
 	public GameStateManager getGSM() {
 		return gsm;
+	}
+	
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 
 }

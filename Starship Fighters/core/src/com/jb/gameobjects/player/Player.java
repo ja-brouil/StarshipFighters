@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
+import com.jb.gamestates.PlayState;
 import com.jb.main.Game;
 
 public class Player extends GameObjects {
@@ -36,8 +37,10 @@ public class Player extends GameObjects {
 	private long bulletcooldown;
 	private long bulletShootSpeed;
 	private int healthPoints;
+	private boolean isDead;
+	private PlayState playState;
 
-	public Player(float x, float y, float dx, float dy, Array<PlayerBullets> listOfBullets) {
+	public Player(float x, float y, float dx, float dy, Array<PlayerBullets> listOfBullets, PlayState playState) {
 		super(x, y, dx, dy);
 		
 		// GamePlay
@@ -46,6 +49,7 @@ public class Player extends GameObjects {
 		this.dx = dx;
 		this.dy = dy;
 		this.listOfBullets = listOfBullets;
+		this.playState = playState;
 		bulletcooldown = TimeUtils.millis();
 
 		// Graphics
@@ -71,6 +75,7 @@ public class Player extends GameObjects {
 	public void init() {
 		// HealthPoints
 		healthPoints = 100;
+		isDead = false;
 		
 		// Note: Ship size is 64 x 64 pixels
 		// Start Animation
@@ -132,6 +137,10 @@ public class Player extends GameObjects {
 		// Edge of the screen move to the other side
 		wrap();
 		
+		// Check if dead
+		if (healthPoints <= 0) {
+			playState.setGameOver(true);
+		}
 
 	}
 
@@ -274,6 +283,14 @@ public class Player extends GameObjects {
 	
 	public void setDY(float dy) {
 		this.dy = dy;
+	}
+	
+	public boolean getDeathStatus() {
+		return isDead;
+	}
+	
+	public void setDeathStatus(boolean isDead) {
+		this.isDead = isDead;
 	}
 
 }

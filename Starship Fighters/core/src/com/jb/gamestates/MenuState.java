@@ -63,7 +63,7 @@ public class MenuState extends GameState {
 		menuBackground2 = new Background(0, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
 
 		// Start Actor Player
-		actorPlayer = new Player(Game.WIDTH + (Game.WIDTH / 2) - 32, Game.HEIGHT / 2, -0.75f, 0, null);
+		actorPlayer = new Player(Game.WIDTH + (Game.WIDTH / 2) - 32, Game.HEIGHT / 2, -0.75f, 0, null, null);
 
 		// Boolean checks
 		stopXMovement = new boolean[3];
