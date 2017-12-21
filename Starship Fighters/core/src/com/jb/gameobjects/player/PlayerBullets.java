@@ -107,6 +107,7 @@ public class PlayerBullets extends GameObjects{
 	
 	// Limits
 	private void setLimits() {
+		
 		if (dy > maxSpeed) {
 			dy = maxSpeed;
 		}

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 
 public class EnemyBullets extends GameObjects{
@@ -18,11 +19,20 @@ public class EnemyBullets extends GameObjects{
 	private Texture allTexture;
 	private TextureRegion[] enemyBulletTexture;
 	
+	// SFX
+	private static String enemyBulletSoundPathname = "data/audio/sound/enemybulletsound.mp3";
+	private static String enemyBulletSoundName = "Enemy Bullet Sound";
+	
 	// Game Mechanics
 	private int damageValue;
 	
 	// Removal and Collision
 	private boolean isOffScreen;
+	
+	// Add Sound
+	static {
+		SoundManager.addSound(enemyBulletSoundPathname, enemyBulletSoundName);
+	}
 
 	public EnemyBullets(float x, float y, float dx, float dy, int damageValue) {
 		super(x, y, dx, dy);
@@ -59,6 +69,10 @@ public class EnemyBullets extends GameObjects{
 		
 		// HitBox
 		collisionBounds = new Rectangle(x, y, 4f, 9f);
+		
+		// Play Sound
+		SoundManager.playSound(enemyBulletSoundName, 1f);
+		
 	}
 	
 	// Update

@@ -13,12 +13,13 @@ public class GameStateManager {
 	public static final int PLAY = 1;
 	public static final int MENU = 0;
 	public static final int GAMEOVER = 3;
+	public static final int VICTORY = 4;
 	private GameInputProcessor input;
 	
 	public GameStateManager(Game game) {
 		this.game = game;
 		gameStates = new Stack<GameState>();
-		pushState(PLAY); 
+		pushState(INTRO); 
 		input = game.getInput();
 	}
 	
@@ -47,6 +48,10 @@ public class GameStateManager {
 		
 		if (state == GAMEOVER) {
 			return new GameOverState(this);
+		}
+		
+		if (state == VICTORY) {
+			return new VictoryState(this);
 		}
 		
 		return null;

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.jb.animation.Animator;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.player.Player;
@@ -19,6 +20,7 @@ public class MenuState extends GameState {
 	private BitmapFont bitmapFont;
 	private int currentOption;
 	private Background menuBackground;
+	private Background menuBackground2;
 	private String menuBackgroundPath;
 	private String menuMusicName = "Menu Music";
 	private String MenuMusicPathName = "data/audio/music/menumusic.mp3";
@@ -26,6 +28,7 @@ public class MenuState extends GameState {
 	private String choiceSoundNamePathName;
 	private Player actorPlayer;
 	private boolean[] stopXMovement;
+
 
 	public MenuState(GameStateManager gsm) {
 		super(gsm);
@@ -57,6 +60,7 @@ public class MenuState extends GameState {
 		// Background
 		menuBackgroundPath = "data/background/menuBackground.png";
 		menuBackground = new Background(Game.WIDTH, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
+		menuBackground2 = new Background(0, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
 
 		// Start Actor Player
 		actorPlayer = new Player(Game.WIDTH + (Game.WIDTH / 2) - 32, Game.HEIGHT / 2, -0.75f, 0, null);
@@ -137,8 +141,16 @@ public class MenuState extends GameState {
 			menuBackground.setMovingBackgroundEnabled(false);
 			menuBackground.setDx(0);
 		}
+		
+		if (menuBackground2.getX() < -1 * Game.WIDTH) {
+			menuBackground2.setMovingBackgroundEnabled(false);
+			menuBackground2.setDx(0);
+		}
+		
 		menuBackground.update(dt);
+		menuBackground2.update(dt);
 
+		// Update Actor
 		if (actorPlayer != null) {
 			// Update Player Background
 			if (menuBackground.getDx() != 0) {
@@ -175,6 +187,7 @@ public class MenuState extends GameState {
 
 		// Draw Background
 		menuBackground.draw(spriteBatch);
+		menuBackground2.draw(spriteBatch);
 
 		// Draw Title
 		bitmapFont.setColor(Color.WHITE);
@@ -187,9 +200,7 @@ public class MenuState extends GameState {
 			} else {
 				bitmapFont.setColor(Color.WHITE);
 			}
-
 			bitmapFont.draw(spriteBatch, menuChoices[i], Game.WIDTH / 2 - 5, 200 - (20 * i));
-
 		}
 
 		// Draw Player Actor

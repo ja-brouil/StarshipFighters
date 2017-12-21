@@ -10,6 +10,7 @@ public class HealthBar extends HUD {
 	private Color healthBarColor;
 	private ShapeRenderer shapeRenderer;
 	private float height, healthLeft, width;
+	private float totalHealth;
 
 	public HealthBar(float x, float y, float healthLeft, float height, boolean showHUDElement) {
 		super(x, y, showHUDElement);
@@ -20,15 +21,15 @@ public class HealthBar extends HUD {
 		this.height = height;
 		this.healthLeft = healthLeft;
 		width = healthLeft;
+		totalHealth = healthLeft;
 		
 
 		// Start Color
-		healthBarColor = new Color(Color.GREEN);
+		healthBarColor = Color.GREEN;
 		
 		// Shape Renderer
 		shapeRenderer = new ShapeRenderer();
-		
-		
+	
 	}
 
 	@Override
@@ -49,6 +50,12 @@ public class HealthBar extends HUD {
 		if (showHUDElement) {
 
 			shapeRenderer.begin(ShapeType.Filled);
+			// Change HP color to yellow between 20% and 10% and red at 10% and lower
+			if (healthLeft < (totalHealth * 0.4) && healthLeft > (totalHealth * 0.2)) {
+				healthBarColor = Color.YELLOW;
+			} else if (healthLeft < (totalHealth * 0.2)) {
+				healthBarColor = Color.RED;
+			}
 			shapeRenderer.setColor(healthBarColor);
 			shapeRenderer.rect(x, y, healthLeft - 1, height);
 			shapeRenderer.end();
@@ -65,6 +72,10 @@ public class HealthBar extends HUD {
 	// Width to fill is the amount of HP left
 	public void setHealthLeft(float healthLeft) {
 		this.healthLeft += healthLeft;
+	}
+	
+	public void setTotalHealth(float totalHealth) {
+		this.totalHealth = totalHealth;
 	}
 
 }

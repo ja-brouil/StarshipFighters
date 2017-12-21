@@ -55,7 +55,7 @@ public class PlayState extends GameState {
 		player = new Player(300, 150, 0, 0, shipBullets);
 		basicAliens = new Array<GameObjects>();
 		explosionList = new Array<Explosion>();
-		samusShipBoss = new SamusShipBoss(100, 675, 2, 0, enemyBulletList);
+		//samusShipBoss = new SamusShipBoss(50, 975, 0, -2, enemyBulletList, explosionList, basicAliens);
 
 		// Start Level
 		levelList = new MasterLevel[5];
@@ -118,12 +118,12 @@ public class PlayState extends GameState {
 				basicAliens.removeIndex(i);
 			}
 		}
-		
-		// Update Boss | section needs to be rewritten with an array of bosses. Change the basic aliens back
+
+		// Update Boss | section needs to be rewritten with an array of bosses. Change
+		// the basic aliens back
 		if (samusShipBoss != null) {
 			samusShipBoss.update(dt);
 		}
-
 
 		// Remove Explosions
 		for (int i = 0; i < explosionList.size; i++) {
@@ -142,10 +142,10 @@ public class PlayState extends GameState {
 				enemyBulletList.removeIndex(i);
 			}
 		}
-		
-		// Check Collisions
+
+		// Check Collisions || Collisions should probably be added per class instead of
+		// having an overall? Look into this
 		checkCollision();
-		
 
 		// Update HUD if needed
 		for (int i = 0; i < allHUDElements.length; i++) {
@@ -158,21 +158,58 @@ public class PlayState extends GameState {
 	private void checkCollision() {
 		// Check Player Bullets
 		for (int i = 0; i < shipBullets.size; i++) {
+			// Check aliens
 			for (int j = 0; j < basicAliens.size; j++) {
 				if (shipBullets.get(i).getBoundingBox().overlaps(basicAliens.get(j).getBoundingBox())) {
 					shipBullets.get(i).removeBullets();
 					basicAliens.get(j).setHP(shipBullets.get(i).getDamageValue(), false);
 				}
 			}
+
+			// Check Boss Hit | 0 = left, 1 = center, 2 = right
+			if (samusShipBoss != null) {
+				for (int h = 0; h < samusShipBoss.getHitBoxes().length; h++) {
+					if (shipBullets.get(i).getBoundingBox().overlaps(samusShipBoss.getSpecificHitBox(h))) {
+						if (h == 0) {
+							if (!samusShipBoss.getLeftWingStatus()) {
+								samusShipBoss.setLeftWingHealth(shipBullets.get(i).getDamageValue());
+							}
+							explosionList.add(new Explosion(shipBullets.get(i).getX(), shipBullets.get(i).getY(), 0, 0,
+									"data/hit_and_explosions/impactHit.png", "data/audio/sound/Bomb Explosion.wav",
+									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false));
+							shipBullets.get(i).removeBullets();
+						}
+						if (h == 1) {
+							if (!samusShipBoss.getMiddleInvincibleStatus()) {
+								samusShipBoss.setHP(shipBullets.get(i).getDamageValue(), false);
+							}
+							shipBullets.get(i).removeBullets();
+							explosionList.add(new Explosion(shipBullets.get(i).getX(), shipBullets.get(i).getY(), 0, 0,
+									"data/hit_and_explosions/impactHit.png", "data/audio/sound/Bomb Explosion.wav",
+									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false));
+						}
+						if (h == 2) {
+							if(!samusShipBoss.getRightWingStatus()) {
+								samusShipBoss.setRightWingHealth(shipBullets.get(i).getDamageValue());
+							}
+							explosionList.add(new Explosion(samusShipBoss.getSpecificHitBox(h).getX(),
+									shipBullets.get(i).getY(), 0, 0, "data/hit_and_explosions/impactHit.png",
+									"data/audio/sound/Bomb Explosion.wav", "Boss Hit", 3, 1, 3, 1, 1f / 40f, false));
+							shipBullets.get(i).removeBullets();
+						}
+					}
+				}
+			}
+
 		}
 
 		// Check for Enemy Bullets
 		for (int i = 0; i < enemyBulletList.size; i++) {
 			if (enemyBulletList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
 				// Play Explosion on Player
-				explosionList.add(new Explosion(player.getX() + MathUtils.random(0, 32), player.getY() + MathUtils.random(0, 32), 0, 0,
-						"data/hit_and_explosions/impactHit.png", "data/audio/sound/Bomb Explosion.wav", "Player Hit", 3,
-						1, 3, 1, 1f / 40f));
+				explosionList.add(new Explosion(player.getX() + MathUtils.random(0, 32),
+						player.getY() + MathUtils.random(0, 32), 0, 0, "data/hit_and_explosions/impactHit.png",
+						"data/audio/sound/Bomb Explosion.wav", "Player Hit", 3, 1, 3, 1, 1f / 40f));
 
 				// Reduce Player Health
 				HealthBar tempHP = (HealthBar) allHUDElements[0];
@@ -217,19 +254,19 @@ public class PlayState extends GameState {
 			shipBullets.get(i).draw(spriteBatch);
 		}
 
+		// Enemy Bullets
+		for (int i = 0; i < enemyBulletList.size; i++) {
+			enemyBulletList.get(i).draw(spriteBatch);
+		}
+
 		// Enemy Aliens
 		for (int i = 0; i < basicAliens.size; i++) {
 			basicAliens.get(i).draw(spriteBatch);
 		}
-		
+
 		// Boss Units
 		if (samusShipBoss != null) {
 			samusShipBoss.draw(spriteBatch);
-		}
-
-		// Enemy Bullets
-		for (int i = 0; i < enemyBulletList.size; i++) {
-			enemyBulletList.get(i).draw(spriteBatch);
 		}
 
 		// Explosions | Hit Animations
@@ -244,7 +281,6 @@ public class PlayState extends GameState {
 
 	@Override
 	public void dispose() {
-		spriteBatch.dispose();
 		SoundManager.disposeAllSound();
 		MusicManager.disposeAllMusic();
 	}
@@ -260,14 +296,18 @@ public class PlayState extends GameState {
 	public void setInputALlowed(boolean inputAllowed) {
 		this.inputAllowed = inputAllowed;
 	}
-	
+
 	// This should be array of bosses
 	public SamusShipBoss getBoss() {
 		return samusShipBoss;
 	}
-	
+
 	public void setNewBoss(SamusShipBoss samusShipBoss) {
 		this.samusShipBoss = samusShipBoss;
+	}
+	
+	public GameStateManager getGSM() {
+		return gsm;
 	}
 
 }

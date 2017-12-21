@@ -60,6 +60,21 @@ public class Explosion extends GameObjects {
 		init(cols, rows, colCut, rowCut, frameLengthTime);
 
 	}
+	
+	// Boss Hit
+	public Explosion(float x, float y, float dx, float dy, String pathName, String explosionSoundCustomPathName,
+			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, boolean playSound) {
+		super(x, y, dx, dy);
+		
+		this.x = x;
+		this.y = y;
+		this.dx = dx;
+		this.dy = dy;
+
+		this.pathName = pathName;
+		init(cols, rows, colCut, rowCut, frameLengthTime, playSound);
+
+	}
 
 	// Initialize
 	private void init() {		
@@ -89,6 +104,22 @@ public class Explosion extends GameObjects {
 		SoundManager.playSound(explosionPlayerName, 0.3f);
 		
 	}
+	
+	// Boss Hit
+	private void init(int cols, int rows, int colCut, int rowCut, float frameLengthTime, boolean playSound) {
+		
+		// Start explosion animation
+		explosionAnimation = new Animator(cols, rows, pathName, colCut, rowCut, frameLengthTime);
+
+		// Set Initial Boolean to false
+		explosionIsDone = false;
+
+		// Start SFX
+		if (playSound) {
+			SoundManager.playSound(explosionPlayerName, 0.3f);
+		}	
+	}
+	
 
 	public void update(float dt) {
 		// Check if animation is done playing

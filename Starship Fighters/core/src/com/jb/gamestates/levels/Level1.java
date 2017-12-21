@@ -10,6 +10,7 @@ import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gameobjects.enemies.SamusShipBoss;
+import com.jb.gamestates.GameStateManager;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
 import com.jb.main.Game;
@@ -24,10 +25,15 @@ public class Level1 extends MasterLevel {
 	private long cooldownBetweenWaves = 2000;
 	private long waveTimer;
 	private boolean updateTimerEnabled = true;
+	private long bossTimer = 5000;
+	private boolean startTimerForBoss = true;
 
 	// Music and Sounds
 	private String level1MusicPathName = "data/audio/music/Level1Music.mp3";
 	private String level1Music = "Level 1 Music";
+	private String victoryMusicPathName = "data/audio/music/victorytheme.mp3";
+	private String victoryMusicName = "Victory";
+	
 
 	// GamePlay
 	// Boolean Switches
@@ -80,17 +86,20 @@ public class Level1 extends MasterLevel {
 	private void startMusic() {
 		MusicManager.addMusic(level1MusicPathName, level1Music);
 		MusicManager.loopMusic(level1Music);
+		MusicManager.addMusic(victoryMusicPathName, victoryMusicName);
 	}
 
 	@Override
 	public void update(float dt) {
 
+		
 		// Update the background
 		level1Background.update(dt);
 		level1Background.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
 		level1background2.update(dt);
 		level1background2.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
-
+		
+		
 		// GamePlay Checks
 		// Start Level 1 after 3 seconds have passed or we have reached the 5 fifth wave
 		if (TimeUtils.timeSinceMillis(timeSinceLevelBegan) < timer) {
@@ -99,7 +108,7 @@ public class Level1 extends MasterLevel {
 
 		
 		// Spawn Enemies
-		if (enemyWavesCounter < 20) {
+		if (enemyWavesCounter < 6) {
 			// Spawn Enemies
 			if (gameplaySwitch[switchCounter]) {
 				if (switchCounter == 0) {
@@ -112,8 +121,7 @@ public class Level1 extends MasterLevel {
 					addFourthEnemies();
 				} else if (switchCounter == 4 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
 					addFifthEnemies();
-				} else if (enemyWavesCounter < 20 && enemyList.size == 0
-						&& TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
+				} else if (enemyList.size == 0 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
 					randomSpawn();
 				}
 				gameplaySwitch[switchCounter] = false;
@@ -122,7 +130,7 @@ public class Level1 extends MasterLevel {
 
 		// Move Enemies Downward (Only for this level) | part 1 for the first 5 waves
 		// then for the random waves | Otherwise
-		if (enemyWavesCounter < 10) {
+		if (enemyWavesCounter < 6) {
 			for (int i = 0; i < enemyList.size; i++) {
 				if ((enemyList.get(i)).getY() <= ((BasicAlien) enemyList.get(i)).getInitialY() - 200
 						&& enemyList.get(i).getDY() < 0) {
@@ -155,12 +163,28 @@ public class Level1 extends MasterLevel {
 
 		
 		// Check if Boss needs to be spawned
-		if (enemyWavesCounter == 20 && bossSpawnEnabled) {
-			bossSpawnEnabled = false;
-			spawnBoss();
+		if (enemyWavesCounter == 6 && bossSpawnEnabled && enemyList.size == 0) {
+			if (startTimerForBoss) {
+				bossTimer = TimeUtils.millis();
+				startTimerForBoss = false;
+				MusicManager.stopMusic(level1Music);
+			}
+			
+			if (TimeUtils.timeSinceMillis(bossTimer) > 3000) {
+				bossSpawnEnabled = false;
+				spawnBoss();
+			}	
 		}
 		
-		
+		// If Boss is dead, victory!
+		if (getPlayState().getBoss() != null) {
+			if (getPlayState().getBoss().getDeathStatus()) {
+				MusicManager.stopMusic("Boss Battle");
+				MusicManager.playMusic(victoryMusicName);
+			}
+			
+			
+		}	
 	}
 
 	// Draw Extra stuff if needed
@@ -171,6 +195,7 @@ public class Level1 extends MasterLevel {
 		level1background2.drawInverted(spriteBatch, false, true);
 	}
 
+	// Enemy Spawns
 	// Add Initial Enemies
 	private void addInitalEnemies() {
 		enemyList.add(new BasicAlien(568, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
@@ -237,8 +262,7 @@ public class Level1 extends MasterLevel {
 	
 	// Boss 
 	private void spawnBoss() {
-		samusShipBoss = new SamusShipBoss(100, 675, 2, 0, enemyBulletList);
+		samusShipBoss = new SamusShipBoss(100, 975, 2, -2, enemyBulletList, explosionList, enemyList);
 		getPlayState().setNewBoss(samusShipBoss); 
 	}
-
 }
