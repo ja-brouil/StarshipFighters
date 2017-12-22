@@ -102,9 +102,9 @@ public class SamusShipBoss extends GameObjects {
 		randomAttackCooldownRight = MathUtils.random(400, 1000);
 
 		// HP
-		leftWingHealth = 1000;
-		rightWingHealth = 1000;
-		healthbar = 3000;
+		leftWingHealth = 100;
+		rightWingHealth = 100;
+		healthbar = 300;
 
 		// Dimension Size
 		width = 196;
