@@ -20,7 +20,7 @@ public class PlayerBullets extends GameObjects{
 	private float maxSpeed;
 	private float dy;
 	
-	// Graphics
+	// Graphics 
 	private String pathname;
 	private Texture allTexture;
 	private TextureRegion[] bulletTexture;
@@ -82,7 +82,7 @@ public class PlayerBullets extends GameObjects{
 		
 		// Update collisionBounds
 		collisionBounds.set(x, y, 4f, 9f);
-		
+		//checkCollision();
 		
 		// Prevent bullet speed
 		setLimits();
@@ -118,6 +118,7 @@ public class PlayerBullets extends GameObjects{
 		
 	}
 	
+	
 	// Remove bullets from out of screen
 	public void removeBullets() {
 		isOffScreen = true;
@@ -134,5 +135,8 @@ public class PlayerBullets extends GameObjects{
 	public int getDamageValue() {
 		return damageValue;
 	}
+
+	@Override // Not needed
+	public void update(float dt, boolean xWrap, boolean yWrap) {}
 	
 }

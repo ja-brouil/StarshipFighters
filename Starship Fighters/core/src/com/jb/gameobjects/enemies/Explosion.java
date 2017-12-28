@@ -1,10 +1,8 @@
 package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.animation.Animator;
-import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 
@@ -141,6 +139,12 @@ public class Explosion extends GameObjects {
 
 	public boolean getExplosionStatus() {
 		return explosionIsDone;
+	}
+
+	@Override
+	public void update(float dt, boolean xWrap, boolean yWrap) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

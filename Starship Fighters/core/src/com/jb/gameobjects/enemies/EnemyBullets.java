@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
+import com.jb.gamestates.PlayState;
 
 public class EnemyBullets extends GameObjects{
 	
@@ -34,7 +35,7 @@ public class EnemyBullets extends GameObjects{
 		SoundManager.addSound(enemyBulletSoundPathname, enemyBulletSoundName);
 	}
 
-	public EnemyBullets(float x, float y, float dx, float dy, int damageValue) {
+	public EnemyBullets(float x, float y, float dx, float dy, int damageValue, PlayState playState) {
 		super(x, y, dx, dy);
 		
 		this.x = x;
@@ -42,7 +43,6 @@ public class EnemyBullets extends GameObjects{
 		this.dx = dx;
 		this.dy = dy;
 		this.damageValue = damageValue;
-		
 		// Pathname for graphics
 		pathName = "data/ammo/enemyBullet.png";
 		
@@ -58,9 +58,7 @@ public class EnemyBullets extends GameObjects{
 	// Initialize
 	private void init() {
 		
-		// Graphics || Might rewrite this later if it lags too much. Create a static method for this? Or have a permanent object
-		// with all the variables already.
-		
+		// Graphics
 		allTexture = new Texture(Gdx.files.internal(pathName));
 		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 2, allTexture.getHeight() / 1);
 		enemyBulletTexture = new TextureRegion[2];
@@ -83,15 +81,15 @@ public class EnemyBullets extends GameObjects{
 		// Update HitBox
 		collisionBounds.set(x, y, 4f, 9f);
 		
+		
 		// Prevent Bullet max speed
 		setLimits();
+		
 	}
 	
 	// Render
-	public void draw(SpriteBatch spriteBatch) {
-		
-		spriteBatch.draw(enemyBulletTexture[0].getTexture(), x, y, 4, 11, 0, 0, 4, 11, false, true );
-		
+	public void draw(SpriteBatch spriteBatch) {	
+		spriteBatch.draw(enemyBulletTexture[0].getTexture(), x, y, 4, 11, 0, 0, 4, 11, false, true );	
 	}
 	
 	// Limits
@@ -106,6 +104,7 @@ public class EnemyBullets extends GameObjects{
 		}
 		
 	}
+
 	
 	// Remove Bullets from out of screen
 	public void removeBullets() {
@@ -120,5 +119,8 @@ public class EnemyBullets extends GameObjects{
 	public int getDamageValue() {
 		return damageValue;
 	}
+
+	@Override
+	public void update(float dt, boolean xWrap, boolean yWrap) {}
 
 }

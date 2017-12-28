@@ -19,7 +19,7 @@ public class GameStateManager {
 	public GameStateManager(Game game) {
 		this.game = game;
 		gameStates = new Stack<GameState>();
-		pushState(INTRO); 
+		pushState(MENU); 
 		input = game.getInput();
 	}
 	
@@ -58,6 +58,7 @@ public class GameStateManager {
 	}
 	
 	// Set State of the Game (pause, play, etc...) Replace at the top of the stack
+	// This will depose of the state first
 	public void setState(int state) {
 		popState();
 		pushState(state);

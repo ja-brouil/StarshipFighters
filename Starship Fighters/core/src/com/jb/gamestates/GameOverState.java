@@ -1,21 +1,10 @@
 package com.jb.gamestates;
 
-import java.awt.Menu;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
-import com.jb.gameobjects.GameObjects;
-import com.jb.gameobjects.enemies.EnemyBullets;
-import com.jb.gameobjects.enemies.Explosion;
-import com.jb.gameobjects.player.Player;
-import com.jb.gameobjects.player.PlayerBullets;
-import com.jb.gamestates.levels.MasterLevel;
 import com.jb.input.GameKeys;
 
 public class GameOverState extends GameState{

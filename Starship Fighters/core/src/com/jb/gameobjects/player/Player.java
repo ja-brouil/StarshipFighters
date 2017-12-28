@@ -1,11 +1,8 @@
 package com.jb.gameobjects.player;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
@@ -18,7 +15,7 @@ public class Player extends GameObjects {
 
 	// Physics
 	private float maxSpeed;
-	private float friction;
+	//private float friction;
 	private float minimumSpeed;
 
 	// Graphics
@@ -61,9 +58,9 @@ public class Player extends GameObjects {
 		bulletShotSoundName = "Shoot1";
 
 		// Limits
-		maxSpeed = 10;
-		friction = 5;
-		minimumSpeed = -10;
+		maxSpeed = 4;
+		//friction = 5;
+		minimumSpeed = -4;
 		bulletSpeed = 15;
 		bulletShootSpeed = 200;
 
@@ -122,7 +119,7 @@ public class Player extends GameObjects {
 		playerHandleInput(dt);
 
 		// Physics
-		applyFriction(dt);
+		//applyFriction(dt);
 
 		// Set Limits
 		setLimits();
@@ -151,7 +148,6 @@ public class Player extends GameObjects {
 		// Draw Ship
 		// Get Time frame for animation
 		animationTime += Gdx.graphics.getDeltaTime();
-		
 		spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
 		
 		
@@ -190,7 +186,8 @@ public class Player extends GameObjects {
 
 	}
 
-	// Apply Friction to ship
+	// Apply Friction to ship 
+	/*
 	private void applyFriction(float dt) {
 		// Apply Friction to the ship
 		// X coordinate
@@ -206,6 +203,7 @@ public class Player extends GameObjects {
 			dy += friction * dt;
 		}
 	}
+	*/
 
 	// Limits
 	private void setLimits() {
@@ -228,14 +226,29 @@ public class Player extends GameObjects {
 	private void playerHandleInput(float dt) {
 		// Left | Right | Up | Down
 		if (left) {
-			dx += -15 * dt;
-		} else if (right) {
-			dx += 15 * dt;
-		} else if (up) {
-			dy += 15 * dt;
-		} else if (down) {
-			dy += -15 * dt;
+			dx += -4; //* dt;
+		} else if (!left && !right) {
+			dx = 0;
 		}
+		
+		if (right) {
+			dx += 4; //* dt;
+		} else if (!left && !right) {
+			dx = 0;
+		}
+		
+		if (up) {
+			dy += 4; //* dt;
+		} else if (!up && !down) {
+			dy = 0;
+		}
+		
+		if (down) {
+			dy += -4; //* dt;
+		} else if (!up && !down) {
+			dy = 0;
+		}
+		
 		
 		// Shoot | Note: This will add a bullet to the array which is passed back to the PlayState
 		if (shoot) {
@@ -292,5 +305,8 @@ public class Player extends GameObjects {
 	public void setDeathStatus(boolean isDead) {
 		this.isDead = isDead;
 	}
+
+	@Override
+	public void update(float dt, boolean xWrap, boolean yWrap) {}
 
 }

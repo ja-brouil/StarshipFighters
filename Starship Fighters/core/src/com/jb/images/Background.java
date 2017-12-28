@@ -2,7 +2,6 @@ package com.jb.images;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /*
@@ -21,7 +20,6 @@ public class Background{
 	private boolean isBeingShown, movingBackgroundEnabled ;
 	private Texture texture;
 	private String pathName;
-	//private Animator animator;
 	
 	// Static Background
 	public Background(float x, float y, float width, float height, boolean isBeingShown, String pathName) {

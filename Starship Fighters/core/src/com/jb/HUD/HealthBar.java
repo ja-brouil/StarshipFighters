@@ -9,8 +9,7 @@ public class HealthBar extends HUD {
 	
 	private Color healthBarColor;
 	private ShapeRenderer shapeRenderer;
-	private float height, healthLeft, width;
-	private float totalHealth;
+	private float height, healthLeft, width, totalHealth;
 
 	public HealthBar(float x, float y, float healthLeft, float height, boolean showHUDElement) {
 		super(x, y, showHUDElement);
@@ -22,7 +21,6 @@ public class HealthBar extends HUD {
 		this.healthLeft = healthLeft;
 		width = healthLeft;
 		totalHealth = healthLeft;
-		
 
 		// Start Color
 		healthBarColor = Color.GREEN;
@@ -37,10 +35,13 @@ public class HealthBar extends HUD {
 		
 		// Set Limit
 		// Health Bar is offset by 20 pixels
+		if (healthLeft >= totalHealth) {
+			healthLeft = totalHealth;
+		}
+		
 		if (healthLeft < 0) {
 			healthLeft = 0;
 		}
-
 	}
 
 	// This Method should be used but I don't have any custom HUD elements so we will just use LibGDX box + font capabilities
@@ -51,7 +52,10 @@ public class HealthBar extends HUD {
 
 			shapeRenderer.begin(ShapeType.Filled);
 			// Change HP color to yellow between 20% and 10% and red at 10% and lower
-			if (healthLeft < (totalHealth * 0.4) && healthLeft > (totalHealth * 0.2)) {
+			if (healthLeft >= (totalHealth * 0.4)) {
+				healthBarColor = Color.GREEN;
+			}
+			else if (healthLeft < (totalHealth * 0.4) && healthLeft > (totalHealth * 0.2)) {
 				healthBarColor = Color.YELLOW;
 			} else if (healthLeft < (totalHealth * 0.2)) {
 				healthBarColor = Color.RED;
@@ -78,4 +82,7 @@ public class HealthBar extends HUD {
 		this.totalHealth = totalHealth;
 	}
 
+	public float getTotalHealth() {
+		return totalHealth;
+	}
 }

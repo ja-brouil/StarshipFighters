@@ -7,15 +7,14 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
-import com.jb.gameobjects.enemies.EnemyBullets;
-import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gameobjects.enemies.SamusShipBoss;
-import com.jb.gamestates.GameStateManager;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
 import com.jb.main.Game;
 
 public class Level1 extends MasterLevel {
+	
+	// Might want to rewrite this using JSON
 
 	// Background
 	private Background level1Background, level1background2;
@@ -29,7 +28,7 @@ public class Level1 extends MasterLevel {
 	private boolean startTimerForBoss = true;
 
 	// Music and Sounds
-	private String level1MusicPathName = "data/audio/music/Level1Music.mp3";
+	private String level1MusicPathName = "data/audio/music/level1.mp3";
 	private String level1Music = "Level 1 Music";
 	private String victoryMusicPathName = "data/audio/music/victorytheme.mp3";
 	private String victoryMusicName = "Victory";
@@ -43,14 +42,11 @@ public class Level1 extends MasterLevel {
 	private boolean bossSpawnEnabled = true;
 	private SamusShipBoss samusShipBoss;
 
-	public Level1(Array<GameObjects> enemyList, Array<Explosion> explosionList, Array<EnemyBullets> enemyBulletList,
-			int levelNumber, PlayState playState) {
-		super(enemyList, explosionList, enemyBulletList, levelNumber, playState);
+	public Level1(Array<GameObjects> enemyList, int levelNumber, PlayState playState) {
+		super(enemyList, playState.getExplosionList(), playState.getEnemyBulletList(), levelNumber, playState);
 
 		// Get lists
 		this.enemyList = enemyList;
-		this.explosionList = explosionList;
-		this.enemyBulletList = enemyBulletList;
 		this.levelNumber = levelNumber;
 		this.playState = playState;
 
@@ -73,7 +69,7 @@ public class Level1 extends MasterLevel {
 		startMusic();
 
 	}
-
+	
 	// Background load
 	private void initializeBackground() {
 
@@ -124,27 +120,8 @@ public class Level1 extends MasterLevel {
 				} else if (enemyList.size == 0 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
 					randomSpawn();
 				}
+				
 				gameplaySwitch[switchCounter] = false;
-			}
-		}
-
-		// Move Enemies Downward (Only for this level) | part 1 for the first 5 waves
-		// then for the random waves | Otherwise
-		if (enemyWavesCounter < 6) {
-			for (int i = 0; i < enemyList.size; i++) {
-				if ((enemyList.get(i)).getY() <= ((BasicAlien) enemyList.get(i)).getInitialY() - 200
-						&& enemyList.get(i).getDY() < 0) {
-					enemyList.get(i).setVelX(MathUtils.random(1, 4));
-					enemyList.get(i).setVelY(0);
-				}
-			}
-		} else {
-			for (int i = 0; i < enemyList.size; i++) {
-				if ((enemyList.get(i)).getY() <= ((BasicAlien) enemyList.get(i)).getInitialY() - 200
-						&& enemyList.get(i).getDY() < 0) {
-					enemyList.get(i).setVelX(4);
-					enemyList.get(i).setVelY(0);
-				}
 			}
 		}
 
@@ -198,54 +175,54 @@ public class Level1 extends MasterLevel {
 	// Enemy Spawns
 	// Add Initial Enemies
 	private void addInitalEnemies() {
-		enemyList.add(new BasicAlien(568, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(468, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(140, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(40, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
+		playState.getBasicAliens().add(new BasicAlien(568, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(468, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(140, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(40, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
 		switchCounter++;
 		enemyWavesCounter++;
 		updateTimerEnabled = true;
 	}
 
 	private void addSecondEnemies() {
-		enemyList.add(new BasicAlien(100, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(250, 950, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(350, 850, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(400, 800, 0, -5, 1000L, -15, enemyBulletList, -20));
+		playState.getBasicAliens().add(new BasicAlien(100, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(250, 950, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(350, 850, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(400, 800, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
 		switchCounter++;
 		enemyWavesCounter++;
 		updateTimerEnabled = true;
 	}
 
 	private void addThirdEnemies() {
-		enemyList.add(new BasicAlien(500, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(550, 950, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(450, 850, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(400, 800, 0, -5, 1000L, -15, enemyBulletList, -20));
+		playState.getBasicAliens().add(new BasicAlien(500, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(550, 950, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(450, 850, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(400, 800, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
 		switchCounter++;
 		enemyWavesCounter++;
 		updateTimerEnabled = true;
 	}
 
 	private void addFourthEnemies() {
-		enemyList.add(new BasicAlien(500, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(550, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(450, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(300, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(200, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(100, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
+		playState.getBasicAliens().add(new BasicAlien(500, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(550, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(450, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(300, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(200, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(100, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
 		switchCounter++;
 		enemyWavesCounter++;
 		updateTimerEnabled = true;
 	}
 
 	private void addFifthEnemies() {
-		enemyList.add(new BasicAlien(600, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(500, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(400, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(300, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(200, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
-		enemyList.add(new BasicAlien(100, 900, 0, -5, 1000L, -15, enemyBulletList, -20));
+		playState.getBasicAliens().add(new BasicAlien(600, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(500, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(400, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(300, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(200, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		playState.getBasicAliens().add(new BasicAlien(100, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
 		switchCounter++;
 		enemyWavesCounter++;
 		updateTimerEnabled = true;
@@ -253,8 +230,8 @@ public class Level1 extends MasterLevel {
 
 	private void randomSpawn() {
 		for (int i = 0; i < MathUtils.random(5, 7); i++) {
-			enemyList.add(new BasicAlien(75 + (i * 75), 900 - (MathUtils.random(0, 2) * 50), 0, -5, 1000L, -15,
-					enemyBulletList, -20));
+			playState.getBasicAliens().add(new BasicAlien(75 + (i * 75), 925 - (MathUtils.random(0, 2) * 50), 0, -5, 1000L, -15,
+					playState.getEnemyBulletList(), -20, playState));
 		}
 		enemyWavesCounter++;
 		updateTimerEnabled = true;
@@ -262,7 +239,7 @@ public class Level1 extends MasterLevel {
 	
 	// Boss 
 	private void spawnBoss() {
-		samusShipBoss = new SamusShipBoss(100, 975, 2, -2, enemyBulletList, explosionList, enemyList);
+		samusShipBoss = new SamusShipBoss(100, 975, 2, -2, playState.getEnemyBulletList(), playState.getExplosionList(), playState.getBasicAliens(), playState);
 		getPlayState().setNewBoss(samusShipBoss); 
 	}
 }

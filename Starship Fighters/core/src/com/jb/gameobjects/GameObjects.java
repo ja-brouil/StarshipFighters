@@ -31,6 +31,7 @@ public abstract class GameObjects {
 	
 	// All Objects Require Update + Render
 	public abstract void update(float dt);
+	public abstract void update(float dt, boolean xWrap, boolean yWrap);
 	public abstract void draw(SpriteBatch spriteBatch);
 	
 	// Use this to change HP
