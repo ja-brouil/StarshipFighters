@@ -13,7 +13,6 @@ public abstract class GameState {
 	
 	protected SpriteBatch spriteBatch;
 	protected OrthographicCamera cam;
-	protected OrthographicCamera hudCam;
 	protected GameInputProcessor input;
 	
 	
@@ -22,9 +21,7 @@ public abstract class GameState {
 		game = gsm.getGame();
 		spriteBatch = game.getSpriteBatch();
 		cam = game.getCamera();
-		hudCam = game.getHUDCam();
 		input = gsm.getInput();
-		
 	}
 	
 	public abstract void init();
@@ -32,7 +29,5 @@ public abstract class GameState {
 	public abstract void update(float dt);
 	public abstract void render();
 	public abstract void dispose();
-	
-	
-	
+
 }

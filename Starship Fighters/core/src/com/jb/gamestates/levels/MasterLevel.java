@@ -23,6 +23,7 @@ public abstract class MasterLevel {
 	
 	public abstract void update(float dt);
 	public abstract void draw(SpriteBatch spriteBatch);
+	public abstract void dispose();
 	
 	// Setters + Getters
 	

@@ -7,51 +7,57 @@ import com.badlogic.gdx.audio.Sound;
 
 public class SoundManager {
 
-	private static HashMap<String, Sound> soundManager;
-	private static Sound currentSound;
+	private HashMap<String, Sound> soundManager;
+	private Sound currentSound;
 
-	static {
+	public SoundManager() {
+		
 		soundManager = new HashMap<String, Sound>();
 	}
 
 	// Add Sound
-	public static void addSound(String pathName, String name) {
+	public void addSound(String pathName, String name) {
 		Sound sound = Gdx.audio.newSound(Gdx.files.internal(pathName));
 		soundManager.put(name, sound);
 	}
 
 	// Remove Sound
-	public static void removeSound(String name) {
+	public  void removeSound(String name) {
 		soundManager.remove(name);
 	}
 
 	// Play sound | Use Sound if you need this to play constantly
 	// through
-	public static void playSound(String name, float volume) {
+	public  void playSound(String name, float volume) {
 		soundManager.get(name).play(volume);
 		currentSound = soundManager.get(name);
 	}
 
 	// Stop Sound
-	public static void stopSound(String name) {
+	public  void stopSound(String name) {
 		soundManager.get(name).stop();
 	}
 	
 	// Get Sound Loaded
-	public static Sound getSound(String name) {
+	public  Sound getSound(String name) {
 		return currentSound;
 	}
 
 	// Dispose of Sound asset
-	public static void disposeSound(String name) {
+	public void disposeSound(String name) {
 		soundManager.get(name).dispose();
 	}
 
 	// Dispose Everything
-	public static void disposeAllSound() {
+	public  void disposeAllSound() {
 		for (HashMap.Entry<String, Sound> sounds : soundManager.entrySet()) {
 			sounds.getValue().dispose();
 		}
+	}
+	
+	// Get all sounds
+	public  HashMap<String, Sound> getAllSounds(){
+		return soundManager;
 	}
 
 }

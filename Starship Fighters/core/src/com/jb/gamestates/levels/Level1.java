@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.jb.HUD.HealthBar;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
@@ -28,6 +29,7 @@ public class Level1 extends MasterLevel {
 	private boolean startTimerForBoss = true;
 
 	// Music and Sounds
+	private MusicManager musicManager;
 	private String level1MusicPathName = "data/audio/music/level1.mp3";
 	private String level1Music = "Level 1 Music";
 	private String victoryMusicPathName = "data/audio/music/victorytheme.mp3";
@@ -80,14 +82,27 @@ public class Level1 extends MasterLevel {
 
 	// Start Music
 	private void startMusic() {
-		MusicManager.addMusic(level1MusicPathName, level1Music);
-		MusicManager.loopMusic(level1Music);
-		MusicManager.addMusic(victoryMusicPathName, victoryMusicName);
+		
+		musicManager = playState.getGSM().getGame().getMusicManager();
+		musicManager.addMusic(level1MusicPathName, level1Music);
+		musicManager.loopMusic(level1Music);
+		musicManager.addMusic(victoryMusicPathName, victoryMusicName);
+	}
+	
+	// Stop Music
+	public void stopMusic() {
+		musicManager.stopMusic(level1Music);
+		musicManager.stopMusic(victoryMusicName);
 	}
 
 	@Override
 	public void update(float dt) {
 
+		// stop Music if game is over
+		if (((HealthBar) playState.getHUD(0)).getHealthLeft() <= 0) {
+			musicManager.stopMusic(level1Music);
+			musicManager.stopMusic(victoryMusicName);
+		}
 		
 		// Update the background
 		level1Background.update(dt);
@@ -104,7 +119,7 @@ public class Level1 extends MasterLevel {
 
 		
 		// Spawn Enemies
-		if (enemyWavesCounter < 6) {
+		if (enemyWavesCounter < 20) {
 			// Spawn Enemies
 			if (gameplaySwitch[switchCounter]) {
 				if (switchCounter == 0) {
@@ -140,11 +155,11 @@ public class Level1 extends MasterLevel {
 
 		
 		// Check if Boss needs to be spawned
-		if (enemyWavesCounter == 6 && bossSpawnEnabled && enemyList.size == 0) {
+		if (enemyWavesCounter == 20 && bossSpawnEnabled && enemyList.size == 0) {
 			if (startTimerForBoss) {
 				bossTimer = TimeUtils.millis();
 				startTimerForBoss = false;
-				MusicManager.stopMusic(level1Music);
+				musicManager.stopMusic(level1Music);
 			}
 			
 			if (TimeUtils.timeSinceMillis(bossTimer) > 3000) {
@@ -156,11 +171,9 @@ public class Level1 extends MasterLevel {
 		// If Boss is dead, victory!
 		if (getPlayState().getBoss() != null) {
 			if (getPlayState().getBoss().getDeathStatus()) {
-				MusicManager.stopMusic("Boss Battle");
-				MusicManager.playMusic(victoryMusicName);
+				musicManager.stopMusic("Boss Battle");
+				musicManager.playMusic(victoryMusicName);
 			}
-			
-			
 		}	
 	}
 
@@ -241,5 +254,13 @@ public class Level1 extends MasterLevel {
 	private void spawnBoss() {
 		samusShipBoss = new SamusShipBoss(100, 975, 2, -2, playState.getEnemyBulletList(), playState.getExplosionList(), playState.getBasicAliens(), playState);
 		getPlayState().setNewBoss(samusShipBoss); 
+	}
+	
+	// Dispose of all resources
+	@Override
+	public void dispose() {
+		level1Background.dispose();
+		level1background2.dispose();
+		musicManager.disposeAllMusic();
 	}
 }

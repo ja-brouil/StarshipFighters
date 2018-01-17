@@ -2,6 +2,7 @@ package com.jb.main;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -19,7 +20,6 @@ public class Game extends ApplicationAdapter {
 	
 	private SpriteBatch spriteBatch;
 	private OrthographicCamera cam;
-	private OrthographicCamera HUDcam;
 	private Viewport viewport;
 	
 	private GameStateManager gsm;
@@ -27,14 +27,22 @@ public class Game extends ApplicationAdapter {
 	
 	private static ImageManager imageManager;
 	
+	private MusicManager musicManager;
+	private SoundManager soundManager;
+	
+	private float dt;
+	
 	
 	@Override
 	public void create () {
 		// When game is started
-		spriteBatch = new SpriteBatch();
 		
 		// Graphics 
+		spriteBatch = new SpriteBatch();
 		
+		// Audio
+		musicManager = new MusicManager();
+		soundManager = new SoundManager();
 		
 		// Setting Cameras to the size of the game window
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
@@ -54,10 +62,21 @@ public class Game extends ApplicationAdapter {
 		gsm = new GameStateManager(this);
 	
 	}
-
+	
+	// Main Game Loop
 	@Override
 	public void render() {
 		// Get time passed, render if only enough time has passed
+		
+		// Debug purposes
+		dt += Gdx.graphics.getDeltaTime();
+		if (dt >= 1) {
+			System.out.println("Memory Used: " + (Gdx.app.getJavaHeap() / 100000) + "mb");
+			System.out.println("Native Memory Used: " + (Gdx.app.getNativeHeap() / 100000) + "mb");
+			System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
+			dt = 0;
+		}
+		
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render();
 		
@@ -66,8 +85,8 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		MusicManager.disposeAllMusic();
-		SoundManager.disposeAllSound();
+		musicManager.disposeAllMusic();
+		soundManager.disposeAllSound();
 	}
 	
 	// Update Viewport to adjust the screen size
@@ -81,12 +100,16 @@ public class Game extends ApplicationAdapter {
 		return spriteBatch;
 	}
 	
-	public OrthographicCamera getCamera() {
-		return cam;
+	public MusicManager getMusicManager() {
+		return musicManager;
 	}
 	
-	public OrthographicCamera getHUDCam() {
-		return HUDcam;
+	public SoundManager getSoundManager() {
+		return soundManager;
+	}
+	
+	public OrthographicCamera getCamera() {
+		return cam;
 	}
 	
 	public GameInputProcessor getInput() {

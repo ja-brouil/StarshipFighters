@@ -26,7 +26,7 @@ public class Animator {
 		initialize();
 	}
 	
-	
+	// Start Animation
 	public void initialize() {
 		// Load SpriteSheet
 		spriteSheet = new Texture(Gdx.files.internal(filePath));
@@ -47,7 +47,13 @@ public class Animator {
 		animationTextureRegion = new Animation<TextureRegion>(frameLengthTime, animationSprites);
 		
 	}
-
+	
+	// Dispose
+	public void dispose(){
+		spriteSheet.dispose();
+	}
+	
+	// Setters + Getters
 	public Texture getSpriteSheet() {
 		return spriteSheet;
 	}

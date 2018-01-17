@@ -108,6 +108,11 @@ public class Background{
 			spriteBatch.draw(texture, x, y, width, height, 0, 0, 640, 800, horizontal, vertical);
 		}
 	}
+	
+	// Called when changing screens
+	public void dispose() {
+		texture.dispose();
+	}
 
 	// Setters and Getters
 	

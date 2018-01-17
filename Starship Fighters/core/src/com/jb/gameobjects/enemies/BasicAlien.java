@@ -22,6 +22,7 @@ public class BasicAlien extends GameObjects {
 	// Graphics
 	private String pathName;
 	private TextureRegion[] rolls; // 0 = normal, 1 = left, 2 = right
+	private Texture allTexture;
 
 	// GamePlay
 	private Array<EnemyBullets> listofEnemyBullets;
@@ -78,7 +79,7 @@ public class BasicAlien extends GameObjects {
 		dropChance = MathUtils.random(0, 9);
 
 		// Start Sprites
-		Texture allTexture = new Texture(Gdx.files.internal(pathName));
+		allTexture = new Texture(Gdx.files.internal(pathName));
 		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 3, allTexture.getHeight() / 1);
 		rolls = new TextureRegion[3];
 		for (int i = 0; i < rolls.length; i++) {
@@ -205,6 +206,11 @@ public class BasicAlien extends GameObjects {
 	
 	public void setDrop(int dropChance) {
 		this.dropChance = dropChance;
+	}
+	
+	// Dispose Method
+	public void dispose() {
+		allTexture.dispose();
 	}
 
 }

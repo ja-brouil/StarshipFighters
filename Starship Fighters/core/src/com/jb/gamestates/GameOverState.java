@@ -1,11 +1,13 @@
 package com.jb.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.input.GameKeys;
+import com.jb.main.Game;
 
 public class GameOverState extends GameState{
 
@@ -16,15 +18,15 @@ public class GameOverState extends GameState{
 	private int currentOption;
 	
 	// SFX
-	private static String selectSound = "data/audio/sound/Menu Select.wav";
-	private static String choiceOptionName;
+	private SoundManager soundManager;
+	private String selectSound = "data/audio/sound/Menu Select.wav";
+	private String choiceOptionName = "Choice Sound";
 	
 	// Bitmap Font
 	private BitmapFont bitmapFont;
 	
-	// Boolean
-	private boolean stopRendering = false;
-	
+	// Music Disposal
+	private MusicManager musicManager;
 
 	public GameOverState(GameStateManager gsm) {
 		super(gsm);
@@ -34,12 +36,14 @@ public class GameOverState extends GameState{
 	@Override
 	public void init() {
 		
-		// Grab info from playstate
-		
+		// Start Sound and Music
+		musicManager = gsm.getGame().getMusicManager();
+		soundManager = gsm.getGame().getSoundManager();
+		soundManager.addSound(selectSound, choiceOptionName);
 		
 		// Start Bitmap Font
 		bitmapFont = new BitmapFont();
-		bitmapFont.getData().setScale(3);
+		//bitmapFont.getData().setScale(3);
 		
 		// Spritebatch start
 		spriteBatch = game.getSpriteBatch();
@@ -48,7 +52,7 @@ public class GameOverState extends GameState{
 		currentOption = 0;
 		
 		// Add Sound effect
-		SoundManager.addSound(selectSound, choiceOptionName);
+		soundManager.addSound(selectSound, choiceOptionName);
 		
 	}
 	
@@ -57,16 +61,18 @@ public class GameOverState extends GameState{
 	public void handleInput() {
 		// Up/Down
 		if (GameKeys.isPressed(GameKeys.UP)) {
+			System.out.println("UP");
 			if (currentOption > 0) {
 				currentOption--;
-				SoundManager.playSound(choiceOptionName, 1f);
+				soundManager.playSound(choiceOptionName, 1f);
 			}
 		}
 		
 		if (GameKeys.isPressed(GameKeys.DOWN)) {
+			System.out.println("DOWN");
 			if (currentOption < choices.length - 1) {
 				currentOption++;
-				SoundManager.playSound(choiceOptionName, 1.0f);
+				soundManager.playSound(choiceOptionName, 1.0f);
 			}
 		}
 		
@@ -77,8 +83,11 @@ public class GameOverState extends GameState{
 		
 		// Escape
 		if (GameKeys.isPressed(GameKeys.ESCAPE)) {
+			dispose();
 			Gdx.app.exit();
 		}
+		
+		GameKeys.update();
 		
 	}
 	
@@ -86,10 +95,10 @@ public class GameOverState extends GameState{
 	private void select() {
 		// Return to main menu
 		if (currentOption == 0) {
-			stopRendering = true;
 			gsm.setState(GameStateManager.MENU);
 		} else if(currentOption == 1) { 
 			// exit
+			dispose();
 			Gdx.app.exit();
 		}
 	}
@@ -110,21 +119,32 @@ public class GameOverState extends GameState{
 		// Clear Screen to black background
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.begin();
 		
+		// Draw Options
+		bitmapFont.setColor(Color.WHITE);
+		bitmapFont.draw(spriteBatch, gameOver, Game.WIDTH / 2 - 50, Game.HEIGHT - 100);
 		
+		// Draw Menu Options
+		for (int i = 0; i < choices.length; i++) {
+			if (currentOption == i) {
+				bitmapFont.setColor(Color.YELLOW);
+			} else {
+				bitmapFont.setColor(Color.WHITE);
+			}
+			bitmapFont.draw(spriteBatch, choices[i], Game.WIDTH / 2 - 5, 200 - (20 * i));
+		}
+		
+		// End Spritebatch
+		spriteBatch.end();
 	
 	}
 
 	@Override
 	public void dispose() {
 		bitmapFont.dispose();
-		spriteBatch.dispose();
-		MusicManager.disposeAllMusic();
-		SoundManager.disposeAllSound();
+		soundManager.disposeAllSound();
+		musicManager.disposeAllMusic();
 	}
 	
-	private void resetEverything() {
-		
-	}
-
 }

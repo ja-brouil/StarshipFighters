@@ -2,20 +2,20 @@ package com.jb.gamestates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.HUD.HUD;
 import com.jb.HUD.HealthBar;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
+import com.jb.gameobjects.CollisionHandling;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gameobjects.enemies.SamusShipBoss;
-import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gameobjects.items.Item;
 import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
@@ -37,6 +37,11 @@ public class PlayState extends GameState {
 	// GamePlay
 	private boolean inputAllowed = true;
 	private boolean gameOver = false;
+	private CollisionHandling collisionHandling;
+	
+	// Audio
+	private MusicManager musicManager;
+	private SoundManager soundManager;
 
 	// Level Objects
 	private MasterLevel[] levelList;
@@ -64,6 +69,7 @@ public class PlayState extends GameState {
 		basicAliens = new Array<GameObjects>();
 		explosionList = new Array<Explosion>();
 		itemList = new Array<Item>();
+		collisionHandling = new CollisionHandling(this);
 
 		// Start Level
 		levelList = new MasterLevel[5];
@@ -77,6 +83,10 @@ public class PlayState extends GameState {
 
 		// Timers
 		deathTimer = TimeUtils.millis();
+		
+		// Audio
+		soundManager = getGSM().getGame().getSoundManager();
+		musicManager = getGSM().getGame().getMusicManager();
 
 	}
 
@@ -85,6 +95,7 @@ public class PlayState extends GameState {
 
 		// Escape to quit to exit faster. Remember to remove this later!
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+			dispose();
 			Gdx.app.exit();
 		}
 
@@ -106,7 +117,7 @@ public class PlayState extends GameState {
 	public void update(float dt) {
 
 		// If Game over, return/draw death animation
-		if (gameOver) {
+		/*if (gameOver) {
 			// Add Player Explosions
 			if (!player.getDeathStatus()) {
 				for (int i = 0; i < 10; i++) {
@@ -117,6 +128,13 @@ public class PlayState extends GameState {
 			}
 
 			return;
+		}*/
+		
+		// Game Over
+		if (((HealthBar) allHUDElements[0]).getHealthLeft() <= 0) {
+			((Level1) levelList[levelNumber]).stopMusic();
+			dispose();
+			gsm.setState(GameStateManager.GAMEOVER);
 		}
 
 		// Check Input
@@ -132,6 +150,7 @@ public class PlayState extends GameState {
 			shipBullets.get(i).update(dt);
 			// Remove Bullets
 			if (shipBullets.get(i).getRemovalStatus()) {
+				shipBullets.get(i).dispose();
 				shipBullets.removeIndex(i);
 				i--;
 			}
@@ -141,7 +160,8 @@ public class PlayState extends GameState {
 		for (int i = 0; i < basicAliens.size; i++) {
 			basicAliens.get(i).update(dt, true, false);
 			if (basicAliens.get(i).getHP() <= 0) {
-				explosionList.add(new Explosion(basicAliens.get(i).getX(), basicAliens.get(i).getY(), 0, 0));
+				explosionList.add(new Explosion(basicAliens.get(i).getX(), basicAliens.get(i).getY(), 0, 0, this));
+				((BasicAlien) basicAliens.get(i)).dispose();
 				basicAliens.removeIndex(i);
 				i--;
 			}
@@ -158,6 +178,7 @@ public class PlayState extends GameState {
 			explosionList.get(i).update(dt);
 			// Remove Explosion
 			if (explosionList.get(i).getExplosionStatus()) {
+				explosionList.get(i).dispose();
 				explosionList.removeIndex(i);
 				i--;
 			}
@@ -168,6 +189,7 @@ public class PlayState extends GameState {
 			enemyBulletList.get(i).update(dt);
 			// Remove Bullets
 			if (enemyBulletList.get(i).getRemovalStatus()) {
+				enemyBulletList.get(i).dispose();
 				enemyBulletList.removeIndex(i);
 				i--;
 			}
@@ -177,13 +199,14 @@ public class PlayState extends GameState {
 		for (int i = 0; i < itemList.size; i++) {
 			itemList.get(i).update(dt);
 			if (itemList.get(i).getRemovalStatus()) {
+				itemList.get(i).dispose();
 				itemList.removeIndex(i);
 				i--;
 			}
 		}
 		
-		// Check for Collisions | Check for collisions after everything has been updated
-		checkCollisions();
+		// Collision/Physics Check
+		collisionHandling.update(dt);
 
 		// Update HUD || This should be updated last as the collisions will reflect the change in HP/Ammo
 		for (int i = 0; i < allHUDElements.length; i++) {
@@ -192,63 +215,6 @@ public class PlayState extends GameState {
 
 	}
 
-	// Collision Check
-	private void checkCollisions() {
-		
-		// Check if bullet hit an enemy 
-		// For the best responsiveness, have a check for both contains method and overlap
-		for (int i = 0; i < shipBullets.size; i++) {
-			for (int j = 0; j < basicAliens.size; j++) {
-				if (shipBullets.get(i).getBoundingBox().contains(basicAliens.get(j).getBoundingBox())
-						|| basicAliens.get(j).getBoundingBox().contains(shipBullets.get(i).getBoundingBox()) || shipBullets.get(i).getBoundingBox().overlaps(basicAliens.get(j).getBoundingBox())
-						|| basicAliens.get(j).getBoundingBox().overlaps(shipBullets.get(i).getBoundingBox())) {
-					basicAliens.get(j).setHP(shipBullets.get(i).getDamageValue(), false);
-					shipBullets.get(i).removeBullets();
-				}
-			}
-		}
-		
-		// Check if player hits Enemies on Screen
-		for (int i = 0; i < basicAliens.size; i++ ) {
-			if (basicAliens.get(i).getBoundingBox().contains(player.getBoundingBox()) || basicAliens.get(i).getBoundingBox().overlaps(player.getBoundingBox())){
-				((BasicAlien) basicAliens.get(i)).setDrop(1);
-				basicAliens.get(i).setHP(-1, true);
-				HealthBar tempHP = (HealthBar) getHUD(0);
-				tempHP.setHealthLeft(-tempHP.getTotalHealth() * 0.25f);
-			}
-		}
-		
-
-		// Check Collision for enemies hitting the player
-		for (int i = 0; i < enemyBulletList.size; i++) {
-			if (enemyBulletList.get(i).getBoundingBox().contains(player.getBoundingBox()) || player.getBoundingBox().contains(enemyBulletList.get(i).getBoundingBox())) {
-				// Play Explosion on Player
-				explosionList.add(new Explosion((player.getX() + MathUtils.random(0, 32)),
-						player.getY() + MathUtils.random(0, 32), 0, 0, "data/hit_and_explosions/impactHit.png",
-						"data/audio/sound/Bomb Explosion.wav", "Player Hit", 3, 1, 3, 1, 1f / 40f));
-
-				// Reduce Player Health
-				HealthBar tempHP = (HealthBar) getHUD(0);
-				tempHP.setHealthLeft(enemyBulletList.get(i).getDamageValue());
-
-				// Remove Bullet
-				enemyBulletList.get(i).removeBullets();
-
-			}
-		}
-
-		// Check for Items colliding with player
-		for (int i = 0; i < itemList.size; i++) {
-			if (itemList.get(i).getBoundingBox().overlaps(player.getBoundingBox()) || player.getBoundingBox().overlaps(itemList.get(i).getBoundingBox())) {
-				EnergyTank tmpEnergyTank = (EnergyTank) itemList.get(i);
-				HealthBar tempBar = (HealthBar) getHUD(0);
-				tempBar.setHealthLeft(tmpEnergyTank.getHealthRegenValue());
-				itemList.removeIndex(i);
-				i--;
-			}
-		}
-
-	}
 
 	@Override
 	public void render() {
@@ -322,8 +288,32 @@ public class PlayState extends GameState {
 
 	@Override
 	public void dispose() {
-		SoundManager.disposeAllSound();
-		MusicManager.disposeAllMusic();
+		
+		// Dispose Player
+		player.dispose();
+		
+		// Dispose Bullets
+		for (int i = 0; i < shipBullets.size; i++) {
+			shipBullets.get(i).dispose();
+		}
+		
+		for (int i = 0; i < enemyBulletList.size; i++) {
+			enemyBulletList.get(i).dispose();
+		}
+		
+		// Dispose Explosions
+		for (int i = 0; i < explosionList.size; i++) {
+			explosionList.get(i).dispose();
+		}
+		
+		// Dispose Enemies
+		for (int i = 0; i < basicAliens.size; i++) {
+			((BasicAlien) basicAliens.get(i)).dispose();
+		}
+		
+		// Dispose Audio
+		musicManager.disposeAllMusic();
+		soundManager.disposeAllSound();	
 	}
 
 	public void setLevel(int levelNumber) {
@@ -388,5 +378,4 @@ public class PlayState extends GameState {
 	public Array<Item> getItemList() {
 		return itemList;
 	}
-
 }

@@ -72,6 +72,12 @@ public class EnergyTank extends Item {
 		animationTimer += Gdx.graphics.getDeltaTime();
 		spriteBatch.draw(itemAnimation.getAnimationFrames().getKeyFrame(animationTimer, true), x, y);
 	}
+	
+	// Dipose
+	@Override
+	public void dispose() {
+		itemAnimation.dispose();
+	}
 
 	// Limits
 	private void setLimits() {

@@ -7,26 +7,35 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
-import com.jb.gameobjects.player.Player;
 import com.jb.images.Background;
 import com.jb.input.GameKeys;
 import com.jb.main.Game;
 
 public class MenuState extends GameState {
 
+	// Menu Options + Pause time
 	private String[] menuChoices;
 	private String title = "Starship Fighters";
 	private BitmapFont bitmapFont;
 	private int currentOption;
+	private float pauseTime;
+	
+	// Background
 	private Background menuBackground;
 	private Background menuBackground2;
 	private String menuBackgroundPath;
+	
+	// Music for Menu
+	private boolean loadMusic = true;
+	private MusicManager musicManager;
 	private String menuMusicName = "Menu Music";
 	private String MenuMusicPathName = "data/audio/music/menumusic.mp3";
+	
+	// Sound for Choices
+	private SoundManager soundManager;
 	private String choiceOptionName;
 	private String choiceSoundNamePathName;
-	private Player actorPlayer;
-	private boolean[] stopXMovement;
+	
 
 
 	public MenuState(GameStateManager gsm) {
@@ -61,38 +70,40 @@ public class MenuState extends GameState {
 		menuBackground = new Background(Game.WIDTH, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
 		menuBackground2 = new Background(0, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
 
-		// Start Actor Player
-		actorPlayer = new Player(Game.WIDTH + (Game.WIDTH / 2) - 32, Game.HEIGHT / 2, -0.75f, 0, null, null);
-
-		// Boolean checks
-		stopXMovement = new boolean[3];
-		for (int i = 0; i < stopXMovement.length; i++) {
-			stopXMovement[i] = true;
-		}
-
 		// Start Music
-		MusicManager.addMusic(MenuMusicPathName, menuMusicName);
-		MusicManager.loopMusic(menuMusicName);
+		musicManager = game.getMusicManager();
+		if (loadMusic) {
+			musicManager.addMusic(MenuMusicPathName, menuMusicName);
+			loadMusic = false;
+		}
+		musicManager.loopMusic(menuMusicName);
 
 		// Start Sound
-		SoundManager.addSound(choiceSoundNamePathName, choiceOptionName);
+		soundManager = gsm.getGame().getSoundManager();
+		soundManager.addSound(choiceSoundNamePathName, choiceOptionName);
 	}
 
 	@Override
 	public void handleInput() {
+		
+		// Pause when exiting out of playstate
+		pauseTime += Gdx.graphics.getDeltaTime();
+		if (pauseTime < 0.3f) {
+			return;
+		}
 
-		// Up/Down
+		// Up | Down
 		if (GameKeys.isPressed(GameKeys.UP)) {
 			if (currentOption > 0) {
 				currentOption--;
-				SoundManager.playSound(choiceOptionName, 1.0f);
+				soundManager.playSound(choiceOptionName, 1.0f);
 			}
 		}
 
 		if (GameKeys.isPressed(GameKeys.DOWN)) {
 			if (currentOption < menuChoices.length - 1) {
 				currentOption++;
-				SoundManager.playSound(choiceOptionName, 1.0f);
+				soundManager.playSound(choiceOptionName, 1.0f);
 			}
 		}
 
@@ -103,8 +114,11 @@ public class MenuState extends GameState {
 
 		// Escape
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			dispose();
 			Gdx.app.exit();
 		}
+		
+		GameKeys.update();
 	}
 
 	// Select Option
@@ -113,25 +127,25 @@ public class MenuState extends GameState {
 		if (currentOption == 0) {
 			gsm.setState(GameStateManager.PLAY);
 
-			// Stop Music + Remove music from hashmap for memory
-			MusicManager.stopMusic(menuMusicName);
-			MusicManager.removeMusic("Menu Music");
+			// Stop Music + Remove music from HashMap for memory
+			musicManager.stopMusic(menuMusicName);
 
 			// Remove Sound Effect
-			SoundManager.removeSound(choiceOptionName);
+			soundManager.removeSound(choiceOptionName);
 
 			// Delete actor player
-			actorPlayer = null;
+			//actorPlayer.dispose();
+			//actorPlayer = null;
 
 		} else if (currentOption == 1) {
-
+			dispose();
 			Gdx.app.exit();
 		}
 	}
 
 	@Override
 	public void update(float dt) {
-
+		
 		// Handle Input
 		handleInput();
 
@@ -148,28 +162,6 @@ public class MenuState extends GameState {
 		
 		menuBackground.update(dt);
 		menuBackground2.update(dt);
-
-		// Update Actor
-		if (actorPlayer != null) {
-			// Update Player Background
-			if (menuBackground.getDx() != 0) {
-				actorPlayer.updateActor(dt, false);
-			}
-
-			// Move Ship up
-			if (menuBackground.getDx() == 0) {
-				actorPlayer.setDX(0);
-				actorPlayer.setDY(5.25f);
-				actorPlayer.updateActor(dt, true);
-
-			}
-
-			// Remove Actor if past screen
-			if (actorPlayer.getY() > Game.HEIGHT) {
-				actorPlayer = null;
-			}
-		}
-
 	}
 
 	@Override
@@ -202,11 +194,6 @@ public class MenuState extends GameState {
 			bitmapFont.draw(spriteBatch, menuChoices[i], Game.WIDTH / 2 - 5, 200 - (20 * i));
 		}
 
-		// Draw Player Actor
-		if (actorPlayer != null) {
-			actorPlayer.draw(spriteBatch);
-		}
-
 		// End SpriteBatch drawing
 		spriteBatch.end();
 
@@ -215,9 +202,10 @@ public class MenuState extends GameState {
 	// Free up System Resources when no longer needed
 	@Override
 	public void dispose() {
-		MusicManager.disposeAllMusic();
-		SoundManager.disposeAllSound();
-		bitmapFont.dispose();
+		menuBackground.dispose();
+		menuBackground2.dispose();
+		soundManager.disposeAllSound();
+		musicManager.disposeAllMusic();
 	}
 
 }

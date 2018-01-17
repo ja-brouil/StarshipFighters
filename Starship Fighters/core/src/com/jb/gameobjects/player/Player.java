@@ -1,6 +1,7 @@
 package com.jb.gameobjects.player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -25,6 +26,7 @@ public class Player extends GameObjects {
 	private float animationFrameDuration;
 	
 	// Sound Effects
+	private SoundManager soundManager;
 	private String bulletShotSoundPathName;
 	private String bulletShotSoundName;
 	
@@ -54,6 +56,8 @@ public class Player extends GameObjects {
 		animationFrameDuration = 1f/40f;
 		
 		// SFX
+		this.playState = playState;
+		soundManager = playState.getGSM().getGame().getSoundManager();
 		bulletShotSoundPathName = "data/audio/sound/Basic Shot.wav";
 		bulletShotSoundName = "Shoot1";
 
@@ -82,7 +86,7 @@ public class Player extends GameObjects {
 		collisionBounds = new Rectangle(x, y, 64, 64);
 		
 		// Start Sound
-		SoundManager.addSound(bulletShotSoundPathName, bulletShotSoundName);
+		soundManager.addSound(bulletShotSoundPathName, bulletShotSoundName);
 		
 	}
 
@@ -254,7 +258,7 @@ public class Player extends GameObjects {
 		if (shoot) {
 			if (TimeUtils.timeSinceMillis(bulletcooldown) > bulletShootSpeed) {
 				addBullets(32, 64);	
-				SoundManager.playSound(bulletShotSoundName, 1.0f);
+				soundManager.playSound(bulletShotSoundName, 1.0f);
 			}
 			
 		}
@@ -277,6 +281,13 @@ public class Player extends GameObjects {
 		collisionBounds.set(x, y, 64,64);
 	}
 	
+	// Dispose Method
+	public void dispose() {
+		shipAnimation.dispose();
+	}
+	
+	// Setters and Getters
+	
 	public Array<PlayerBullets> getBulletList() {
 		return listOfBullets;
 	}
@@ -289,7 +300,6 @@ public class Player extends GameObjects {
 		return healthPoints;
 	}
 	
-	// Setters + Getters
 	public void setDX(float dx) {
 		this.dx = dx;
 	}
@@ -305,7 +315,8 @@ public class Player extends GameObjects {
 	public void setDeathStatus(boolean isDead) {
 		this.isDead = isDead;
 	}
-
+	
+	// Not needed override
 	@Override
 	public void update(float dt, boolean xWrap, boolean yWrap) {}
 

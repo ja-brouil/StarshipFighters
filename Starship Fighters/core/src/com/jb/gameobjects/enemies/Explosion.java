@@ -5,8 +5,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.animation.Animator;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
+import com.jb.gamestates.PlayState;
 
 public class Explosion extends GameObjects {
+	
+	// PlayState
+	private PlayState playState;
 
 	// Graphics
 	private String pathName;
@@ -15,26 +19,21 @@ public class Explosion extends GameObjects {
 	private boolean explosionIsDone;
 
 	// SFX || Default || Player
-	private static String explosionSoundPathName = "data/audio/sound/Bomb Explosion.wav";
-	private static String explosionSoundName = "Explosion Hit";
-	private static String explosionPlayerPathName = "data/audio/sound/No Damage.wav";
-	private static String explosionPlayerName = "Player Hit";
-
-
-	static {
-		// Add sound
-		SoundManager.addSound(explosionSoundPathName, explosionSoundName);
-		SoundManager.addSound(explosionPlayerPathName, explosionPlayerName);
-	}
+	private SoundManager soundManager;
+	private String explosionSoundPathName = "data/audio/sound/Bomb Explosion.wav";
+	private String explosionSoundName = "Explosion Hit";
+	private String explosionPlayerPathName = "data/audio/sound/No Damage.wav";
+	private String explosionPlayerName = "Player Hit";
 
 	// Default Explosion
-	public Explosion(float x, float y, float dx, float dy) {
+	public Explosion(float x, float y, float dx, float dy, PlayState playState) {
 		super(x, y, dx, dy);
 
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
+		this.playState = playState;
 
 		// Pathname for graphics
 		pathName = "data/hit_and_explosions/explosion.png";
@@ -46,13 +45,15 @@ public class Explosion extends GameObjects {
 
 	// Custom Explosion
 	public Explosion(float x, float y, float dx, float dy, String pathName, String explosionSoundCustomPathName,
-			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime) {
+			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, PlayState playState) {
 		super(x, y, dx, dy);
 		
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
+		this.playState = playState;
+		soundManager = playState.getGSM().getGame().getSoundManager();
 
 		this.pathName = pathName;
 		init(cols, rows, colCut, rowCut, frameLengthTime);
@@ -61,13 +62,15 @@ public class Explosion extends GameObjects {
 	
 	// Boss Hit
 	public Explosion(float x, float y, float dx, float dy, String pathName, String explosionSoundCustomPathName,
-			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, boolean playSound) {
+			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, boolean playSound, PlayState playState) {
 		super(x, y, dx, dy);
 		
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
+		this.playState = playState;
+		soundManager = playState.getGSM().getGame().getSoundManager();
 
 		this.pathName = pathName;
 		init(cols, rows, colCut, rowCut, frameLengthTime, playSound);
@@ -84,7 +87,10 @@ public class Explosion extends GameObjects {
 		explosionIsDone = false;
 
 		// Start SFX
-		SoundManager.playSound(explosionSoundName, 1.0f);
+		soundManager = playState.getGSM().getGame().getSoundManager();
+		soundManager.addSound(explosionSoundPathName, explosionSoundName);
+		soundManager.addSound(explosionPlayerPathName, explosionPlayerName);
+		soundManager.playSound(explosionSoundName, 1.0f);
 		
 
 	}
@@ -99,7 +105,9 @@ public class Explosion extends GameObjects {
 		explosionIsDone = false;
 
 		// Start SFX
-		SoundManager.playSound(explosionPlayerName, 0.3f);
+		soundManager.addSound(explosionSoundPathName, explosionSoundName);
+		soundManager.addSound(explosionPlayerPathName, explosionPlayerName);
+		soundManager.playSound(explosionPlayerName, 0.3f);
 		
 	}
 	
@@ -114,7 +122,7 @@ public class Explosion extends GameObjects {
 
 		// Start SFX
 		if (playSound) {
-			SoundManager.playSound(explosionPlayerName, 0.3f);
+			soundManager.playSound(explosionPlayerName, 0.3f);
 		}	
 	}
 	
@@ -145,6 +153,11 @@ public class Explosion extends GameObjects {
 	public void update(float dt, boolean xWrap, boolean yWrap) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	// Dispose
+	public void dispose() {
+		explosionAnimation.dispose();
 	}
 
 }

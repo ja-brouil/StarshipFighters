@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.main.Game;
 
@@ -15,6 +14,8 @@ public class IntroState extends GameState{
 	private String segaSoundName;
 	private String segaLogoPathName;
 	private long timer;
+	private SoundManager soundManager;
+	
 
 	public IntroState(GameStateManager gsm) {
 		super(gsm);
@@ -33,12 +34,14 @@ public class IntroState extends GameState{
 		segaLogoPathName = "data/background/segalogo.png";
 		
 		// Start Sound
-		SoundManager.addSound(segaPathname, segaSoundName);
+		soundManager = gsm.getGame().getSoundManager();
+		soundManager.addSound(segaPathname, segaSoundName);
 		
 		// Texture
 		texture = new Texture(Gdx.files.internal(segaLogoPathName));
 		
-		SoundManager.playSound(segaSoundName, 1.0f);
+		// Play Sound
+		soundManager.playSound(segaSoundName, 1.0f);
 	}
 
 	@Override // Not Needed
@@ -51,7 +54,7 @@ public class IntroState extends GameState{
 		// Move Next state after Sega
 		if (TimeUtils.timeSinceMillis(timer) > 3000) {
 			gsm.setState(GameStateManager.MENU);
-			SoundManager.removeSound(segaSoundName);
+			soundManager.removeSound(segaSoundName);
 		}
 		
 	}
@@ -75,8 +78,7 @@ public class IntroState extends GameState{
 	// This should not be called as the game should never quit unless it crashes or the OS crashes
 	@Override
 	public void dispose() {
-		MusicManager.disposeAllMusic();
-		SoundManager.disposeAllSound();
+		texture.dispose();
 	}
 	
 

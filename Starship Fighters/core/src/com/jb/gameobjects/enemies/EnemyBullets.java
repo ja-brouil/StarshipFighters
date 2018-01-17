@@ -11,6 +11,9 @@ import com.jb.gamestates.PlayState;
 
 public class EnemyBullets extends GameObjects{
 	
+	// PlayState Access
+	private PlayState playState;
+	
 	// Physics
 	private float minSpeed;
 	private float dy;
@@ -21,28 +24,30 @@ public class EnemyBullets extends GameObjects{
 	private TextureRegion[] enemyBulletTexture;
 	
 	// SFX
-	private static String enemyBulletSoundPathname = "data/audio/sound/enemybulletsound.mp3";
-	private static String enemyBulletSoundName = "Enemy Bullet Sound";
+	private SoundManager soundManager;
+	private String enemyBulletSoundPathname = "data/audio/sound/enemybulletsound.mp3";
+	private String enemyBulletSoundName = "Enemy Bullet Sound";
 	
 	// Game Mechanics
 	private int damageValue;
 	
 	// Removal and Collision
 	private boolean isOffScreen;
-	
-	// Add Sound
-	static {
-		SoundManager.addSound(enemyBulletSoundPathname, enemyBulletSoundName);
-	}
+
 
 	public EnemyBullets(float x, float y, float dx, float dy, int damageValue, PlayState playState) {
 		super(x, y, dx, dy);
 		
+		// Location
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
 		this.damageValue = damageValue;
+		
+		// PlayState Access
+		this.playState = playState;
+		
 		// Pathname for graphics
 		pathName = "data/ammo/enemyBullet.png";
 		
@@ -69,7 +74,9 @@ public class EnemyBullets extends GameObjects{
 		collisionBounds = new Rectangle(x, y, 4f, 9f);
 		
 		// Play Sound
-		SoundManager.playSound(enemyBulletSoundName, 1f);
+		soundManager = playState.getGSM().getGame().getSoundManager();
+		soundManager.addSound(enemyBulletSoundPathname, enemyBulletSoundName);
+		soundManager.playSound(enemyBulletSoundName, 1f);
 		
 	}
 	
@@ -103,6 +110,11 @@ public class EnemyBullets extends GameObjects{
 			removeBullets();
 		}
 		
+	}
+	
+	// Dispose
+	public void dispose() {
+		allTexture.dispose();
 	}
 
 	

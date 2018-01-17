@@ -72,6 +72,12 @@ public class HealthBar extends HUD {
 		
 	}
 	
+	// Dispose of HUD when called
+	public void dispose() {
+		shapeRenderer.dispose();
+		healthBarColor = null;
+	}
+	
 	
 	// Width to fill is the amount of HP left
 	public void setHealthLeft(float healthLeft) {
@@ -84,5 +90,9 @@ public class HealthBar extends HUD {
 
 	public float getTotalHealth() {
 		return totalHealth;
+	}
+	
+	public float getHealthLeft() {
+		return healthLeft;
 	}
 }

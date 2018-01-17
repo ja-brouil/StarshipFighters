@@ -82,7 +82,6 @@ public class PlayerBullets extends GameObjects{
 		
 		// Update collisionBounds
 		collisionBounds.set(x, y, 4f, 9f);
-		//checkCollision();
 		
 		// Prevent bullet speed
 		setLimits();
@@ -116,6 +115,11 @@ public class PlayerBullets extends GameObjects{
 			removeBullets();
 		}
 		
+	}
+	
+	// Dispose of Textures
+	public void dispose() {
+		allTexture.dispose();
 	}
 	
 	

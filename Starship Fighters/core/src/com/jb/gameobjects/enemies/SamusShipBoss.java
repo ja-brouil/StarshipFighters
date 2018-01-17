@@ -38,14 +38,16 @@ public class SamusShipBoss extends GameObjects {
 	private float animationTime;
 
 	// SFX
-	private static String bossSoundFilePath = "data/audio/sound/bossDamage.wav";
-	private static String bossSoundName = "Boss Hit";
-	private static String bossSpawnSoundFilePath = "data/audio/sound/bombLaunching.wav";
-	private static String bossSpawnSoundName = "Boss Spawn Sound";
+	private SoundManager soundManager;
+	private String bossSoundFilePath = "data/audio/sound/bossDamage.wav";
+	private String bossSoundName = "Boss Hit";
+	private String bossSpawnSoundFilePath = "data/audio/sound/bombLaunching.wav";
+	private String bossSpawnSoundName = "Boss Spawn Sound";
 
 	// Boss Music
-	private static String bossMusic = "data/audio/music/bossbattle.mp3";
-	private static String bossMusicName = "Boss Battle";
+	private MusicManager musicManager; 
+	private String bossMusic = "data/audio/music/bossbattle.mp3";
+	private String bossMusicName = "Boss Battle";
 
 	// HitBoxes
 	private Rectangle[] bossHitBoxes;
@@ -61,13 +63,6 @@ public class SamusShipBoss extends GameObjects {
 	private long rightWingExplosionTimer, leftWingExplosionTimer, bossDeathExplosionTimer;
 	private long bulletCooldown, bulletCooldownRight, bulletCooldownLeft;
 	private long randomAttackCooldown, randomAttackCooldownLeft, randomAttackCooldownRight;
-
-	// Start SFX
-	static {
-		SoundManager.addSound(bossSoundFilePath, bossSoundName);
-		SoundManager.addSound(bossSpawnSoundFilePath, bossSpawnSoundName);
-		MusicManager.addMusic(bossMusic, bossMusicName);
-	}
 
 	public SamusShipBoss(float x, float y, float dx, float dy, Array<EnemyBullets> enemyBullets,
 			Array<Explosion> explosionList, Array<GameObjects> basicAliens, PlayState playState) {
@@ -89,6 +84,15 @@ public class SamusShipBoss extends GameObjects {
 
 	// Start the boss
 	private void init() {
+		
+		// Music
+		musicManager = playState.getGSM().getGame().getMusicManager();
+		musicManager.addMusic(bossMusic, bossMusicName);
+		
+		// sound
+		soundManager = playState.getGSM().getGame().getSoundManager();
+		soundManager.addSound(bossSoundFilePath, bossSoundName);
+		soundManager.addSound(bossSpawnSoundFilePath, bossSpawnSoundName);
 
 		// Start Graphics
 		filePath = "data/spaceships/samushipboss.png";
@@ -183,7 +187,7 @@ public class SamusShipBoss extends GameObjects {
 			dy = 0;
 			dx = 2;
 			y = 675;
-			MusicManager.loopMusic(bossMusicName);
+			musicManager.loopMusic(bossMusicName);
 		}
 	}
 
@@ -228,7 +232,7 @@ public class SamusShipBoss extends GameObjects {
 		if (rightWingHealth <= 0 && !isRightWingDead) {
 			if (TimeUtils.timeSinceMillis(rightWingExplosionTimer) > 200 && rightWingExplosionCounter < 10) {
 				// Add delayed explosions
-				explosionList.add(new Explosion((x + 148) + MathUtils.random(-48, 48), y, 48, height));
+				explosionList.add(new Explosion((x + 148) + MathUtils.random(-48, 48), y, 48, height, playState));
 				rightWingExplosionTimer = TimeUtils.millis();
 				rightWingExplosionCounter++;
 			}
@@ -242,7 +246,7 @@ public class SamusShipBoss extends GameObjects {
 		if (leftWingHealth <= 0 && !isLeftWingDead) {
 			if (TimeUtils.timeSinceMillis(leftWingExplosionTimer) > 200 && leftWingExplosionCounter < 10) {
 				// Add delayed explosions
-				explosionList.add(new Explosion(x + MathUtils.random(-48, 48), y, 48, height));
+				explosionList.add(new Explosion(x + MathUtils.random(-48, 48), y, 48, height, playState));
 				leftWingExplosionTimer = TimeUtils.millis();
 				leftWingExplosionCounter++;
 			}
@@ -267,7 +271,7 @@ public class SamusShipBoss extends GameObjects {
 			if (TimeUtils.timeSinceMillis(bossDeathExplosionTimer) > 200 && bossDeathExplosionCounter < 15) {
 				// Add delayed explosions
 				explosionList.add(new Explosion(x + (0.5f * MathUtils.random(0, width)),
-						(y + (0.5f * MathUtils.random(0, height))), width, height));
+						(y + (0.5f * MathUtils.random(0, height))), width, height, playState));
 				bossDeathExplosionTimer = TimeUtils.millis();
 				bossDeathExplosionCounter++;
 				isDead = true;
@@ -282,7 +286,7 @@ public class SamusShipBoss extends GameObjects {
 			listOfAliens.add(new BasicAlien(x + (width / 2), y + (height / 2), 3, 0, 1000L, -15, enemyBullets, -20, playState));
 			listOfAliens.add(new BasicAlien(x + (width / 2), y + (height / 2), -3, 0, 1000L, -15, enemyBullets, -20, playState));
 			timeSinceBattleBegan = TimeUtils.millis();
-			SoundManager.playSound(bossSpawnSoundName, 1f);
+			soundManager.playSound(bossSpawnSoundName, 1f);
 		}
 
 	}
@@ -300,7 +304,7 @@ public class SamusShipBoss extends GameObjects {
 							}
 							explosionList.add(new Explosion(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0,
 									"data/hit_and_explosions/impactHit.png", "data/audio/sound/Bomb Explosion.wav",
-									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false));
+									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false, playState));
 							tmpShipBullets.removeBullets();
 						}
 						if (h == 1) {
@@ -310,7 +314,7 @@ public class SamusShipBoss extends GameObjects {
 							tmpShipBullets.removeBullets();
 							explosionList.add(new Explosion(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0,
 									"data/hit_and_explosions/impactHit.png", "data/audio/sound/Bomb Explosion.wav",
-									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false));
+									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false, playState));
 						}
 						if (h == 2) {
 							if (!this.getRightWingStatus()) {
@@ -318,7 +322,7 @@ public class SamusShipBoss extends GameObjects {
 							}
 							explosionList.add(new Explosion(this.getSpecificHitBox(h).getX(), tmpShipBullets.getY(),
 									0, 0, "data/hit_and_explosions/impactHit.png",
-									"data/audio/sound/Bomb Explosion.wav", "Boss Hit", 3, 1, 3, 1, 1f / 40f, false));
+									"data/audio/sound/Bomb Explosion.wav", "Boss Hit", 3, 1, 3, 1, 1f / 40f, false, playState));
 							tmpShipBullets.removeBullets();
 						}
 					}
@@ -397,8 +401,5 @@ public class SamusShipBoss extends GameObjects {
 	}
 
 	@Override
-	public void update(float dt, boolean xWrap, boolean yWrap) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void update(float dt, boolean xWrap, boolean yWrap) {}
 }

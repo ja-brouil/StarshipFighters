@@ -83,7 +83,4 @@ public abstract class GameObjects {
 	public int getHP() {
 		return healthbar;
 	}
-	
-	
-
 }
