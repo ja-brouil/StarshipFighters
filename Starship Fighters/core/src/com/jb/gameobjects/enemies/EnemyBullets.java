@@ -114,6 +114,7 @@ public class EnemyBullets extends GameObjects{
 	
 	// Dispose
 	public void dispose() {
+		soundManager.disposeSound(enemyBulletSoundName);
 		allTexture.dispose();
 	}
 

@@ -157,6 +157,7 @@ public class Explosion extends GameObjects {
 	
 	// Dispose
 	public void dispose() {
+		soundManager.disposeSound(explosionSoundName);
 		explosionAnimation.dispose();
 	}
 

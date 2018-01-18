@@ -290,7 +290,8 @@ public class SamusShipBoss extends GameObjects {
 		}
 
 	}
-
+	
+	// Collision Check
 	private void checkCollisions() {
 		// Check Boss Hit | 0 = left, 1 = center, 2 = right
 		if (this != null) {
@@ -330,7 +331,8 @@ public class SamusShipBoss extends GameObjects {
 			}
 		}
 	}
-
+	
+	// Render Method
 	@Override
 	public void draw(SpriteBatch spriteBatch) {
 		// Draw Boss
@@ -338,7 +340,10 @@ public class SamusShipBoss extends GameObjects {
 		animationTime += Gdx.graphics.getDeltaTime();
 		spriteBatch.draw(enemyBossSprite.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
 	}
-
+	
+	
+	
+	// Add Boss Bullets
 	private void addBossBullets(float xOffset, float yOffset) {
 		enemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, 5, bossBulletDamage, playState));
 	}

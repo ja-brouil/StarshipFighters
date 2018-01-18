@@ -20,6 +20,7 @@ import com.jb.gameobjects.items.Item;
 import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.gamestates.levels.Level1;
+import com.jb.gamestates.levels.LevelLoader;
 import com.jb.gamestates.levels.MasterLevel;
 import com.jb.input.GameKeys;
 
@@ -52,6 +53,9 @@ public class PlayState extends GameState {
 
 	// Timer
 	private long deathTimer;
+	
+	// DEBUG PLAYSTATE
+	private LevelLoader levelLoader;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -75,6 +79,7 @@ public class PlayState extends GameState {
 		levelList = new MasterLevel[5];
 		levelList[0] = new Level1(basicAliens, 1, this);
 		levelNumber = 0;
+		levelLoader = new LevelLoader("1", "data/levels/testmap.tmx");
 
 		// Start the HUD
 		// 0 = Health Bar
