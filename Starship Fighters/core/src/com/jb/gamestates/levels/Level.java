@@ -6,38 +6,52 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.jb.gamestates.PlayState;
 
-public class LevelLoader {
+public class Level {
 	
 	// Tiled Map
 	private TiledMap tiledMap;
-	private String level;
-	private String mapName;
-	private Array<Vector2> spawnPoints;
 	private MapLayer spawnLayer;
+	
+	// Level Number
+	private static int levelNumber;
+	
+	// Map Location
+	private String mapName;
+	
+	// Spawn Points
+	private Array<Vector2> spawnPoints;
+	
+	// PlayState
+	private PlayState playState;
 
-	public LevelLoader(String level, String mapName) {
-		this.level = level;
+	public Level(String mapName, PlayState playState) {
+		this.playState = playState;
 		this.mapName = mapName;
 		init();
 	}
 	
+	// Load Level 
 	public void init() {
+		
+		// Load TMX Map
 		spawnPoints = new Array<Vector2>();
 		tiledMap = new TmxMapLoader().load(mapName);
 		spawnLayer = tiledMap.getLayers().get("BasicAlienSpawn");
 		loadSpawnLocations(spawnLayer);
-		
-		for (int i = 0; i < spawnPoints.size; i++) {
-			System.out.println(spawnPoints.get(i) + " x: " + spawnPoints.get(i).x);
-			System.out.println(spawnPoints.get(i) + " y: " + spawnPoints.get(i).y);
-		}
 	}
 	
+	// Load Spawn Locations
 	private void loadSpawnLocations(MapLayer layer) {
 		for (MapObject mapObject : layer.getObjects()) {
 			spawnPoints.add(new Vector2(mapObject.getProperties().get("x", Float.class), mapObject.getProperties().get("y", Float.class)));
 		}
+	}
+	
+	// Load Backgrounds
+	private void loadBackgrounds() {
+		
 	}
 	
 	public void update(float dt) {
@@ -47,12 +61,17 @@ public class LevelLoader {
 	public void render() {
 		
 	}
-
+	
+	// Dispose of All Assets
 	public void dispose() {
 		
 	}
 	
-	public String getLevel() {
-		return level;
+	public static int getLevel() {
+		return levelNumber;
+	}
+	
+	public Array<Vector2> getEnemyArray(){
+		return spawnPoints;
 	}
 }

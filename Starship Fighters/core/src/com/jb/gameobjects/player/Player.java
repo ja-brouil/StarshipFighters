@@ -147,14 +147,12 @@ public class Player extends GameObjects {
 
 	// Render Player
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(SpriteBatch spriteBatch) {	
 		
 		// Draw Ship
 		// Get Time frame for animation
 		animationTime += Gdx.graphics.getDeltaTime();
 		spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
-		
-		
 	}
 	
 	// Use this update method for cutscenes | Add additional stuff as needed
