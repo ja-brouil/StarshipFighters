@@ -21,7 +21,7 @@ public class PlayerBullets extends GameObjects{
 	private float dy;
 	
 	// Graphics 
-	private String pathname;
+	private String pathname = "data/ammo/bulletfinal.png";
 	private Texture allTexture;
 	private TextureRegion[] bulletTexture;
 	
@@ -31,6 +31,11 @@ public class PlayerBullets extends GameObjects{
 	
 	// Removal and Collision
 	private boolean isOffScreen;
+	
+	public PlayerBullets(boolean dispose) {
+		init();
+		dispose();
+	}
 
 	public PlayerBullets(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);
@@ -40,8 +45,6 @@ public class PlayerBullets extends GameObjects{
 		this.dx = dx;
 		this.dy = dy;
 		
-		// Pathname for Graphics
-		pathname = "data/ammo/bulletfinal.png";
 		
 		// Initial Boolean Status 
 		isOffScreen = false;

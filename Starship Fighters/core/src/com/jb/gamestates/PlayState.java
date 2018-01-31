@@ -18,9 +18,7 @@ import com.jb.gameobjects.enemies.SamusShipBoss;
 import com.jb.gameobjects.items.Item;
 import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
-import com.jb.gamestates.levels.Level;
 import com.jb.gamestates.levels.Level1;
-import com.jb.gamestates.levels.MasterLevel;
 import com.jb.input.GameKeys;
 
 public class PlayState extends GameState {
@@ -44,7 +42,7 @@ public class PlayState extends GameState {
 	private SoundManager soundManager;
 
 	// Level Objects
-	private Level levelLoader;
+	private Level1 level1;
 
 	// HUD Elements
 	private HUD[] allHUDElements;
@@ -71,10 +69,7 @@ public class PlayState extends GameState {
 		collisionHandling = new CollisionHandling(this);
 
 		// Start Level
-		levelLoader = new Level("data/levels/testmap.tmx", this);
-		for (int i = 0; i < levelLoader.getEnemyArray().size; i++) {
-			basicAliens.add(new BasicAlien(levelLoader.getEnemyArray().get(i).x, levelLoader.getEnemyArray().get(i).y, 0, -5, 1000L, -15, getEnemyBulletList(), -20, this));
-		}
+		//level1 = new Level1("data/levels/testmap.tmx", this);
 
 		// Start the HUD
 		// 0 = Health Bar
@@ -87,6 +82,9 @@ public class PlayState extends GameState {
 		// Audio
 		soundManager = getGSM().getGame().getSoundManager();
 		musicManager = getGSM().getGame().getMusicManager();
+		
+		// DEBUG SECTION
+		basicAliens.add(new BasicAlien(200, 850, 0, -5f, 1000, 3, enemyBulletList, 5, this));
 
 	}
 
@@ -130,6 +128,9 @@ public class PlayState extends GameState {
 			return;
 		}*/
 		
+		// Update Level
+		//level1.update(dt);
+		
 		// Game Over
 		if (((HealthBar) allHUDElements[0]).getHealthLeft() <= 0) {
 			musicManager.disposeAllMusic();
@@ -158,7 +159,6 @@ public class PlayState extends GameState {
 			basicAliens.get(i).update(dt, true, false);
 			if (basicAliens.get(i).getHP() <= 0) {
 				explosionList.add(new Explosion(basicAliens.get(i).getX(), basicAliens.get(i).getY(), 0, 0, this));
-				((BasicAlien) basicAliens.get(i)).dispose();
 				basicAliens.removeIndex(i);
 				i--;
 			}
@@ -175,7 +175,6 @@ public class PlayState extends GameState {
 			explosionList.get(i).update(dt);
 			// Remove Explosion
 			if (explosionList.get(i).getExplosionStatus()) {
-				explosionList.get(i).dispose();
 				explosionList.removeIndex(i);
 				i--;
 			}
@@ -186,7 +185,6 @@ public class PlayState extends GameState {
 			enemyBulletList.get(i).update(dt);
 			// Remove Bullets
 			if (enemyBulletList.get(i).getRemovalStatus()) {
-				enemyBulletList.get(i).dispose();
 				enemyBulletList.removeIndex(i);
 				i--;
 			}
@@ -196,7 +194,6 @@ public class PlayState extends GameState {
 		for (int i = 0; i < itemList.size; i++) {
 			itemList.get(i).update(dt);
 			if (itemList.get(i).getRemovalStatus()) {
-				itemList.get(i).dispose();
 				itemList.removeIndex(i);
 				i--;
 			}
@@ -225,22 +222,24 @@ public class PlayState extends GameState {
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-
-		// Draw Level Elements (BackGround)
 		
-
+		// Draw Level Elements (BackGround)
+		//level1.render(spriteBatch);
+		spriteBatch.end();
 
 		// Draw HUD
 		// NOTICE: THIS SHOULD NORMALLY BE UNDER THE SPRITEBATCH BEGIN BUT I DONT HAVE
 		// CUSTOM HUD ELEMENTS YET
+		spriteBatch.begin();
 		for (int i = 0; i < allHUDElements.length; i++) {
 			allHUDElements[i].draw(spriteBatch);
 		}
 		spriteBatch.end();
-		
-
-		// Player Render
 		spriteBatch.begin();
+		
+		
+		
+		// Player Render
 		player.draw(spriteBatch);
 
 		// Bullet Render
@@ -281,31 +280,25 @@ public class PlayState extends GameState {
 	@Override
 	public void dispose() {
 		
+		// Dispose Level
+		//level1.dispose();
+		
 		// Dispose Player
 		player.dispose();
 		
 		// Dispose Bullets
-		for (int i = 0; i < shipBullets.size; i++) {
-			shipBullets.get(i).dispose();
-		}
+		PlayerBullets tmpPlayerBullets = new PlayerBullets(true);
 		
-		for (int i = 0; i < enemyBulletList.size; i++) {
-			enemyBulletList.get(i).dispose();
-		}
+		// Dispose Aliens
+		BasicAlien tmpBasicAlien = new BasicAlien(true);
 		
-		// Dispose Explosions
-		for (int i = 0; i < explosionList.size; i++) {
-			explosionList.get(i).dispose();
-		}
-		
-		// Dispose Enemies
-		for (int i = 0; i < basicAliens.size; i++) {
-			((BasicAlien) basicAliens.get(i)).dispose();
-		}
+		// Dispose Enemy Bullets
+		//EnemyBullets tmpEnemyBullets = new EnemyBullets(true);
 		
 		// Dispose Audio
 		musicManager.disposeAllMusic();
 		soundManager.disposeAllSound();	
+	
 	}
 
 

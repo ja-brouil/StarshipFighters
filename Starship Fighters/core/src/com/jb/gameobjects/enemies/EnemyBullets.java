@@ -19,7 +19,7 @@ public class EnemyBullets extends GameObjects{
 	private float dy;
 	
 	// Graphics
-	private String pathName;
+	private String pathName = "data/ammo/enemyBullet.png";
 	private Texture allTexture;
 	private TextureRegion[] enemyBulletTexture;
 	
@@ -33,8 +33,14 @@ public class EnemyBullets extends GameObjects{
 	
 	// Removal and Collision
 	private boolean isOffScreen;
-
-
+	
+	// Removal Constructor
+	public EnemyBullets(boolean remove) {
+		init();
+		dispose();
+	}
+	
+	// Standard Constructor
 	public EnemyBullets(float x, float y, float dx, float dy, int damageValue, PlayState playState) {
 		super(x, y, dx, dy);
 		
@@ -47,9 +53,6 @@ public class EnemyBullets extends GameObjects{
 		
 		// PlayState Access
 		this.playState = playState;
-		
-		// Pathname for graphics
-		pathName = "data/ammo/enemyBullet.png";
 		
 		// Initial Boolean Status
 		isOffScreen = false;

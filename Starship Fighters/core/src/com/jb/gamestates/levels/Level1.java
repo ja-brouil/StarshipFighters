@@ -1,266 +1,189 @@
 package com.jb.gamestates.levels;
 
+import java.sql.Time;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.jb.HUD.HealthBar;
 import com.jb.assetmanagers.audio.MusicManager;
-import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.SamusShipBoss;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
 import com.jb.main.Game;
 
-public class Level1 extends MasterLevel {
+public class Level1 {
 	
-	// Might want to rewrite this using JSON
-
-	// Background
-	private Background level1Background, level1background2;
-
-	// Time
-	private long timer = 3000;
-	private long cooldownBetweenWaves = 2000;
-	private long waveTimer;
-	private boolean updateTimerEnabled = true;
-	private long bossTimer = 5000;
-	private boolean startTimerForBoss = true;
-
-	// Music and Sounds
+	// Tiled Map
+	private TiledMap tiledMap;
+	private MapLayer spawnLayer;
+	
+	// Level Number
+	private static int levelNumber;
+	
+	// Map Location
+	private String mapName;
+	
+	// Spawn Points
+	private Array<Vector2> spawnPoints;
+	private Vector2 bossSpawnPoint;
+	
+	// Spawn Counter
+	private int spawnNumber;
+	private long spawnTimerCooldown;
+	private long spawnTimerElapsedTime;
+	private boolean spawnEnabled;
+	
+	// Boss Spawn Variables
+	private boolean spawnboss;
+	
+	// Music
 	private MusicManager musicManager;
 	private String level1MusicPathName = "data/audio/music/level1.mp3";
 	private String level1Music = "Level 1 Music";
 	private String victoryMusicPathName = "data/audio/music/victorytheme.mp3";
 	private String victoryMusicName = "Victory";
 	
+	// Background
+	private Background bg1;
+	private Background bg2;
+	
+	// PlayState
+	private PlayState playState;
 
-	// GamePlay
-	// Boolean Switches
-	private boolean[] gameplaySwitch;
-	private int switchCounter;
-	private int enemyWavesCounter = 0;
-	private boolean bossSpawnEnabled = true;
-	private SamusShipBoss samusShipBoss;
-
-	public Level1(Array<GameObjects> enemyList, int levelNumber, PlayState playState) {
-		super(enemyList, playState.getExplosionList(), playState.getEnemyBulletList(), levelNumber, playState);
-
-		// Get lists
-		this.enemyList = enemyList;
-		this.levelNumber = levelNumber;
+	public Level1(String mapName, PlayState playState) {
 		this.playState = playState;
-
-		// Start Background
-		initializeBackground();
-
-		// Update Timer
-		timeSinceLevelBegan = TimeUtils.millis();
-		waveTimer = TimeUtils.millis();
-
-		// Initialize the switches
-		gameplaySwitch = new boolean[20];
-		for (int i = 0; i < gameplaySwitch.length; i++) {
-			gameplaySwitch[i] = false;
-		}
-		gameplaySwitch[0] = true;
-		switchCounter = 0;
-
-		// Start Music
-		startMusic();
-
+		this.mapName = mapName;
+		init();
 	}
 	
-	// Background load
-	private void initializeBackground() {
-
-		level1Background = new Background(0, 0, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg");
-		level1background2 = new Background(0, -800, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg");
-
-	}
-
-	// Start Music
-	private void startMusic() {
+	// Load Level 
+	public void init() {
 		
+		// Load TMX Map
+		tiledMap = new TmxMapLoader().load(mapName);
+		
+		// Get Basic Enemies Spawn points
+		spawnPoints = new Array<Vector2>();
+		spawnLayer = tiledMap.getLayers().get("BasicAlienSpawn");
+		loadSpawnLocations(spawnLayer);
+		
+		// Boss Spawn | Not sure how to just get the boss spawn object only, read into this 
+		MapObject bossSpawn = tiledMap.getLayers().get("BossSpawn").getObjects().get("Boss");
+		bossSpawnPoint = new Vector2(bossSpawn.getProperties().get("x", Float.class), bossSpawn.getProperties().get("y", Float.class));
+
+		// Background 
+		loadBackgrounds();
+		
+		// Music
+		loadMusic();
+	}
+	
+	// Load Spawn Locations
+	private void loadSpawnLocations(MapLayer layer) {
+		
+		// Get Spawn Points
+		for (MapObject mapObject : layer.getObjects()) {
+			spawnPoints.add(new Vector2(mapObject.getProperties().get("x", Float.class), mapObject.getProperties().get("y", Float.class)));
+		}
+		
+		// Start Initial Enemies
+		for (int i = 0; i < spawnPoints.size; i++) {
+			playState.getBasicAliens().add(new BasicAlien(spawnPoints.get(i).x, spawnPoints.get(i).y, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
+		}
+		
+		// Start Spawn Counter
+		spawnNumber = 0;
+		
+		// Spawn Cooldown
+		spawnTimerCooldown = 1000;
+		spawnTimerElapsedTime = TimeUtils.millis();
+		
+		// Spawn Enabler
+		spawnEnabled = false;
+		spawnboss = false;
+		
+	}
+	
+	// Load Backgrounds
+	private void loadBackgrounds() {
+		bg1 = new Background(0, 0, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg");
+		bg2 = new Background(0, -800, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg");
+	}
+	
+	// Load Music
+	private void loadMusic() {
 		musicManager = playState.getGSM().getGame().getMusicManager();
 		musicManager.addMusic(level1MusicPathName, level1Music);
 		musicManager.loopMusic(level1Music);
 		musicManager.addMusic(victoryMusicPathName, victoryMusicName);
 	}
 	
-	// Stop Music
-	public void stopMusic() {
-		musicManager.stopMusic(level1Music);
-		musicManager.stopMusic(victoryMusicName);
-	}
-
-	@Override
+	// Level Mechanics
 	public void update(float dt) {
-
-		// stop Music if game is over
-		if (((HealthBar) playState.getHUD(0)).getHealthLeft() <= 0) {
-			musicManager.stopMusic(level1Music);
-			musicManager.stopMusic(victoryMusicName);
+		
+		// Update Background
+		bg1.update(dt);
+		bg1.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
+		bg2.update(dt);
+		bg2.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
+		
+		// Check if all enemies are dead
+		if (playState.getBasicAliens().size == 0 && !spawnEnabled && spawnNumber <= 5) {
+			spawnEnabled = true;
+			spawnTimerElapsedTime = TimeUtils.millis();
 		}
 		
-		// Update the background
-		level1Background.update(dt);
-		level1Background.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
-		level1background2.update(dt);
-		level1background2.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
-		
-		
-		// GamePlay Checks
-		// Start Level 1 after 3 seconds have passed or we have reached the 5 fifth wave
-		if (TimeUtils.timeSinceMillis(timeSinceLevelBegan) < timer) {
-			return;
-		}
-
-		
-		// Spawn Enemies
-		if (enemyWavesCounter < 20) {
-			// Spawn Enemies
-			if (gameplaySwitch[switchCounter]) {
-				if (switchCounter == 0) {
-					addInitalEnemies();
-				} else if (switchCounter == 1 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
-					addSecondEnemies();
-				} else if (switchCounter == 2 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
-					addThirdEnemies();
-				} else if (switchCounter == 3 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
-					addFourthEnemies();
-				} else if (switchCounter == 4 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
-					addFifthEnemies();
-				} else if (enemyList.size == 0 && TimeUtils.timeSinceMillis(waveTimer) > cooldownBetweenWaves) {
-					randomSpawn();
+		// Spawn New Enemies | 1 second pause in between
+		if (spawnEnabled) {
+			if (TimeUtils.timeSinceMillis(spawnTimerElapsedTime) > spawnTimerCooldown && spawnNumber < 5) {
+				for (int i = 0; i < spawnPoints.size; i++) {
+					playState.getBasicAliens().add(new BasicAlien(spawnPoints.get(i).x, spawnPoints.get(i).y, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
 				}
 				
-				gameplaySwitch[switchCounter] = false;
+				// Stop spawn and increase spawn counter
+				spawnEnabled = false;
+				spawnNumber++;
+				
+				// Check if Spawn is 5 to spawn boss
+				if (spawnNumber == 5) {
+					spawnboss = true;
+				}
 			}
-		}
-
-		// Check if enemies are dead | For first 5 spawns
-		if (enemyList.size == 0) {
-			// Update cooldown
-			if (updateTimerEnabled) {
-				waveTimer = TimeUtils.millis();
-				updateTimerEnabled = false;
-			}
-			// Switch Level
-			if (!gameplaySwitch[switchCounter]) {
-				gameplaySwitch[switchCounter] = true;
-			}
-		}
-
-		
-		// Check if Boss needs to be spawned
-		if (enemyWavesCounter == 20 && bossSpawnEnabled && enemyList.size == 0) {
-			if (startTimerForBoss) {
-				bossTimer = TimeUtils.millis();
-				startTimerForBoss = false;
-				musicManager.stopMusic(level1Music);
-			}
-			
-			if (TimeUtils.timeSinceMillis(bossTimer) > 3000) {
-				bossSpawnEnabled = false;
-				spawnBoss();
-			}	
 		}
 		
-		// If Boss is dead, victory!
-		if (getPlayState().getBoss() != null) {
-			if (getPlayState().getBoss().getDeathStatus()) {
-				musicManager.stopMusic("Boss Battle");
-				musicManager.playMusic(victoryMusicName);
-			}
-		}	
-	}
-
-	// Draw Extra stuff if needed
-	@Override
-	public void draw(SpriteBatch spriteBatch) {
-		// Draw Background
-		level1Background.draw(spriteBatch);
-		level1background2.drawInverted(spriteBatch, false, true);
-	}
-
-	// Enemy Spawns
-	// Add Initial Enemies
-	private void addInitalEnemies() {
-		playState.getBasicAliens().add(new BasicAlien(568, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(468, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(140, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(40, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		switchCounter++;
-		enemyWavesCounter++;
-		updateTimerEnabled = true;
-	}
-
-	private void addSecondEnemies() {
-		playState.getBasicAliens().add(new BasicAlien(100, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(250, 950, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(350, 850, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(400, 800, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		switchCounter++;
-		enemyWavesCounter++;
-		updateTimerEnabled = true;
-	}
-
-	private void addThirdEnemies() {
-		playState.getBasicAliens().add(new BasicAlien(500, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(550, 950, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(450, 850, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(400, 800, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		switchCounter++;
-		enemyWavesCounter++;
-		updateTimerEnabled = true;
-	}
-
-	private void addFourthEnemies() {
-		playState.getBasicAliens().add(new BasicAlien(500, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(550, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(450, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(300, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(200, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(100, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		switchCounter++;
-		enemyWavesCounter++;
-		updateTimerEnabled = true;
-	}
-
-	private void addFifthEnemies() {
-		playState.getBasicAliens().add(new BasicAlien(600, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(500, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(400, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(300, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(200, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		playState.getBasicAliens().add(new BasicAlien(100, 900, 0, -5, 1000L, -15, playState.getEnemyBulletList(), -20, playState));
-		switchCounter++;
-		enemyWavesCounter++;
-		updateTimerEnabled = true;
-	}
-
-	private void randomSpawn() {
-		for (int i = 0; i < MathUtils.random(5, 7); i++) {
-			playState.getBasicAliens().add(new BasicAlien(75 + (i * 75), 925 - (MathUtils.random(0, 2) * 50), 0, -5, 1000L, -15,
-					playState.getEnemyBulletList(), -20, playState));
+		// Boss Check
+		if (spawnNumber == 5 && spawnboss) {
+			playState.setNewBoss(new SamusShipBoss(100, 975, 2, -2, playState.getEnemyBulletList(), playState.getExplosionList(), playState.getBasicAliens(), playState));
+			spawnboss = false;
 		}
-		enemyWavesCounter++;
-		updateTimerEnabled = true;
 	}
 	
-	// Boss 
-	private void spawnBoss() {
-		samusShipBoss = new SamusShipBoss(100, 975, 2, -2, playState.getEnemyBulletList(), playState.getExplosionList(), playState.getBasicAliens(), playState);
-		getPlayState().setNewBoss(samusShipBoss); 
+	// Render Extra Level Graphics | If needed
+	public void render(SpriteBatch spriteBatch) {
+		bg2.drawInverted(spriteBatch, false, true);
+		bg1.draw(spriteBatch);
 	}
 	
-	// Dispose of all resources
-	@Override
+	// Dispose of All Assets
 	public void dispose() {
-		level1Background.dispose();
-		level1background2.dispose();
-		musicManager.disposeAllMusic();
+		musicManager.disposeMusic(level1Music);
+		musicManager.disposeMusic(victoryMusicName);
+		bg1.dispose();
+		bg2.dispose();
+	}
+	
+	public static int getLevel() {
+		return levelNumber;
+	}
+	
+	public Array<Vector2> getEnemyArray(){
+		return spawnPoints;
 	}
 }

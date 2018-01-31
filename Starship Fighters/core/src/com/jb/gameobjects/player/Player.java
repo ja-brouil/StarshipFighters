@@ -154,28 +154,15 @@ public class Player extends GameObjects {
 		animationTime += Gdx.graphics.getDeltaTime();
 		spriteBatch.draw(shipAnimation.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
 	}
-	
-	// Use this update method for cutscenes | Add additional stuff as needed
-	public void updateActor(float dt, boolean acceleration) {
-		if (acceleration) {
-			dx *= dx * dt * 1.2;
-			dy *= dy * dt * 1.2;
-			x += dx;
-			y += dy;
-		} else {
-			x += dx;
-			y += dy;
-		}
-	}
 
-	// Wrap Around + Prevent out of bounds for Y
+	// Prevent Out of Bounds
 	private void wrap() {
 		// Wrap Around for X Coordinate
-		if (x > Game.WIDTH) {
-			x = 0;
+		if (x > Game.WIDTH - 64) {
+			x = Game.WIDTH - 64;
 		}
-		if (x < 0 - 64) {
-			x = Game.WIDTH;
+		if (x < 0) {
+			x = 0;
 		}
 		
 		// Wrap Around for Y Coordinate

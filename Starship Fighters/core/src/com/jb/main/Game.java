@@ -71,14 +71,14 @@ public class Game extends ApplicationAdapter {
 		// Debug purposes
 		dt += Gdx.graphics.getDeltaTime();
 		
-		/*
+		
 		if (dt >= 1) {
 			System.out.println("Memory Used: " + (Gdx.app.getJavaHeap() / 100000) + "mb");
 			System.out.println("Native Memory Used: " + (Gdx.app.getNativeHeap() / 100000) + "mb");
 			System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
 			dt = 0;
 		}
-		*/
+		
 		
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render();

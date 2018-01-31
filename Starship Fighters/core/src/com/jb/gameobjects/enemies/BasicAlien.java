@@ -20,7 +20,7 @@ public class BasicAlien extends GameObjects {
 	private float minimumSpeed;
 
 	// Graphics
-	private String pathName;
+	private String pathName = "data/spaceships/BasicEnemy.png";
 	private TextureRegion[] rolls; // 0 = normal, 1 = left, 2 = right
 	private Texture allTexture;
 
@@ -35,7 +35,14 @@ public class BasicAlien extends GameObjects {
 
 	// Get Arrays
 	private PlayState playState;
+	
+	// Blank Constructor for JSON + Dispose
+	public BasicAlien(boolean dispose) {
+		init();
+		dispose();
+	}
 
+	// Standard Constructor
 	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed,
 			Array<EnemyBullets> listOfEnemyBullets, int damageValue, PlayState playState) {
 		super(x, y, dx, dy);
@@ -55,9 +62,6 @@ public class BasicAlien extends GameObjects {
 		// GamePlay Starting Positions
 		initialX = x;
 		initialY = y;
-
-		// Graphics
-		pathName = "data/spaceships/BasicEnemy.png";
 
 		// Limits
 		maxSpeed = 10;

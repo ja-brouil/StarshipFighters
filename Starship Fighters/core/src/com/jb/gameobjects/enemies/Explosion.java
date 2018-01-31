@@ -77,6 +77,11 @@ public class Explosion extends GameObjects {
 
 	}
 
+	public Explosion(boolean remove) {
+		init();
+		dispose();
+	}
+
 	// Initialize
 	private void init() {		
 

@@ -11,6 +11,12 @@ public abstract class GameObjects {
 	protected int healthbar;
 	protected Rectangle collisionBounds;
 	
+	
+	// Blank constructor for JSON | Dispose
+	public GameObjects() {
+		
+	}
+	
 	public GameObjects(float x, float y, float dx, float dy) {
 		// No need to extra stuff in the constructor here
 	}
