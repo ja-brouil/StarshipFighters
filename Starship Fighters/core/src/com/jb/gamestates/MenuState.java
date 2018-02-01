@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.jb.animation.Animator;
 import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.images.Background;
@@ -24,6 +25,10 @@ public class MenuState extends GameState {
 	private Background menuBackground;
 	private Background menuBackground2;
 	private String menuBackgroundPath;
+	
+	// Opening Animation Sequence
+	private Animator openingSequence;
+	private float animationTime;
 	
 	// Music for Menu
 	private boolean loadMusic = true;
@@ -69,6 +74,9 @@ public class MenuState extends GameState {
 		menuBackgroundPath = "data/background/menuBackground.png";
 		menuBackground = new Background(Game.WIDTH, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
 		menuBackground2 = new Background(0, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
+		
+		// Opening Animation Sequence
+		openingSequence = new Animator(8, 10, "data/transitions/IntroAnimation.png", 8, 10, 1/15f);
 
 		// Start Music
 		musicManager = game.getMusicManager();
@@ -133,9 +141,6 @@ public class MenuState extends GameState {
 			// Remove Sound Effect
 			soundManager.removeSound(choiceOptionName);
 
-			// Delete actor player
-			//actorPlayer.dispose();
-			//actorPlayer = null;
 
 		} else if (currentOption == 1) {
 			dispose();
@@ -162,6 +167,7 @@ public class MenuState extends GameState {
 		
 		menuBackground.update(dt);
 		menuBackground2.update(dt);
+		
 	}
 
 	@Override
@@ -170,7 +176,6 @@ public class MenuState extends GameState {
 		// Clear Screen to Black Background
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
 
 		// SpriteBatch
 		spriteBatch.setProjectionMatrix(cam.combined);
@@ -179,6 +184,19 @@ public class MenuState extends GameState {
 		// Draw Background
 		menuBackground.draw(spriteBatch);
 		menuBackground2.draw(spriteBatch);
+		
+		// Draw the Opening Animation
+		if (menuBackground.getDx() == 0 && menuBackground2.getDx() == 0) {
+			if (openingSequence != null) {
+				animationTime += Gdx.graphics.getDeltaTime();
+				spriteBatch.draw(openingSequence.getAnimationFrames().getKeyFrame(animationTime), 150, 400);
+
+				if (openingSequence.getAnimationFrames().isAnimationFinished(animationTime)) {
+					openingSequence.dispose();
+					openingSequence = null;
+				}
+			}
+		}
 
 		// Draw Title
 		bitmapFont.setColor(Color.WHITE);

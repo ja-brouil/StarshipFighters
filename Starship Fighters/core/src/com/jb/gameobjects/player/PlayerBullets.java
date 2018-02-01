@@ -31,11 +31,6 @@ public class PlayerBullets extends GameObjects{
 	
 	// Removal and Collision
 	private boolean isOffScreen;
-	
-	public PlayerBullets(boolean dispose) {
-		init();
-		dispose();
-	}
 
 	public PlayerBullets(float x, float y, float dx, float dy) {
 		super(x, y, dx, dy);

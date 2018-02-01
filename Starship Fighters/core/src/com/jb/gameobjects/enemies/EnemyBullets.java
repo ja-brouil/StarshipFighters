@@ -25,7 +25,7 @@ public class EnemyBullets extends GameObjects{
 	
 	// SFX
 	private SoundManager soundManager;
-	private String enemyBulletSoundPathname = "data/audio/sound/enemybulletsound.mp3";
+	private String enemyBulletSoundPathname = "data/audio/sound/bombLaunching.wav";
 	private String enemyBulletSoundName = "Enemy Bullet Sound";
 	
 	// Game Mechanics
@@ -34,11 +34,6 @@ public class EnemyBullets extends GameObjects{
 	// Removal and Collision
 	private boolean isOffScreen;
 	
-	// Removal Constructor
-	public EnemyBullets(boolean remove) {
-		init();
-		dispose();
-	}
 	
 	// Standard Constructor
 	public EnemyBullets(float x, float y, float dx, float dy, int damageValue, PlayState playState) {

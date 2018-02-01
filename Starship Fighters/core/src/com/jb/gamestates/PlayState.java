@@ -94,7 +94,7 @@ public class PlayState extends GameState {
 		// Escape to quit to exit faster. Remember to remove this later!
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			dispose();
-			Gdx.app.exit();
+			gsm.setState(GameStateManager.MENU);
 		}
 
 		// Set Game Keys
@@ -185,6 +185,7 @@ public class PlayState extends GameState {
 			enemyBulletList.get(i).update(dt);
 			// Remove Bullets
 			if (enemyBulletList.get(i).getRemovalStatus()) {
+				enemyBulletList.get(i).dispose();
 				enemyBulletList.removeIndex(i);
 				i--;
 			}
@@ -287,13 +288,16 @@ public class PlayState extends GameState {
 		player.dispose();
 		
 		// Dispose Bullets
-		PlayerBullets tmpPlayerBullets = new PlayerBullets(true);
+		PlayerBullets tmPlayerBullets = new PlayerBullets(-1, -1, 0, 0);
+		tmPlayerBullets.dispose();
 		
 		// Dispose Aliens
-		BasicAlien tmpBasicAlien = new BasicAlien(true);
+		BasicAlien tmpBasicAlien = new BasicAlien(0, 0, 0, 0, 0, 0, enemyBulletList, 0, this);
+		tmpBasicAlien.dispose();
 		
 		// Dispose Enemy Bullets
-		//EnemyBullets tmpEnemyBullets = new EnemyBullets(true);
+		EnemyBullets tmpEnemyBullets = new EnemyBullets(0, 0, 0, 0, 0, this);
+		tmpEnemyBullets.dispose();
 		
 		// Dispose Audio
 		musicManager.disposeAllMusic();

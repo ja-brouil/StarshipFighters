@@ -51,6 +51,7 @@ public class Animator {
 	// Dispose
 	public void dispose(){
 		spriteSheet.dispose();
+		
 	}
 	
 	// Setters + Getters

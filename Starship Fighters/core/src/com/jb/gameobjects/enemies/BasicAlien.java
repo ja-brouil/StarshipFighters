@@ -35,12 +35,7 @@ public class BasicAlien extends GameObjects {
 
 	// Get Arrays
 	private PlayState playState;
-	
-	// Blank Constructor for JSON + Dispose
-	public BasicAlien(boolean dispose) {
-		init();
-		dispose();
-	}
+
 
 	// Standard Constructor
 	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed,
