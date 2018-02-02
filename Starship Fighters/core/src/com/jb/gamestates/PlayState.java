@@ -1,7 +1,9 @@
 package com.jb.gamestates;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -20,6 +22,7 @@ import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.gamestates.levels.Level1;
 import com.jb.input.GameKeys;
+import com.jb.main.Game;
 
 public class PlayState extends GameState {
 
@@ -94,7 +97,7 @@ public class PlayState extends GameState {
 		// Escape to quit to exit faster. Remember to remove this later!
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			dispose();
-			gsm.setState(GameStateManager.MENU);
+			Game.closeGame = true;
 		}
 
 		// Set Game Keys
@@ -159,6 +162,7 @@ public class PlayState extends GameState {
 			basicAliens.get(i).update(dt, true, false);
 			if (basicAliens.get(i).getHP() <= 0) {
 				explosionList.add(new Explosion(basicAliens.get(i).getX(), basicAliens.get(i).getY(), 0, 0, this));
+				((BasicAlien) basicAliens.get(i)).dispose();
 				basicAliens.removeIndex(i);
 				i--;
 			}
@@ -185,7 +189,6 @@ public class PlayState extends GameState {
 			enemyBulletList.get(i).update(dt);
 			// Remove Bullets
 			if (enemyBulletList.get(i).getRemovalStatus()) {
-				enemyBulletList.get(i).dispose();
 				enemyBulletList.removeIndex(i);
 				i--;
 			}
@@ -206,6 +209,11 @@ public class PlayState extends GameState {
 		// Update HUD || This should be updated last as the collisions will reflect the change in HP/Ammo
 		for (int i = 0; i < allHUDElements.length; i++) {
 			allHUDElements[i].update(dt);
+		}
+		
+		// Close Game After Everything
+		if (Game.closeGame) {
+			Gdx.app.exit();
 		}
 
 	}

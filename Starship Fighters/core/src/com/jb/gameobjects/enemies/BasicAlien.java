@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gamestates.PlayState;
@@ -23,6 +24,11 @@ public class BasicAlien extends GameObjects {
 	private String pathName = "data/spaceships/BasicEnemy.png";
 	private TextureRegion[] rolls; // 0 = normal, 1 = left, 2 = right
 	private Texture allTexture;
+	
+	// Bullet SFX
+	private SoundManager soundManager;
+	private String enemyBulletSoundPathname = "data/audio/sound/bombLaunching.wav";
+	private String enemyBulletSoundName = "Enemy Bullet Sound";
 
 	// GamePlay
 	private Array<EnemyBullets> listofEnemyBullets;
@@ -68,6 +74,10 @@ public class BasicAlien extends GameObjects {
 
 	// Initial load
 	private void init() {
+		
+		// Start Sound
+		soundManager = playState.getGSM().getGame().getSoundManager();
+		soundManager.addSound(enemyBulletSoundPathname, enemyBulletSoundName);
 
 		// Start Shooting
 		bulletCooldown = TimeUtils.millis();
@@ -119,6 +129,7 @@ public class BasicAlien extends GameObjects {
 		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < Game.WIDTH && x > 0
 				&& y < Game.HEIGHT && y > 0) {
 			addEnemyBullets(16, 0);
+			soundManager.playSound(enemyBulletSoundName, 1f);
 			randomAttackCooldown = MathUtils.random(1000, 2000);
 		}
 		
@@ -183,6 +194,7 @@ public class BasicAlien extends GameObjects {
 		listofEnemyBullets
 				.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed, damageValue, playState));
 		bulletCooldown = TimeUtils.millis();
+		
 	}
 
 	// Drop Chance
@@ -210,6 +222,7 @@ public class BasicAlien extends GameObjects {
 	// Dispose Method
 	public void dispose() {
 		allTexture.dispose();
+		soundManager.disposeSound(enemyBulletSoundName);
 	}
 
 }

@@ -32,6 +32,8 @@ public class Game extends ApplicationAdapter {
 	
 	private float dt;
 	
+	public static boolean closeGame;
+	
 	
 	@Override
 	public void create () {

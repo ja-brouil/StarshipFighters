@@ -23,10 +23,6 @@ public class EnemyBullets extends GameObjects{
 	private Texture allTexture;
 	private TextureRegion[] enemyBulletTexture;
 	
-	// SFX
-	private SoundManager soundManager;
-	private String enemyBulletSoundPathname = "data/audio/sound/bombLaunching.wav";
-	private String enemyBulletSoundName = "Enemy Bullet Sound";
 	
 	// Game Mechanics
 	private int damageValue;
@@ -70,12 +66,6 @@ public class EnemyBullets extends GameObjects{
 		
 		// HitBox
 		collisionBounds = new Rectangle(x, y, 4f, 9f);
-		
-		// Play Sound
-		soundManager = playState.getGSM().getGame().getSoundManager();
-		soundManager.addSound(enemyBulletSoundPathname, enemyBulletSoundName);
-		soundManager.playSound(enemyBulletSoundName, 1f);
-		
 	}
 	
 	// Update
@@ -112,7 +102,6 @@ public class EnemyBullets extends GameObjects{
 	
 	// Dispose
 	public void dispose() {
-		soundManager.disposeSound(enemyBulletSoundName);
 		allTexture.dispose();
 	}
 
