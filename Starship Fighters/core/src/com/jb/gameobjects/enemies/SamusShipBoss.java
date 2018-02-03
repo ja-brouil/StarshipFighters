@@ -1,6 +1,7 @@
 package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -29,6 +30,9 @@ public class SamusShipBoss extends GameObjects {
 	private int rightWingExplosionCounter;
 	private int leftWingExplosionCounter;
 	private int bossDeathExplosionCounter;
+	
+	// Asset Manager
+	private AssetManager assetManager;
 
 	// Graphics
 	private float width, height;
@@ -65,8 +69,8 @@ public class SamusShipBoss extends GameObjects {
 	private long randomAttackCooldown, randomAttackCooldownLeft, randomAttackCooldownRight;
 
 	public SamusShipBoss(float x, float y, float dx, float dy, Array<EnemyBullets> enemyBullets,
-			Array<Explosion> explosionList, Array<GameObjects> basicAliens, PlayState playState) {
-		super(x, y, dx, dy);
+			Array<Explosion> explosionList, Array<GameObjects> basicAliens, PlayState playState, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
 
 		this.x = x;
 		this.y = y;
@@ -76,6 +80,7 @@ public class SamusShipBoss extends GameObjects {
 		this.explosionList = explosionList;
 		this.listOfAliens = basicAliens;
 		this.playState = playState;
+		this.assetManager = assetManager;
 
 		// Start Boss
 		init();
@@ -86,18 +91,16 @@ public class SamusShipBoss extends GameObjects {
 	private void init() {
 		
 		// Music
-		musicManager = playState.getGSM().getGame().getMusicManager();
 		musicManager.addMusic(bossMusic, bossMusicName);
 		
 		// sound
-		soundManager = playState.getGSM().getGame().getSoundManager();
 		soundManager.addSound(bossSoundFilePath, bossSoundName);
 		soundManager.addSound(bossSpawnSoundFilePath, bossSpawnSoundName);
 
 		// Start Graphics
 		filePath = "data/spaceships/samushipboss.png";
 		frameLengthTime = 1f / 2f;
-		enemyBossSprite = new Animator(3, 4, filePath, 3, 4, frameLengthTime);
+		enemyBossSprite = new Animator(3, 4, filePath, 3, 4, frameLengthTime, assetManager);
 
 		// Set Wing Booleans
 		isLeftWingDead = false;
@@ -283,7 +286,7 @@ public class SamusShipBoss extends GameObjects {
 	private void spawnEnemies() {
 		// Check if its been 5 seconds
 		if (TimeUtils.timeSinceMillis(timeSinceBattleBegan) > 5000 && healthbar > 0) {
-			listOfAliens.add(new BasicAlien(x + (width / 2), y + (height / 2), 3, 0, 1000L, -15, enemyBullets, -20, playState));
+			listOfAliens.add(new BasicAlien(x + (width / 2), y + (height / 2), 3, 0, 1000L, -15, enemyBullets, -20, playState.getLevel1(), null, null));
 			listOfAliens.add(new BasicAlien(x + (width / 2), y + (height / 2), -3, 0, 1000L, -15, enemyBullets, -20, playState));
 			timeSinceBattleBegan = TimeUtils.millis();
 			soundManager.playSound(bossSpawnSoundName, 1f);

@@ -1,6 +1,7 @@
 package com.jb.gameobjects.enemies;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,27 +9,23 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gamestates.PlayState;
+import com.jb.gamestates.levels.Level1;
 import com.jb.main.Game;
 
 public class BasicAlien extends GameObjects {
+	
+	// Graphics
+	private TextureRegion[] rolls;
+	
+	// Sound
+	private Sound bulletSound;
 
 	// Physics
 	private float maxSpeed;
 	private float minimumSpeed;
-
-	// Graphics
-	private String pathName = "data/spaceships/BasicEnemy.png";
-	private TextureRegion[] rolls; // 0 = normal, 1 = left, 2 = right
-	private Texture allTexture;
-	
-	// Bullet SFX
-	private SoundManager soundManager;
-	private String enemyBulletSoundPathname = "data/audio/sound/bombLaunching.wav";
-	private String enemyBulletSoundName = "Enemy Bullet Sound";
 
 	// GamePlay
 	private Array<EnemyBullets> listofEnemyBullets;
@@ -41,12 +38,13 @@ public class BasicAlien extends GameObjects {
 
 	// Get Arrays
 	private PlayState playState;
+	private Level1 level1;
 
 
 	// Standard Constructor
 	public BasicAlien(float x, float y, float dx, float dy, long bulletCooldown, float bulletShootSpeed,
-			Array<EnemyBullets> listOfEnemyBullets, int damageValue, PlayState playState) {
-		super(x, y, dx, dy);
+			int damageValue, Level1 level1, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
 
 		// GamePlay
 		this.x = x;
@@ -55,10 +53,11 @@ public class BasicAlien extends GameObjects {
 		this.dy = dy;
 		this.bulletCooldown = bulletCooldown;
 		this.enemyBulletSpeed = bulletShootSpeed;
-		this.listofEnemyBullets = listOfEnemyBullets;
 		this.damageValue = damageValue;
+		this.level1 = level1;
+		this.assetManager = assetManager;
+		listofEnemyBullets = level1.getEnemyBulletList();
 		healthbar = 100;
-		this.playState = playState;
 
 		// GamePlay Starting Positions
 		initialX = x;
@@ -74,10 +73,7 @@ public class BasicAlien extends GameObjects {
 
 	// Initial load
 	private void init() {
-		
-		// Start Sound
-		soundManager = playState.getGSM().getGame().getSoundManager();
-		soundManager.addSound(enemyBulletSoundPathname, enemyBulletSoundName);
+
 
 		// Start Shooting
 		bulletCooldown = TimeUtils.millis();
@@ -87,8 +83,8 @@ public class BasicAlien extends GameObjects {
 		// Drop Chance | 10% chance
 		dropChance = MathUtils.random(0, 9);
 
-		// Start Sprites
-		allTexture = new Texture(Gdx.files.internal(pathName));
+		// Get Sprites
+		Texture allTexture = assetManager.get("data/spaceships/BasicEnemy.png", Texture.class);
 		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 3, allTexture.getHeight() / 1);
 		rolls = new TextureRegion[3];
 		for (int i = 0; i < rolls.length; i++) {
@@ -99,13 +95,9 @@ public class BasicAlien extends GameObjects {
 		collisionBounds = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());
 	}
 
-	// Update Enemy Status
+
+	// Update
 	public void update(float dt) {
-		wrapXBound();
-
-	}
-
-	public void update(float dt, boolean xWrap, boolean yWrap) {
 
 		// Update Movement
 		x += dx;
@@ -117,19 +109,12 @@ public class BasicAlien extends GameObjects {
 		setLimits();
 
 		// Wraps
-		if (xWrap) {
-			wrapXBound();
-		}
-
-		if (yWrap) {
-			wrapYBound();
-		}
+		wrapXBound();
 
 		// Update Shoot | Don't shoot if out of the screen
 		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < Game.WIDTH && x > 0
 				&& y < Game.HEIGHT && y > 0) {
 			addEnemyBullets(16, 0);
-			soundManager.playSound(enemyBulletSoundName, 1f);
 			randomAttackCooldown = MathUtils.random(1000, 2000);
 		}
 		
@@ -142,9 +127,7 @@ public class BasicAlien extends GameObjects {
 	public void draw(SpriteBatch spriteBatch) {
 		// Draw Enemy
 		spriteBatch.draw(rolls[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
-
 	}
-
 
 
 	// Prevent out of bounds
@@ -159,15 +142,6 @@ public class BasicAlien extends GameObjects {
 		}
 	}
 
-	private void wrapYBound() {
-		if (y > (Game.HEIGHT - 32)) {
-			dy *= -1;
-		}
-
-		if (y < 0) {
-			dy *= -1;
-		}
-	}
 
 	// Drop Enemies down if they are above the screen
 	private void moveDownward() {
@@ -192,7 +166,9 @@ public class BasicAlien extends GameObjects {
 	// Add Bullets from enemies
 	private void addEnemyBullets(int xOffset, int yOffset) {
 		listofEnemyBullets
-				.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed, damageValue, playState));
+				.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed, damageValue, playState, assetManager));
+		bulletSound = assetManager.get("data/audio/sound/bombLaunching.wav", Sound.class);
+		bulletSound.play(1.0f);
 		bulletCooldown = TimeUtils.millis();
 		
 	}
@@ -201,7 +177,7 @@ public class BasicAlien extends GameObjects {
 	private void dropItems() {
 		if (healthbar <= 0) {
 			if (dropChance == 0) {
-				playState.getItemList().add(new EnergyTank(x, y, 0, -2, playState, 50));
+				level1.getEnergyTankList().add(new EnergyTank(x, y, 0, -2, playState, 50, assetManager));
 			}
 		}
 	}
@@ -218,11 +194,6 @@ public class BasicAlien extends GameObjects {
 	public void setDrop(int dropChance) {
 		this.dropChance = dropChance;
 	}
-	
-	// Dispose Method
-	public void dispose() {
-		allTexture.dispose();
-		soundManager.disposeSound(enemyBulletSoundName);
-	}
+
 
 }

@@ -1,21 +1,27 @@
 package com.jb.animation;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Animator {
 	
+	// Graphics
 	private Texture spriteSheet;
 	private int frameCols, frameRows, columnCutOff, rowCutOff;
 	private int spriteHeight, spriteWidth;
 	private String filePath;
 	private TextureRegion[] animationSprites;
+	
+	// Animation Variables
 	private Animation<TextureRegion> animationTextureRegion;
 	private float frameLengthTime;
 	
-	public Animator(int frameCols, int frameRows, String filePath, int columnCutOff, int rowCutOff, float frameLengthTime) {
+	// Asset Manager
+	private AssetManager assetManager;
+	
+	public Animator(int frameCols, int frameRows, String filePath, int columnCutOff, int rowCutOff, float frameLengthTime, AssetManager assetManager) {
 	
 		this.frameCols = frameCols;
 		this.frameRows = frameRows;
@@ -23,13 +29,16 @@ public class Animator {
 		this.columnCutOff = columnCutOff;
 		this.rowCutOff = rowCutOff;
 		this.frameLengthTime = frameLengthTime;
+		this.assetManager = assetManager;
 		initialize();
 	}
 	
 	// Start Animation
 	public void initialize() {
 		// Load SpriteSheet
-		spriteSheet = new Texture(Gdx.files.internal(filePath));
+		assetManager.load(filePath, Texture.class);
+		assetManager.update(5000);
+		spriteSheet = assetManager.get(filePath, Texture.class);
 		
 		// Extract Sprites
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / frameCols, spriteSheet.getHeight() / frameRows);
@@ -44,14 +53,7 @@ public class Animator {
 		}
 		
 		// Load animation frames
-		animationTextureRegion = new Animation<TextureRegion>(frameLengthTime, animationSprites);
-		
-	}
-	
-	// Dispose
-	public void dispose(){
-		spriteSheet.dispose();
-		
+		animationTextureRegion = new Animation<TextureRegion>(frameLengthTime, animationSprites);	
 	}
 	
 	// Setters + Getters

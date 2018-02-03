@@ -1,5 +1,6 @@
 package com.jb.gameobjects.items;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.animation.Animator;
@@ -17,8 +18,8 @@ public abstract class Item extends GameObjects {
 	protected Texture itemTexture;
 	protected boolean remove;
 	
-	public Item(float x, float y, float dx, float dy, PlayState playState) {
-		super(x, y, dx, dy);
+	public Item(float x, float y, float dx, float dy, PlayState playState, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
 		
 	}
 

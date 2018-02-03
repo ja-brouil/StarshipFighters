@@ -1,6 +1,6 @@
 package com.jb.images;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -16,13 +16,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Background{
 	
+	// Dimensions, location and movement speed
 	private float x, y, dx, dy, width, height;
-	private boolean isBeingShown, movingBackgroundEnabled ;
-	private Texture texture;
+	
+	// Display and Moving background boolean
+	private boolean isBeingShown, movingBackgroundEnabled;
+	
+	// Asset Manager Properties
 	private String pathName;
+	private AssetManager assetManager;
+	
+	// Graphics
+	private Texture backgroundTexture;
 	
 	// Static Background
-	public Background(float x, float y, float width, float height, boolean isBeingShown, String pathName) {
+	public Background(float x, float y, float width, float height, boolean isBeingShown, String pathName, AssetManager assetManager) {
 		
 		this.x = x;
 		this.y = y;
@@ -30,13 +38,14 @@ public class Background{
 		this.height = height;
 		this.pathName = pathName;
 		this.isBeingShown = isBeingShown;
+		this.assetManager = assetManager;
 		movingBackgroundEnabled = false;
 		
 		init();
 	}
 	
 	// Moving Background
-	public Background(float x, float y, float dx, float dy, float width, float height, boolean isBeingShown, String pathName) {
+	public Background(float x, float y, float dx, float dy, float width, float height, boolean isBeingShown, String pathName, AssetManager assetManager) {
 		
 		this.x = x;
 		this.y = y;
@@ -46,17 +55,16 @@ public class Background{
 		this.height = height;
 		this.pathName = pathName;
 		this.isBeingShown = isBeingShown;
-		
+		this.assetManager = assetManager;
 		movingBackgroundEnabled = true;
 		
 		init();
 	}
 	
-	// Start
+	// Initialize Background Images
 	private void init() {
-		
-		texture = new Texture(Gdx.files.internal(pathName));
-		
+		assetManager.load(pathName, Texture.class);
+		assetManager.finishLoading();
 	}
 	
 	// Limits
@@ -93,29 +101,24 @@ public class Background{
 
 	// Draw
 	public void draw(SpriteBatch spriteBatch) {
-		
+		backgroundTexture = assetManager.get(pathName, Texture.class);
 		// Draw if needed to be drawn
 		if (isBeingShown) {
-			spriteBatch.draw(texture, x, y, width, height);
+			spriteBatch.draw(backgroundTexture, x, y, width, height);
 		}
 		
 	}
 	
 	// Draw Inverted | We won't need this when have a correct background image
 	public void drawInverted(SpriteBatch spriteBatch, boolean horizontal, boolean vertical) {
+		backgroundTexture = assetManager.get(pathName, Texture.class);
 		// Draw if needed to be drawn
 		if (isBeingShown) {
-			spriteBatch.draw(texture, x, y, width, height, 0, 0, 640, 800, horizontal, vertical);
+			spriteBatch.draw(backgroundTexture, x, y, width, height, 0, 0, 640, 800, horizontal, vertical);
 		}
 	}
 	
-	// Called when changing screens
-	public void dispose() {
-		texture.dispose();
-	}
-
 	// Setters and Getters
-	
 	public float getX() {
 		return x;
 	}
@@ -179,14 +182,6 @@ public class Background{
 
 	public void setMovingBackgroundEnabled(boolean movingBackgroundEnabled) {
 		this.movingBackgroundEnabled = movingBackgroundEnabled;
-	}
-
-	public Texture getTexture() {
-		return texture;
-	}
-
-	public void setTexture(Texture texture) {
-		this.texture = texture;
 	}
 
 	public String getPathName() {

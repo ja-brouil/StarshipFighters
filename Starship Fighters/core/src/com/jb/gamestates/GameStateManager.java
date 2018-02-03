@@ -2,50 +2,43 @@ package com.jb.gamestates;
 
 import java.util.Stack;
 
-import com.badlogic.gdx.audio.Music;
-import com.jb.assetmanagers.audio.MusicManager;
-import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.input.GameInputProcessor;
 import com.jb.main.Game;
 
 public class GameStateManager {
 
-	// Game Asset
+	// Game Object
 	private Game game;
 	
 	// Game States
 	private Stack<GameState> gameStates;
-	public static final int INTRO = 2;
 	public static final int PLAY = 1;
 	public static final int MENU = 0;
 	public static final int GAMEOVER = 3;
 	public static final int VICTORY = 4;
 	
-	// Game Processor
+	// Game Input
 	private GameInputProcessor input;
-	
-	// Music | Sound
-	private MusicManager musicManager;
-	private SoundManager soundManager;
+
 	
 	public GameStateManager(Game game) {
 		this.game = game;
 		gameStates = new Stack<GameState>();
 		pushState(MENU); 
 		input = game.getInput();
-		musicManager = game.getMusicManager();
-		soundManager = game.getSoundManager();
 	}
 	
+	// Update Method (peek checks top of stack without removing it)
 	public void update(float dt) {
-		gameStates.peek().update(dt); // check top of the stack without removing it from the list
+		gameStates.peek().update(dt); 
 	}
 	
+	// Render
 	public void render() {
 		gameStates.peek().render();
 	}
 	
-	// Get Play State
+	// Get State
 	private GameState getState(int state) {
 		
 		if (state == MENU) {
@@ -54,10 +47,6 @@ public class GameStateManager {
 		
 		if (state == PLAY) {
 			return new PlayState(this);
-		}
-		
-		if (state == INTRO) {
-			return new IntroState(this);
 		}
 		
 		if (state == GAMEOVER) {
@@ -85,12 +74,12 @@ public class GameStateManager {
 	
 	// Dispose of the top of the stack
 	public void popState(){
-		GameState g = gameStates.pop();
-		g.dispose();
+		GameState gameState = gameStates.pop();
+		gameState.dispose();
 		System.gc();
 	}
 	
-	
+	// Setters + Getters
 	public Game getGame() {
 		return game;
 	}

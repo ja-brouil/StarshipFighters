@@ -1,6 +1,7 @@
 package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,10 +20,8 @@ public class EnemyBullets extends GameObjects{
 	private float dy;
 	
 	// Graphics
-	private String pathName = "data/ammo/enemyBullet.png";
 	private Texture allTexture;
 	private TextureRegion[] enemyBulletTexture;
-	
 	
 	// Game Mechanics
 	private int damageValue;
@@ -32,8 +31,8 @@ public class EnemyBullets extends GameObjects{
 	
 	
 	// Standard Constructor
-	public EnemyBullets(float x, float y, float dx, float dy, int damageValue, PlayState playState) {
-		super(x, y, dx, dy);
+	public EnemyBullets(float x, float y, float dx, float dy, int damageValue, PlayState playState, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
 		
 		// Location
 		this.x = x;
@@ -44,6 +43,9 @@ public class EnemyBullets extends GameObjects{
 		
 		// PlayState Access
 		this.playState = playState;
+		
+		// Graphics
+		this.assetManager = assetManager;
 		
 		// Initial Boolean Status
 		isOffScreen = false;
@@ -58,7 +60,7 @@ public class EnemyBullets extends GameObjects{
 	private void init() {
 		
 		// Graphics
-		allTexture = new Texture(Gdx.files.internal(pathName));
+		allTexture = assetManager.get("data/ammo/enemyBullet.png", Texture.class);
 		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 2, allTexture.getHeight() / 1);
 		enemyBulletTexture = new TextureRegion[2];
 		enemyBulletTexture[0] = tmp[0][0];
@@ -119,8 +121,5 @@ public class EnemyBullets extends GameObjects{
 	public int getDamageValue() {
 		return damageValue;
 	}
-
-	@Override
-	public void update(float dt, boolean xWrap, boolean yWrap) {}
 
 }

@@ -2,12 +2,12 @@ package com.jb.gamestates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.jb.animation.Animator;
-import com.jb.assetmanagers.audio.MusicManager;
-import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.images.Background;
 import com.jb.input.GameKeys;
 import com.jb.main.Game;
@@ -31,24 +31,15 @@ public class MenuState extends GameState {
 	private float animationTime;
 	
 	// Music for Menu
-	private boolean loadMusic = true;
-	private MusicManager musicManager;
-	private String menuMusicName = "Menu Music";
+	private Music menuMusic;
 	private String MenuMusicPathName = "data/audio/music/menumusic.mp3";
 	
 	// Sound for Choices
-	private SoundManager soundManager;
-	private String choiceOptionName;
+	private Sound menuSound;
 	private String choiceSoundNamePathName;
-	
-
 
 	public MenuState(GameStateManager gsm) {
 		super(gsm);
-
-		// Strings
-		choiceOptionName = "Move Cursor";
-		choiceSoundNamePathName = "data/audio/sound/Menu Select.wav";
 
 		init();
 
@@ -72,23 +63,31 @@ public class MenuState extends GameState {
 
 		// Background
 		menuBackgroundPath = "data/background/menuBackground.png";
-		menuBackground = new Background(Game.WIDTH, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
-		menuBackground2 = new Background(0, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath);
+		menuBackground = new Background(Game.WIDTH, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath, assetManager);
+		menuBackground2 = new Background(0, 0, -0.75f, 0, 1920, 1080, true, menuBackgroundPath, assetManager);
+		
+		// Load Music + Play music
+		assetManager.load(MenuMusicPathName, Music.class);
+	
+		
+		// Load Sound
+		choiceSoundNamePathName = "data/audio/sound/Menu Select.wav";
+		assetManager.load(choiceSoundNamePathName, Sound.class);
 		
 		// Opening Animation Sequence
-		openingSequence = new Animator(8, 10, "data/transitions/IntroAnimation.png", 8, 10, 1/15f);
+		openingSequence = new Animator(8, 10, "data/transitions/IntroAnimation.png", 8, 10, 1/10f, assetManager);
+		
+		// Update Asset Manager
+		assetManager.update(5000);
+		
+		// Play Music
+		menuMusic = assetManager.get(MenuMusicPathName, Music.class);
+		menuMusic.setLooping(true);
+		menuMusic.play();
+		
+		// Load Sound Name
+		menuSound = assetManager.get(choiceSoundNamePathName, Sound.class);
 
-		// Start Music
-		musicManager = game.getMusicManager();
-		if (loadMusic) {
-			musicManager.addMusic(MenuMusicPathName, menuMusicName);
-			loadMusic = false;
-		}
-		musicManager.loopMusic(menuMusicName);
-
-		// Start Sound
-		soundManager = gsm.getGame().getSoundManager();
-		soundManager.addSound(choiceSoundNamePathName, choiceOptionName);
 	}
 
 	@Override
@@ -104,14 +103,14 @@ public class MenuState extends GameState {
 		if (GameKeys.isPressed(GameKeys.UP)) {
 			if (currentOption > 0) {
 				currentOption--;
-				soundManager.playSound(choiceOptionName, 1.0f);
+				menuSound.play(1.0f);
 			}
 		}
 
 		if (GameKeys.isPressed(GameKeys.DOWN)) {
 			if (currentOption < menuChoices.length - 1) {
 				currentOption++;
-				soundManager.playSound(choiceOptionName, 1.0f);
+				menuSound.play(1.0f);
 			}
 		}
 
@@ -133,14 +132,8 @@ public class MenuState extends GameState {
 	private void select() {
 		// play
 		if (currentOption == 0) {
+			menuMusic.stop();
 			gsm.setState(GameStateManager.PLAY);
-
-			// Stop Music + Remove music from HashMap for memory
-			musicManager.stopMusic(menuMusicName);
-
-			// Remove Sound Effect
-			soundManager.removeSound(choiceOptionName);
-
 
 		} else if (currentOption == 1) {
 			dispose();
@@ -165,6 +158,7 @@ public class MenuState extends GameState {
 			menuBackground2.setDx(0);
 		}
 		
+		// Update Background
 		menuBackground.update(dt);
 		menuBackground2.update(dt);
 		
@@ -187,15 +181,8 @@ public class MenuState extends GameState {
 		
 		// Draw the Opening Animation
 		if (menuBackground.getDx() == 0 && menuBackground2.getDx() == 0) {
-			if (openingSequence != null) {
-				animationTime += Gdx.graphics.getDeltaTime();
-				spriteBatch.draw(openingSequence.getAnimationFrames().getKeyFrame(animationTime), 150, 400);
-
-				if (openingSequence.getAnimationFrames().isAnimationFinished(animationTime)) {
-					openingSequence.dispose();
-					openingSequence = null;
-				}
-			}
+			animationTime += Gdx.graphics.getDeltaTime();
+			spriteBatch.draw(openingSequence.getAnimationFrames().getKeyFrame(animationTime), 150, 400);
 		}
 
 		// Draw Title
@@ -217,13 +204,10 @@ public class MenuState extends GameState {
 
 	}
 
-	// Free up System Resources when no longer needed
+	// Additional dispose if needed
 	@Override
 	public void dispose() {
-		menuBackground.dispose();
-		menuBackground2.dispose();
-		soundManager.disposeAllSound();
-		musicManager.disposeAllMusic();
+		bitmapFont.dispose();
 	}
 
 }

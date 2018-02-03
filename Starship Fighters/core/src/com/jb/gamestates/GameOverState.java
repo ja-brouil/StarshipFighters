@@ -37,8 +37,6 @@ public class GameOverState extends GameState{
 	public void init() {
 		
 		// Start Sound and Music
-		musicManager = gsm.getGame().getMusicManager();
-		soundManager = gsm.getGame().getSoundManager();
 		soundManager.addSound(selectSound, choiceOptionName);
 		
 		// Start Bitmap Font

@@ -1,26 +1,31 @@
 package com.jb.gameobjects;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public abstract class GameObjects {
 	
+	// Screen Position
 	protected float x,y;
+	
+	// Velocity
 	protected float dx, dy;
+	
+	// Input Booleans
 	protected boolean left, right, up, down, shoot, missile;
+	
+	// Health
 	protected int healthbar;
+	
+	// HitBox
 	protected Rectangle collisionBounds;
 	
+	// Asset Manager
+	protected AssetManager assetManager;
 	
-	// Blank constructor for JSON | Dispose
-	public GameObjects() {
-		
-	}
-	
-	public GameObjects(float x, float y, float dx, float dy) {
-		// No need to extra stuff in the constructor here
-	}
-	
+	// Constructor
+	public GameObjects(float x, float y, float dx, float dy, AssetManager assetManager) {}
 	
 	// Cast result to int if needed
 	public static float clamp(float max, float min, float value) {
@@ -37,7 +42,6 @@ public abstract class GameObjects {
 	
 	// All Objects Require Update + Render
 	public abstract void update(float dt);
-	public abstract void update(float dt, boolean xWrap, boolean yWrap);
 	public abstract void draw(SpriteBatch spriteBatch);
 	
 	// Use this to change HP

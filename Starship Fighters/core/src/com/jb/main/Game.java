@@ -2,49 +2,45 @@ package com.jb.main;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.jb.assetmanagers.ImageManager;
-import com.jb.assetmanagers.audio.MusicManager;
-import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gamestates.GameStateManager;
 import com.jb.input.GameInputProcessor;
 
 public class Game extends ApplicationAdapter {
 	
+	// Main Window Height
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 800;
 	
+	// Graphics renderer and camera 
 	private SpriteBatch spriteBatch;
 	private OrthographicCamera cam;
 	private Viewport viewport;
 	
+	// GameStates and Input handling
 	private GameStateManager gsm;
 	private GameInputProcessor input;
 	
-	private static ImageManager imageManager;
+	// Asset Manager
+	private AssetManager assetManager;
 	
-	private MusicManager musicManager;
-	private SoundManager soundManager;
-	
+	// DEBUG
 	private float dt;
-	
-	public static boolean closeGame;
 	
 	
 	@Override
 	public void create () {
-		// When game is started
 		
 		// Graphics 
 		spriteBatch = new SpriteBatch();
 		
-		// Audio
-		musicManager = new MusicManager();
-		soundManager = new SoundManager();
+		// Start Asset Manage
+		assetManager = new AssetManager();
+		
 		
 		// Setting Cameras to the size of the game window
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
@@ -57,9 +53,6 @@ public class Game extends ApplicationAdapter {
 		input = new GameInputProcessor();
 		Gdx.input.setInputProcessor(input);
 		
-		// Start Image Manager
-		imageManager = new ImageManager();
-		
 		// Start Game State Manager
 		gsm = new GameStateManager(this);
 	
@@ -68,12 +61,10 @@ public class Game extends ApplicationAdapter {
 	// Main Game Loop
 	@Override
 	public void render() {
+		
 		// Get time passed, render if only enough time has passed
-		
-		// Debug purposes
+		// DEBUG | FPS + Memory Usage
 		dt += Gdx.graphics.getDeltaTime();
-		
-		
 		if (dt >= 1) {
 			System.out.println("Memory Used: " + (Gdx.app.getJavaHeap() / 100000) + "mb");
 			System.out.println("Native Memory Used: " + (Gdx.app.getNativeHeap() / 100000) + "mb");
@@ -81,7 +72,7 @@ public class Game extends ApplicationAdapter {
 			dt = 0;
 		}
 		
-		
+		// Update then Render
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render();
 		
@@ -90,8 +81,7 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		musicManager.disposeAllMusic();
-		soundManager.disposeAllSound();
+		assetManager.dispose();
 	}
 	
 	// Update Viewport to adjust the screen size
@@ -105,14 +95,6 @@ public class Game extends ApplicationAdapter {
 		return spriteBatch;
 	}
 	
-	public MusicManager getMusicManager() {
-		return musicManager;
-	}
-	
-	public SoundManager getSoundManager() {
-		return soundManager;
-	}
-	
 	public OrthographicCamera getCamera() {
 		return cam;
 	}
@@ -120,8 +102,8 @@ public class Game extends ApplicationAdapter {
 	public GameInputProcessor getInput() {
 		return input;
 	}
-	
-	public static ImageManager getImageManager() {
-		return imageManager;
+
+	public AssetManager getAssetManager() {
+		return assetManager;
 	}
 }

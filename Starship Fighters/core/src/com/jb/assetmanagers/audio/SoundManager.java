@@ -3,21 +3,26 @@ package com.jb.assetmanagers.audio;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+
 
 public class SoundManager {
 
+	// Objects Needed
 	private HashMap<String, Sound> soundManager;
 	private Sound currentSound;
+	private AssetManager assetManager;
 
-	public SoundManager() {
-		
+	public SoundManager(AssetManager assetManager) {
+		this.assetManager = assetManager;
 		soundManager = new HashMap<String, Sound>();
 	}
 
 	// Add Sound
 	public void addSound(String pathName, String name) {
-		Sound sound = Gdx.audio.newSound(Gdx.files.internal(pathName));
+		assetManager.load(pathName, Sound.class);
+		Sound sound = assetManager.get(pathName, Sound.class);
 		soundManager.put(name, sound);
 	}
 
@@ -28,7 +33,7 @@ public class SoundManager {
 
 	// Play sound | Use Sound if you need this to play constantly
 	// through
-	public  void playSound(String name, float volume) {
+	public void playSound(String name, float volume) {
 		soundManager.get(name).play(volume);
 		currentSound = soundManager.get(name);
 	}

@@ -1,6 +1,7 @@
 package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.animation.Animator;
 import com.jb.assetmanagers.audio.SoundManager;
@@ -26,8 +27,8 @@ public class Explosion extends GameObjects {
 	private String explosionPlayerName = "Player Hit";
 
 	// Default Explosion
-	public Explosion(float x, float y, float dx, float dy, PlayState playState) {
-		super(x, y, dx, dy);
+	public Explosion(float x, float y, float dx, float dy, PlayState playState, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
 
 		this.x = x;
 		this.y = y;
@@ -45,15 +46,14 @@ public class Explosion extends GameObjects {
 
 	// Custom Explosion
 	public Explosion(float x, float y, float dx, float dy, String pathName, String explosionSoundCustomPathName,
-			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, PlayState playState) {
-		super(x, y, dx, dy);
+			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, PlayState playState, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
 		
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
 		this.playState = playState;
-		soundManager = playState.getGSM().getGame().getSoundManager();
 
 		this.pathName = pathName;
 		init(cols, rows, colCut, rowCut, frameLengthTime);
@@ -62,15 +62,14 @@ public class Explosion extends GameObjects {
 	
 	// Boss Hit
 	public Explosion(float x, float y, float dx, float dy, String pathName, String explosionSoundCustomPathName,
-			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, boolean playSound, PlayState playState) {
-		super(x, y, dx, dy);
+			String explosionSoundCustomName, int cols, int rows, int colCut, int rowCut, float frameLengthTime, boolean playSound, PlayState playState, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
 		
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
 		this.playState = playState;
-		soundManager = playState.getGSM().getGame().getSoundManager();
 
 		this.pathName = pathName;
 		init(cols, rows, colCut, rowCut, frameLengthTime, playSound);
@@ -81,13 +80,12 @@ public class Explosion extends GameObjects {
 	private void init() {		
 
 		// Start explosion animation
-		explosionAnimation = new Animator(4, 2, pathName, 4, 2, 1f / 40f);
+		explosionAnimation = new Animator(4, 2, pathName, 4, 2, 1f / 40f, assetManager);
 
 		// Set Initial Boolean to false
 		explosionIsDone = false;
 
 		// Start SFX
-		soundManager = playState.getGSM().getGame().getSoundManager();
 		soundManager.addSound(explosionSoundPathName, explosionSoundName);
 		soundManager.addSound(explosionPlayerPathName, explosionPlayerName);
 		soundManager.playSound(explosionSoundName, 1.0f);
@@ -99,7 +97,7 @@ public class Explosion extends GameObjects {
 	private void init(int cols, int rows, int colCut, int rowCut, float frameLengthTime) {
 		
 		// Start explosion animation
-		explosionAnimation = new Animator(cols, rows, pathName, colCut, rowCut, frameLengthTime);
+		explosionAnimation = new Animator(cols, rows, pathName, colCut, rowCut, frameLengthTime, assetManager);
 
 		// Set Initial Boolean to false
 		explosionIsDone = false;
@@ -115,7 +113,7 @@ public class Explosion extends GameObjects {
 	private void init(int cols, int rows, int colCut, int rowCut, float frameLengthTime, boolean playSound) {
 		
 		// Start explosion animation
-		explosionAnimation = new Animator(cols, rows, pathName, colCut, rowCut, frameLengthTime);
+		explosionAnimation = new Animator(cols, rows, pathName, colCut, rowCut, frameLengthTime, assetManager);
 
 		// Set Initial Boolean to false
 		explosionIsDone = false;
@@ -149,16 +147,5 @@ public class Explosion extends GameObjects {
 		return explosionIsDone;
 	}
 
-	@Override
-	public void update(float dt, boolean xWrap, boolean yWrap) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	// Dispose
-	public void dispose() {
-		soundManager.disposeSound(explosionSoundName);
-		explosionAnimation.dispose();
-	}
 
 }

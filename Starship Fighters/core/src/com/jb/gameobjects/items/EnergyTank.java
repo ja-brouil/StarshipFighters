@@ -1,6 +1,7 @@
 package com.jb.gameobjects.items;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.animation.Animator;
@@ -21,8 +22,8 @@ public class EnergyTank extends Item {
 	// Gameplay
 	private float healthRegenValue;
 
-	public EnergyTank(float x, float y, float dx, float dy, PlayState playState, float healthRegenValue) {
-		super(x, y, dx, dy, playState);
+	public EnergyTank(float x, float y, float dx, float dy, PlayState playState, float healthRegenValue, AssetManager assetManager) {
+		super(x, y, dx, dy, playState, assetManager);
 
 		this.x = x;
 		this.y = y;
@@ -30,6 +31,7 @@ public class EnergyTank extends Item {
 		this.dy = dy;
 		this.playState = playState;
 		this.healthRegenValue = healthRegenValue;
+		this.assetManager = assetManager;
 
 		init();
 	}
@@ -42,7 +44,7 @@ public class EnergyTank extends Item {
 		frameLengthTime = 1f / 5f;
 
 		// Start Animation
-		itemAnimation = new Animator(frameCols, frameRows, animationPathName, frameCols, frameRows, frameLengthTime);
+		itemAnimation = new Animator(frameCols, frameRows, animationPathName, frameCols, frameRows, frameLengthTime, assetManager);
 		
 		// Bounding Box for collision
 		width = 53f / 4f;
@@ -50,10 +52,6 @@ public class EnergyTank extends Item {
 		collisionBounds = new Rectangle(x, y, width, height);
 
 	}
-
-	@Override
-	// Not needed
-	public void update(float dt, boolean xWrap, boolean yWrap) {}
 
 	// Update Items
 	public void update(float dt) {
@@ -72,12 +70,7 @@ public class EnergyTank extends Item {
 		animationTimer += Gdx.graphics.getDeltaTime();
 		spriteBatch.draw(itemAnimation.getAnimationFrames().getKeyFrame(animationTimer, true), x, y);
 	}
-	
-	// Dipose
-	@Override
-	public void dispose() {
-		itemAnimation.dispose();
-	}
+
 
 	// Limits
 	private void setLimits() {
@@ -108,6 +101,10 @@ public class EnergyTank extends Item {
 	
 	public float getHealthRegenValue() {
 		return healthRegenValue;
+	}
+
+	@Override
+	public void dispose() {
 	}
 
 }

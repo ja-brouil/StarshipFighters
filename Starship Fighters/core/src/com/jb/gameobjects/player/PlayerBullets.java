@@ -1,9 +1,7 @@
 package com.jb.gameobjects.player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.gameobjects.GameObjects;
 import com.jb.main.Game;
@@ -16,14 +14,12 @@ import com.jb.main.Game;
 
 public class PlayerBullets extends GameObjects{
 	
+	// Player Access
+	private Player player;
+	
 	// Physics
 	private float maxSpeed;
 	private float dy;
-	
-	// Graphics 
-	private String pathname = "data/ammo/bulletfinal.png";
-	private Texture allTexture;
-	private TextureRegion[] bulletTexture;
 	
 	// Game Mechanics
 	private boolean doubleBullets, tripleBullets;
@@ -32,14 +28,14 @@ public class PlayerBullets extends GameObjects{
 	// Removal and Collision
 	private boolean isOffScreen;
 
-	public PlayerBullets(float x, float y, float dx, float dy) {
-		super(x, y, dx, dy);
+	public PlayerBullets(float x, float y, float dx, float dy, AssetManager assetManager, Player player) {
+		super(x, y, dx, dy, assetManager);
 		
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
-		
+		this.player = player;
 		
 		// Initial Boolean Status 
 		isOffScreen = false;
@@ -58,13 +54,6 @@ public class PlayerBullets extends GameObjects{
 		
 		// GamePlay
 		damageValue = -100;
-		
-		// Graphics || Might rewrite this later if it lags too much. Create a static method for this? Or have a permanent object
-		// with all the variables already.
-		allTexture = new Texture(Gdx.files.internal(pathname));
-		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 2, allTexture.getHeight() / 1);
-		bulletTexture = new TextureRegion[1];
-		bulletTexture[0] = tmp[0][0];
 		
 		// Rectangle
 		collisionBounds = new Rectangle();
@@ -90,14 +79,14 @@ public class PlayerBullets extends GameObjects{
 	public void draw(SpriteBatch spriteBatch){
 		
 		if (doubleBullets) {
-			spriteBatch.draw(bulletTexture[0], x, y);
-			spriteBatch.draw(bulletTexture[0], x + 5, y);
+			spriteBatch.draw(player.getBulletTexture(), x, y);
+			spriteBatch.draw(player.getBulletTexture(), x + 5, y);
 		} else if (tripleBullets) {
-			spriteBatch.draw(bulletTexture[0], x, y);
-			spriteBatch.draw(bulletTexture[0], x + 5, y);
-			spriteBatch.draw(bulletTexture[0], x + 10, y);
+			spriteBatch.draw(player.getBulletTexture(), x, y);
+			spriteBatch.draw(player.getBulletTexture(), x + 5, y);
+			spriteBatch.draw(player.getBulletTexture(), x + 10, y);
 		} else {
-			spriteBatch.draw(bulletTexture[0], x, y);
+			spriteBatch.draw(player.getBulletTexture(), x, y);
 		}
 		
 	}
@@ -113,11 +102,6 @@ public class PlayerBullets extends GameObjects{
 			removeBullets();
 		}
 		
-	}
-	
-	// Dispose of Textures
-	public void dispose() {
-		allTexture.dispose();
 	}
 	
 	
@@ -137,8 +121,5 @@ public class PlayerBullets extends GameObjects{
 	public int getDamageValue() {
 		return damageValue;
 	}
-
-	@Override // Not needed
-	public void update(float dt, boolean xWrap, boolean yWrap) {}
 	
 }
