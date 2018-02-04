@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gamestates.PlayState;
-import com.jb.gamestates.levels.Level1;
+import com.jb.gamestates.levels.level1.Level1;
 import com.jb.main.Game;
 
 public class BasicAlien extends GameObjects {

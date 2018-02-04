@@ -103,8 +103,4 @@ public class EnergyTank extends Item {
 		return healthRegenValue;
 	}
 
-	@Override
-	public void dispose() {
-	}
-
 }

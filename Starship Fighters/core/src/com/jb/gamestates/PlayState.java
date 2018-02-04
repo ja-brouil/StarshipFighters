@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.jb.gameobjects.player.Player;
-import com.jb.gamestates.levels.Level1;
+import com.jb.gamestates.levels.level1.Level1;
 import com.jb.input.GameKeys;
 
 public class PlayState extends GameState {
@@ -54,12 +54,12 @@ public class PlayState extends GameState {
 
 		// Set Game Keys
 		if (inputAllowed) {
-			player.setLeft(GameKeys.isDown(GameKeys.LEFT));
-			player.setRight(GameKeys.isDown(GameKeys.RIGHT));
-			player.setUp(GameKeys.isDown(GameKeys.UP));
-			player.setDown(GameKeys.isDown(GameKeys.DOWN));
-			player.setShoot(GameKeys.isDown(GameKeys.SPACE));
-			player.setMissile(GameKeys.isPressed(GameKeys.SHIFT));
+			player.getPlayerInput().setLeft(GameKeys.isDown(GameKeys.LEFT));
+			player.getPlayerInput().setRight(GameKeys.isDown(GameKeys.RIGHT));
+			player.getPlayerInput().setUp(GameKeys.isDown(GameKeys.UP));
+			player.getPlayerInput().setDown(GameKeys.isDown(GameKeys.DOWN));
+			player.getPlayerInput().setShoot(GameKeys.isDown(GameKeys.SPACE));
+			player.getPlayerInput().setMissile(GameKeys.isPressed(GameKeys.SHIFT));
 		}
 
 		// Update Keys

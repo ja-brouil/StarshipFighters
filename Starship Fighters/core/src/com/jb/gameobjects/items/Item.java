@@ -33,6 +33,4 @@ public abstract class Item extends GameObjects {
 		return remove;
 	}
 	
-	public abstract void dispose();
-	
 }

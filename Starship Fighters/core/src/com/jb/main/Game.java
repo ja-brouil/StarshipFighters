@@ -61,23 +61,22 @@ public class Game extends ApplicationAdapter {
 	// Main Game Loop
 	@Override
 	public void render() {
-		
-		// Get time passed, render if only enough time has passed
 		// DEBUG | FPS + Memory Usage
 		dt += Gdx.graphics.getDeltaTime();
-		if (dt >= 1) {
+		if (dt >= 5) {
 			System.out.println("Memory Used: " + (Gdx.app.getJavaHeap() / 100000) + "mb");
 			System.out.println("Native Memory Used: " + (Gdx.app.getNativeHeap() / 100000) + "mb");
 			System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
 			dt = 0;
 		}
 		
-		// Update then Render
+		// Update then Render | Update only only if enough time has passed
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render();
 		
 	}
 	
+	// Dispose
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();

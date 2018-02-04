@@ -30,15 +30,22 @@ public class Animator {
 		this.rowCutOff = rowCutOff;
 		this.frameLengthTime = frameLengthTime;
 		this.assetManager = assetManager;
+		this.filePath = filePath;
 		initialize();
 	}
 	
 	// Start Animation
 	public void initialize() {
+
 		// Load SpriteSheet
-		assetManager.load(filePath, Texture.class);
-		assetManager.update(5000);
-		spriteSheet = assetManager.get(filePath, Texture.class);
+		if (!assetManager.isLoaded(filePath, Texture.class)) {
+			assetManager.load(filePath, Texture.class);
+			assetManager.update(5000);
+			spriteSheet = assetManager.get(filePath, Texture.class);
+		} else {
+			spriteSheet = assetManager.get(filePath, Texture.class);
+		}
+		
 		
 		// Extract Sprites
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / frameCols, spriteSheet.getHeight() / frameRows);

@@ -25,15 +25,20 @@ public class Player extends GameObjects {
 	private Animator shipAnimation;
 	private float animationTime;
 	private float animationFrameDuration;
+	private Array<PlayerHit> listOfPlayerHits;
 
 	// Basic Bullet Graphics
 	private String basicBulletPathname = "data/ammo/bulletfinal.png";
 	private TextureRegion[] bulletTexture;
-
+	
+	// Player Hit Graphics
+	private String playerHitGraphicPathName = "data/hit_and_explosions/impactHit.png";
+	
 	// Asset Manager
 	private AssetManager assetManager;
 
 	// Sound Effects
+	private String playerHitSoundPathName = "data/audio/sound/No Damage.wav";
 	private String bulletShotSoundPathName;
 	private Sound bulletSound;
 
@@ -44,6 +49,11 @@ public class Player extends GameObjects {
 	private long bulletShootSpeed;
 	private int healthPoints;
 	private boolean isDead;
+	
+	// Input
+	private PlayerInput playerInput;
+	
+	// Play State Access
 	private PlayState playState;
 
 	public Player(float x, float y, float dx, float dy, PlayState playState, AssetManager assetManager) {
@@ -57,7 +67,6 @@ public class Player extends GameObjects {
 		this.playState = playState;
 		bulletcooldown = TimeUtils.millis();
 		this.assetManager = assetManager;
-		this.playState = playState;
 
 		// Graphics
 		pathname = "data/spaceships/ship1.png";
@@ -68,7 +77,6 @@ public class Player extends GameObjects {
 
 		// Limits
 		maxSpeed = 4;
-		// friction = 5;
 		minimumSpeed = -4;
 		bulletSpeed = 15;
 		bulletShootSpeed = 200;
@@ -93,9 +101,11 @@ public class Player extends GameObjects {
 
 		// Load Sound
 		assetManager.load(bulletShotSoundPathName, Sound.class);
+		assetManager.load(playerHitSoundPathName, Sound.class);
 
-		// Load Basic Bullet Art
+		// Load Art
 		assetManager.load(basicBulletPathname, Texture.class);
+		assetManager.load(playerHitGraphicPathName, Texture.class);
 
 		// Set Art and Sound Objects
 		assetManager.finishLoading();
@@ -108,34 +118,13 @@ public class Player extends GameObjects {
 		bulletTexture = new TextureRegion[1];
 		bulletTexture[0] = tmp[0][0];
 		
-		// Bullet Array List
+		// Player Array Lists
 		listOfBullets = new Array<PlayerBullets>();
+		listOfPlayerHits = new Array<PlayerHit>();
+		
+		// Start Player Input
+		playerInput = new PlayerInput(this);
 
-	}
-
-	// Key Input
-	public void setLeft(boolean b) {
-		left = b;
-	}
-
-	public void setRight(boolean b) {
-		right = b;
-	}
-
-	public void setUp(boolean b) {
-		up = b;
-	}
-
-	public void setDown(boolean b) {
-		down = b;
-	}
-
-	public void setShoot(boolean b) {
-		shoot = b;
-	}
-
-	public void setMissile(boolean b) {
-		missile = b;
 	}
 
 	// Update Player Status
@@ -145,9 +134,8 @@ public class Player extends GameObjects {
 		// Check if dead
 			// Code for dead
 		
-
 		// Player Input
-		playerHandleInput(dt);
+		playerInput.playerHandleInput(dt);
 
 		// Set Limits
 		setLimits();
@@ -171,6 +159,16 @@ public class Player extends GameObjects {
 				i--;
 			}
 		}
+		
+		// Update Payer Hits
+		for (int i = 0; i < listOfPlayerHits.size; i++) {
+			listOfPlayerHits.get(i).update(dt);
+			// Remove from Array
+			if (listOfPlayerHits.get(i).isPlayerHitAnimationDone()) {
+				listOfPlayerHits.removeIndex(i);
+				i--;
+			}
+		}
 
 	}
 
@@ -185,6 +183,11 @@ public class Player extends GameObjects {
 		// Draw Bullets
 		for (PlayerBullets playerBullets: listOfBullets) {
 			playerBullets.draw(spriteBatch);
+		}
+		
+		// Draw Player Hits
+		for (PlayerHit playerHit: listOfPlayerHits) {
+			playerHit.draw(spriteBatch);
 		}
 	}
 
@@ -210,7 +213,6 @@ public class Player extends GameObjects {
 
 	// Limits
 	private void setLimits() {
-		// Set Maximum Speed
 		if (dx > maxSpeed) {
 			dx = maxSpeed;
 		}
@@ -225,55 +227,16 @@ public class Player extends GameObjects {
 		}
 	}
 
-	// Handle input
-	private void playerHandleInput(float dt) {
-		// Left | Right | Up | Down
-		if (left) {
-			dx += -4;
-		} else if (!left && !right) {
-			dx = 0;
-		}
-
-		if (right) {
-			dx += 4;
-		} else if (!left && !right) {
-			dx = 0;
-		}
-
-		if (up) {
-			dy += 4;
-		} else if (!up && !down) {
-			dy = 0;
-		}
-
-		if (down) {
-			dy += -4;
-		} else if (!up && !down) {
-			dy = 0;
-		}
-
-		// Shoot
-		if (shoot) {
-			if (TimeUtils.timeSinceMillis(bulletcooldown) > bulletShootSpeed) {
-				addBullets(32, 64);
-			}
-
-		}
-		// Missile
-		if (missile) {
-			// Code for shooting missiles
-		}
-
-	}
-
 	// Shoot Code
-	private void addBullets(int xOffset, int yOffset) {
+	public void addBullets(int xOffset, int yOffset) {
 		listOfBullets.add(new PlayerBullets(getX() + xOffset, getY() + yOffset, 0, bulletSpeed, assetManager, this));
 		bulletSound.play(1.0f);
 		bulletcooldown = TimeUtils.millis();
 	}
+	
+	// Missile Code
 
-	// Update Rectangle
+	// Update HitBox
 	private void updateRectangle(float x, float y) {
 		collisionBounds.set(x, y, 64, 64);
 	}
@@ -286,9 +249,17 @@ public class Player extends GameObjects {
 	public Array<PlayerBullets> getPlayerBulletList() {
 		return listOfBullets;
 	}
+	
+	public Array<PlayerHit> getPlayerHits(){
+		return listOfPlayerHits;
+	}
 
 	public TextureRegion getBulletTexture() {
 		return bulletTexture[0];
+	}
+	
+	public PlayerInput getPlayerInput() {
+		return playerInput;
 	}
 
 	public void setHP(int healthPoints) {
@@ -297,6 +268,14 @@ public class Player extends GameObjects {
 
 	public int getHP() {
 		return healthPoints;
+	}
+	
+	public float getDX() {
+		return dx;
+	}
+	
+	public float getDY() {
+		return dy;
 	}
 
 	public void setDX(float dx) {
@@ -313,5 +292,17 @@ public class Player extends GameObjects {
 
 	public void setDeathStatus(boolean isDead) {
 		this.isDead = isDead;
+	}
+
+	public long getBulletcooldown() {
+		return bulletcooldown;
+	}
+
+	public long getBulletShootSpeed() {
+		return bulletShootSpeed;
+	}
+	
+	public AssetManager getAssetManager() {
+		return assetManager;
 	}
 }
