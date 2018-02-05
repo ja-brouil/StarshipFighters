@@ -1,9 +1,8 @@
-package com.jb.gamestates.levels.level1;
+package com.jb.level.level1;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -15,20 +14,14 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
+import com.jb.gameobjects.enemies.SamusShipBoss;
 import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
+import com.jb.level.Level;
 import com.jb.main.Game;
 
-public class Level1 {
-
-	// Tiled Map
-	private TiledMap tiledMap;
-	private MapLayer spawnLayer;
-	private MapGroupLayer mapGroupLayer;
-
-	// Map Location
-	private String mapName;
+public class Level1 extends Level{
 
 	// Spawn Points
 	private Array<Vector2> spawnPoints;
@@ -37,6 +30,9 @@ public class Level1 {
 	// Basic Aliens
 	private Array<BasicAlien> basicAlienList;
 	private Array<EnemyBullets> enemyBulletList;
+	
+	// Boss
+	private SamusShipBoss samusShipBoss;
 
 	// Explosion Array
 	private Array<Explosion> explosionList;
@@ -53,29 +49,18 @@ public class Level1 {
 	// Boss Spawn Variables
 	private boolean spawnboss;
 
-	// Music
-	private Music levelThemeSong;
-
 	// Background
 	private Background bg1;
 	private Background bg2;
 
-	// PlayState
-	private PlayState playState;
-
 	// Collision Handling
 	private Level1CollisionDetection level1CollisionDetection;
-
-	// Asset Manager
-	private AssetManager assetManager;
-
-	// Level Loader
+	
+	// Asset Loader
 	private Level1Assets level1Assets;
 
 	public Level1(String mapName, PlayState playState, AssetManager assetManager) {
-		this.playState = playState;
-		this.mapName = mapName;
-		this.assetManager = assetManager;
+		super(mapName, playState, assetManager);
 		init();
 	}
 
@@ -90,8 +75,6 @@ public class Level1 {
 		spawnPoints = new Array<Vector2>();
 		mapGroupLayer = (MapGroupLayer) tiledMap.getLayers().get("EnemySpawn");
 		spawnLayer = mapGroupLayer.getLayers().get(spawnNumber);
-
-		// Boss Spawn
 		
 		// Start Arraylists
 		basicAlienList = new Array<BasicAlien>();
@@ -106,6 +89,12 @@ public class Level1 {
 		level1Assets = new Level1Assets(this);
 		level1Assets.loadLevel1Assets();
 		assetManager.finishLoading();
+		
+		// Boss Object
+		MapGroupLayer bossSpawnGroupLayer = (MapGroupLayer) tiledMap.getLayers().get("Boss");
+		MapLayer bossSpawnLayer = bossSpawnGroupLayer.getLayers().get("BossSpawn");
+		bossSpawnPoint = new Vector2(bossSpawnLayer.getObjects().get("Boss").getProperties().get("x", Float.class), bossSpawnLayer.getObjects().get("Boss").getProperties().get("y", Float.class));
+		samusShipBoss = new SamusShipBoss(-100, -100, 0, 0, this, playState, assetManager);
 		
 		// Start Music
 		startMusic();
@@ -161,7 +150,7 @@ public class Level1 {
 		level1CollisionDetection.checkCollisions();
 
 		// Check if all enemies are dead
-		if (basicAlienList.size == 0 && !spawnEnabled && spawnNumber <= 5) {
+		if (basicAlienList.size == 0 && !spawnEnabled && spawnNumber <= 5 && !spawnboss) {
 			spawnEnabled = true;
 			spawnTimerElapsedTime = TimeUtils.millis();
 		}
@@ -186,10 +175,31 @@ public class Level1 {
 				// Check if Spawn is 5 to spawn boss
 				if (spawnNumber == 5) {
 					spawnboss = true;
+					spawnEnabled = false;
+					spawnTimerElapsedTime = TimeUtils.millis();
+					spawnTimerCooldown = 8000;
+					
 				}
 			}
 		}
-
+		
+		// Spawn Boss
+		if (spawnboss && basicAlienList.size == 0) {
+			
+			// Stop Level Music
+			levelThemeSong.stop();
+			
+			if (TimeUtils.timeSinceMillis(spawnTimerElapsedTime) > spawnTimerCooldown) {
+				
+				// Start boss
+				startBoss();
+				
+				// Start Boss Theme
+				Music bossTheme = assetManager.get("data/audio/music/bossbattle.mp3", Music.class);
+				bossTheme.setLooping(true);
+				bossTheme.play();
+			}
+		}
 	}
 
 	// Draw Level Elements
@@ -208,9 +218,14 @@ public class Level1 {
 		for (EnemyBullets enemyBullets : enemyBulletList) {
 			enemyBullets.draw(spriteBatch);
 		}
+		
+		// Draw Boss
+		samusShipBoss.draw(spriteBatch);
 
 		// Draw Explosions
-
+		for (Explosion explosion : explosionList) {
+			explosion.draw(spriteBatch);
+		}	
 	}
 
 	// Update all Game Objects
@@ -218,9 +233,8 @@ public class Level1 {
 		// Update Enemies
 		for (int i = 0; i < basicAlienList.size; i++) {
 			basicAlienList.get(i).update(dt);
-			if (basicAlienList.get(i).getHP() <= 0) {
-				// explosionList.add(new Explosion(basicAlienList.get(i).getX(),
-				// basicAlienList.get(i).getY(), 0, 0, null));
+			if (basicAlienList.get(i).isDead()) {
+				explosionList.add(new Explosion(basicAlienList.get(i).getX(), basicAlienList.get(i).getY(), 0, 0, playState, assetManager));
 				basicAlienList.removeIndex(i);
 				i--;
 			}
@@ -254,6 +268,9 @@ public class Level1 {
 				i--;
 			}
 		}
+		
+		// Update Boss
+		samusShipBoss.update(dt);
 	}
 	
 	// Get Spawn Locations
@@ -275,6 +292,19 @@ public class Level1 {
 		levelThemeSong = assetManager.get("data/audio/music/level1.mp3", Music.class);
 		levelThemeSong.setLooping(true);
 		levelThemeSong.play();
+	}
+	
+	// Start Boss
+	private void startBoss() {
+		
+		// Move Boss from OffScreen
+		samusShipBoss.setVelX(-2f);
+		samusShipBoss.setVelY(-1f);
+		samusShipBoss.setX(bossSpawnPoint.x);
+		samusShipBoss.setY(bossSpawnPoint.y);
+		samusShipBoss.setActive(true);
+		spawnboss = false;
+		
 	}
 
 	// Getters

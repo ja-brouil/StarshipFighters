@@ -2,20 +2,27 @@ package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
 import com.jb.assetmanagers.audio.MusicManager;
-import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.player.PlayerBullets;
+import com.jb.gameobjects.player.PlayerHit;
 import com.jb.gamestates.PlayState;
+import com.jb.level.level1.Level1;
 import com.jb.main.Game;
 
 public class SamusShipBoss extends GameObjects {
+	
+	// PlayState Access
+	private PlayState playState;
 
 	// Right and Left Wing
 	private boolean isLeftWingDead;
@@ -30,6 +37,7 @@ public class SamusShipBoss extends GameObjects {
 	private int rightWingExplosionCounter;
 	private int leftWingExplosionCounter;
 	private int bossDeathExplosionCounter;
+	private boolean isActive = false;
 	
 	// Asset Manager
 	private AssetManager assetManager;
@@ -42,16 +50,7 @@ public class SamusShipBoss extends GameObjects {
 	private float animationTime;
 
 	// SFX
-	private SoundManager soundManager;
-	private String bossSoundFilePath = "data/audio/sound/bossDamage.wav";
-	private String bossSoundName = "Boss Hit";
-	private String bossSpawnSoundFilePath = "data/audio/sound/bombLaunching.wav";
-	private String bossSpawnSoundName = "Boss Spawn Sound";
-
-	// Boss Music
-	private MusicManager musicManager; 
-	private String bossMusic = "data/audio/music/bossbattle.mp3";
-	private String bossMusicName = "Boss Battle";
+	private String bossSpawnSoundFilePath = "data/audio/sound/bossSpawnEnemies.wav";
 
 	// HitBoxes
 	private Rectangle[] bossHitBoxes;
@@ -59,8 +58,8 @@ public class SamusShipBoss extends GameObjects {
 	// Array
 	private Array<EnemyBullets> enemyBullets;
 	private Array<Explosion> explosionList;
-	private Array<GameObjects> listOfAliens;
-	private PlayState playState;
+	private Array<BasicAlien> listOfAliens;
+	private Level1 level1;
 
 	// timers
 	private long timeSinceBattleBegan;
@@ -68,19 +67,16 @@ public class SamusShipBoss extends GameObjects {
 	private long bulletCooldown, bulletCooldownRight, bulletCooldownLeft;
 	private long randomAttackCooldown, randomAttackCooldownLeft, randomAttackCooldownRight;
 
-	public SamusShipBoss(float x, float y, float dx, float dy, Array<EnemyBullets> enemyBullets,
-			Array<Explosion> explosionList, Array<GameObjects> basicAliens, PlayState playState, AssetManager assetManager) {
+	public SamusShipBoss(float x, float y, float dx, float dy, Level1 level1, PlayState playState, AssetManager assetManager) {
 		super(x, y, dx, dy, assetManager);
 
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
-		this.enemyBullets = enemyBullets;
-		this.explosionList = explosionList;
-		this.listOfAliens = basicAliens;
-		this.playState = playState;
 		this.assetManager = assetManager;
+		this.playState = playState;
+		this.level1 = level1;
 
 		// Start Boss
 		init();
@@ -90,12 +86,8 @@ public class SamusShipBoss extends GameObjects {
 	// Start the boss
 	private void init() {
 		
-		// Music
-		musicManager.addMusic(bossMusic, bossMusicName);
-		
-		// sound
-		soundManager.addSound(bossSoundFilePath, bossSoundName);
-		soundManager.addSound(bossSpawnSoundFilePath, bossSpawnSoundName);
+		// Boss Damage
+		bossBulletDamage = -25;
 
 		// Start Graphics
 		filePath = "data/spaceships/samushipboss.png";
@@ -142,12 +134,19 @@ public class SamusShipBoss extends GameObjects {
 		rightWingExplosionCounter = 0;
 		leftWingExplosionCounter = 0;
 		bossDeathExplosionCounter = 0;
-
+		
+		// Arrays
+		enemyBullets = level1.getEnemyBulletList();
+		explosionList = level1.getExplosionList();
+		listOfAliens = level1.getBasicAlienList();
 	}
 
 	// Update the Boss
 	@Override
 	public void update(float dt) {
+		if (!isActive) {
+			return;
+		}
 
 		// Update Boss Position
 		x += dx;
@@ -177,7 +176,6 @@ public class SamusShipBoss extends GameObjects {
 
 	// Movement Limits
 	private void checkMovementLimits() {
-
 		if (x > (Game.WIDTH - (194 * 0.6))) {
 			dx *= -1;
 		}
@@ -190,7 +188,6 @@ public class SamusShipBoss extends GameObjects {
 			dy = 0;
 			dx = 2;
 			y = 675;
-			musicManager.loopMusic(bossMusicName);
 		}
 	}
 
@@ -234,29 +231,27 @@ public class SamusShipBoss extends GameObjects {
 		// Check if Wings are dead
 		if (rightWingHealth <= 0 && !isRightWingDead) {
 			if (TimeUtils.timeSinceMillis(rightWingExplosionTimer) > 200 && rightWingExplosionCounter < 10) {
-				// Add delayed explosions
-				explosionList.add(new Explosion((x + 148) + MathUtils.random(-48, 48), y, 48, height, playState));
+				explosionList.add(new Explosion(x + 148 + MathUtils.random(-48, 48), y, 0, 0, playState, assetManager));
 				rightWingExplosionTimer = TimeUtils.millis();
 				rightWingExplosionCounter++;
 			}
 
 			// Kill Right Wing
 			if (rightWingExplosionCounter == 10) {
-				setRightWingDead(true);
+				isRightWingDead = true;
 			}
 		}
 
 		if (leftWingHealth <= 0 && !isLeftWingDead) {
 			if (TimeUtils.timeSinceMillis(leftWingExplosionTimer) > 200 && leftWingExplosionCounter < 10) {
-				// Add delayed explosions
-				explosionList.add(new Explosion(x + MathUtils.random(-48, 48), y, 48, height, playState));
+				explosionList.add(new Explosion(x + MathUtils.random(-48, 48), y, 0, 0, playState, assetManager));
 				leftWingExplosionTimer = TimeUtils.millis();
 				leftWingExplosionCounter++;
 			}
 
 			// Kill Left Wing
 			if (leftWingExplosionCounter == 10) {
-				setLeftWingDead(true);
+				isLeftWingDead = true;
 			}
 		}
 
@@ -273,8 +268,7 @@ public class SamusShipBoss extends GameObjects {
 			dy = 0;
 			if (TimeUtils.timeSinceMillis(bossDeathExplosionTimer) > 200 && bossDeathExplosionCounter < 15) {
 				// Add delayed explosions
-				explosionList.add(new Explosion(x + (0.5f * MathUtils.random(0, width)),
-						(y + (0.5f * MathUtils.random(0, height))), width, height, playState));
+				explosionList.add(new Explosion(x + (0.5f * MathUtils.random(0, width)), (y + (0.5f * MathUtils.random(0, height))), 0, 0, playState, assetManager));
 				bossDeathExplosionTimer = TimeUtils.millis();
 				bossDeathExplosionCounter++;
 				isDead = true;
@@ -286,10 +280,11 @@ public class SamusShipBoss extends GameObjects {
 	private void spawnEnemies() {
 		// Check if its been 5 seconds
 		if (TimeUtils.timeSinceMillis(timeSinceBattleBegan) > 5000 && healthbar > 0) {
-			listOfAliens.add(new BasicAlien(x + (width / 2), y + (height / 2), 3, 0, 1000L, -15, enemyBullets, -20, playState.getLevel1(), null, null));
-			listOfAliens.add(new BasicAlien(x + (width / 2), y + (height / 2), -3, 0, 1000L, -15, enemyBullets, -20, playState));
+			listOfAliens.add(new BasicAlien(x + (width / 2), y + ( height / 2), 3, 0, 1000L, -15, -20, level1, assetManager));
+			listOfAliens.add(new BasicAlien(x + (width / 2), y + ( height / 2), -3, 0, 1000L, -15, -20, level1, assetManager));
+			listOfAliens.add(new BasicAlien(x + (width / 3), y + ( height / 2), 3, 0, 1000L, -15, -20, level1, assetManager));
+			listOfAliens.add(new BasicAlien(x + (width / 3), y + ( height / 2), -3, 0, 1000L, -15, -20, level1, assetManager));
 			timeSinceBattleBegan = TimeUtils.millis();
-			soundManager.playSound(bossSpawnSoundName, 1f);
 		}
 
 	}
@@ -299,34 +294,28 @@ public class SamusShipBoss extends GameObjects {
 		// Check Boss Hit | 0 = left, 1 = center, 2 = right
 		if (this != null) {
 			for (int h = 0; h < bossHitBoxes.length; h++) {
-				for (int a = 0; a < playState.getShipBullets().size; a++) {
-					PlayerBullets tmpShipBullets = playState.getShipBullets().get(a);
-					if (tmpShipBullets.getBoundingBox().overlaps(this.getSpecificHitBox(h))) {
+				for (int a = 0; a < playState.getPlayer().getBulletList().size; a++) {
+					PlayerBullets tmpShipBullets = playState.getPlayer().getBulletList().get(a);
+					if (tmpShipBullets.getBoundingBox().overlaps(bossHitBoxes[h])) {
 						if (h == 0) {
-							if (!this.getLeftWingStatus()) {
-								this.setLeftWingHealth(tmpShipBullets.getDamageValue());
+							if (!isLeftWingDead) {
+								leftWingHealth += tmpShipBullets.getDamageValue();
 							}
-							explosionList.add(new Explosion(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0,
-									"data/hit_and_explosions/impactHit.png", "data/audio/sound/Bomb Explosion.wav",
-									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false, playState));
+							playState.getPlayer().getPlayerHits().add(new PlayerHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, 3, 1, 3, 1, 1f / 40f, assetManager));
 							tmpShipBullets.removeBullets();
 						}
 						if (h == 1) {
-							if (!this.getMiddleInvincibleStatus()) {
+							if (!isMiddleInvincible) {
 								this.setHP(tmpShipBullets.getDamageValue(), false);
 							}
 							tmpShipBullets.removeBullets();
-							explosionList.add(new Explosion(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0,
-									"data/hit_and_explosions/impactHit.png", "data/audio/sound/Bomb Explosion.wav",
-									"Boss Hit", 3, 1, 3, 1, 1f / 40f, false, playState));
+							playState.getPlayer().getPlayerHits().add(new PlayerHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, 3, 1, 3, 1, 1f / 40f, assetManager));
 						}
 						if (h == 2) {
-							if (!this.getRightWingStatus()) {
-								this.setRightWingHealth(tmpShipBullets.getDamageValue());
+							if (!isRightWingDead) {
+								rightWingHealth += tmpShipBullets.getDamageValue();
 							}
-							explosionList.add(new Explosion(this.getSpecificHitBox(h).getX(), tmpShipBullets.getY(),
-									0, 0, "data/hit_and_explosions/impactHit.png",
-									"data/audio/sound/Bomb Explosion.wav", "Boss Hit", 3, 1, 3, 1, 1f / 40f, false, playState));
+							playState.getPlayer().getPlayerHits().add(new PlayerHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, 3, 1, 3, 1, 1f / 40f, assetManager));
 							tmpShipBullets.removeBullets();
 						}
 					}
@@ -338,7 +327,9 @@ public class SamusShipBoss extends GameObjects {
 	// Render Method
 	@Override
 	public void draw(SpriteBatch spriteBatch) {
-		// Draw Boss
+		if (!isActive) {
+			return;
+		}
 		// Get Time for animation
 		animationTime += Gdx.graphics.getDeltaTime();
 		spriteBatch.draw(enemyBossSprite.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
@@ -348,66 +339,15 @@ public class SamusShipBoss extends GameObjects {
 	
 	// Add Boss Bullets
 	private void addBossBullets(float xOffset, float yOffset) {
-		enemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, 5, bossBulletDamage, playState));
+		enemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, 5, bossBulletDamage, playState, assetManager));
 	}
 
-	// Getters | Setters
-	public boolean isLeftWingDead() {
-		return isLeftWingDead;
-	}
-
-	public void setLeftWingDead(boolean isLeftWingDead) {
-		this.isLeftWingDead = isLeftWingDead;
-	}
-
-	public boolean isRightWingDead() {
-		return isRightWingDead;
-	}
-
-	public void setRightWingDead(boolean isRightWingDead) {
-		this.isRightWingDead = isRightWingDead;
-	}
-
-	public int getLeftWingHealth() {
-		return leftWingHealth;
-	}
-
-	public void setLeftWingHealth(int leftWingHealth) {
-		this.leftWingHealth += leftWingHealth;
-	}
-
-	public int getRightWingHealth() {
-		return rightWingHealth;
-	}
-
-	public void setRightWingHealth(int rightWingHealth) {
-		this.rightWingHealth += rightWingHealth;
-	}
-
-	public Rectangle[] getHitBoxes() {
-		return bossHitBoxes;
-	}
-
-	public Rectangle getSpecificHitBox(int i) {
-		return bossHitBoxes[i];
-	}
-
-	public boolean getLeftWingStatus() {
-		return isLeftWingDead;
-	}
-
-	public boolean getRightWingStatus() {
-		return isRightWingDead;
-	}
-
-	public boolean getMiddleInvincibleStatus() {
-		return isMiddleInvincible;
-	}
-
+	// Getters
 	public boolean getDeathStatus() {
 		return isDead;
 	}
-
-	@Override
-	public void update(float dt, boolean xWrap, boolean yWrap) {}
+	
+	public void setActive(boolean active) {
+		isActive = active;
+	}
 }

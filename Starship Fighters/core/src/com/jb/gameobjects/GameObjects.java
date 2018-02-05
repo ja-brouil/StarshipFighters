@@ -18,6 +18,9 @@ public abstract class GameObjects {
 	// Health
 	protected int healthbar;
 	
+	// Dead status
+	protected boolean isDead;
+	
 	// HitBox
 	protected Rectangle collisionBounds;
 	
@@ -92,5 +95,9 @@ public abstract class GameObjects {
 	
 	public int getHP() {
 		return healthbar;
+	}
+
+	public boolean isDead() {
+		return isDead;
 	}
 }

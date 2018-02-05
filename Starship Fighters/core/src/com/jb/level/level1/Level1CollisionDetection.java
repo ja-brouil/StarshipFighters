@@ -1,4 +1,4 @@
-package com.jb.gamestates.levels.level1;
+package com.jb.level.level1;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;

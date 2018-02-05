@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gamestates.PlayState;
-import com.jb.gamestates.levels.level1.Level1;
+import com.jb.level.level1.Level1;
 import com.jb.main.Game;
 
 public class BasicAlien extends GameObjects {
@@ -58,6 +58,7 @@ public class BasicAlien extends GameObjects {
 		this.assetManager = assetManager;
 		listofEnemyBullets = level1.getEnemyBulletList();
 		healthbar = 100;
+		isDead = false;
 
 		// GamePlay Starting Positions
 		initialX = x;
@@ -98,6 +99,12 @@ public class BasicAlien extends GameObjects {
 
 	// Update
 	public void update(float dt) {
+		
+		// Check if dead
+		if (healthbar <= 0) {
+			isDead = true;
+			return;
+		}
 
 		// Update Movement
 		x += dx;
@@ -175,7 +182,7 @@ public class BasicAlien extends GameObjects {
 
 	// Drop Chance
 	private void dropItems() {
-		if (healthbar <= 0) {
+		if (isDead) {
 			if (dropChance == 0) {
 				level1.getEnergyTankList().add(new EnergyTank(x, y, 0, -2, playState, 50, assetManager));
 			}
@@ -194,6 +201,5 @@ public class BasicAlien extends GameObjects {
 	public void setDrop(int dropChance) {
 		this.dropChance = dropChance;
 	}
-
 
 }

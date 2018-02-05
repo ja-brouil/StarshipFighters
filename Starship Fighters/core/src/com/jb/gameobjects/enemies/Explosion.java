@@ -25,7 +25,7 @@ public class Explosion extends GameObjects {
 
 	// SFX Enemy Explosion
 	private String explosionSoundPathName = "data/audio/sound/Bomb Explosion.wav";
-	private Sound enemyExplosionSound;
+	private Sound explosionSound;
 
 	// Default Explosion
 	public Explosion(float x, float y, float dx, float dy, PlayState playState, AssetManager assetManager) {
@@ -53,7 +53,9 @@ public class Explosion extends GameObjects {
 		// Set Initial Boolean to false
 		explosionIsDone = false;
 		
-
+		// Play Sound
+		explosionSound = assetManager.get(explosionSoundPathName, Sound.class);
+		explosionSound.play(1.0f);
 	}
 
 	public void update(float dt) {

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="20" height="25" tilewidth="32" tileheight="32" nextobjectid="69">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="20" height="25" tilewidth="32" tileheight="32" nextobjectid="70">
+ <group name="Boss">
+  <objectgroup name="BossSpawn">
+   <object id="69" name="Boss" x="0" y="-128" width="32" height="32"/>
+  </objectgroup>
+ </group>
  <group name="EnemySpawn">
-  <objectgroup name="BasicAlienSpawn1">
+  <objectgroup name="BasicAlienSpawn1" visible="0">
    <object id="24" x="128" y="-96"/>
    <object id="31" x="544" y="-96"/>
   </objectgroup>

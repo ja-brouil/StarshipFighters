@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
-import com.jb.gamestates.PlayState;
 import com.jb.main.Game;
 
 public class Player extends GameObjects {
@@ -52,11 +51,8 @@ public class Player extends GameObjects {
 	
 	// Input
 	private PlayerInput playerInput;
-	
-	// Play State Access
-	private PlayState playState;
 
-	public Player(float x, float y, float dx, float dy, PlayState playState, AssetManager assetManager) {
+	public Player(float x, float y, float dx, float dy, AssetManager assetManager) {
 		super(x, y, dx, dy, assetManager);
 
 		// GamePlay
@@ -64,7 +60,6 @@ public class Player extends GameObjects {
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
-		this.playState = playState;
 		bulletcooldown = TimeUtils.millis();
 		this.assetManager = assetManager;
 

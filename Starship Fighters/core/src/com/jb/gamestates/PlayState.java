@@ -5,8 +5,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.jb.gameobjects.player.Player;
-import com.jb.gamestates.levels.level1.Level1;
 import com.jb.input.GameKeys;
+import com.jb.level.level1.Level1;
 
 public class PlayState extends GameState {
 
@@ -37,7 +37,7 @@ public class PlayState extends GameState {
 	public void init() {
 
 		// Start Player
-		player = new Player(300, 150, 0, 0, this, assetManager);
+		player = new Player(300, 150, 0, 0, assetManager);
 
 		// Start Level
 		level1 = new Level1("data/levels/testmap.tmx", this, assetManager);

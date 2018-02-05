@@ -1,4 +1,6 @@
-package com.jb.gamestates.levels.level1;
+package com.jb.level.level1;
+
+import javax.xml.soap.Text;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -17,9 +19,12 @@ public class Level1Assets {
 	// Music
 	private String level1MusicPathName = "data/audio/music/level1.mp3";
 	private String victoryMusicPathName = "data/audio/music/victorytheme.mp3";
+	private String bossTheme = "data/audio/music/bossbattle.mp3";
 
 	// SFX
 	private String enemyBulletSoundPathname = "data/audio/sound/bombLaunching.wav";
+	private String explosionSoundPathName = "data/audio/sound/Bomb Explosion.wav";
+	private String bossAddSpawnName = "data/audio/sound/bossSpawnEnemies.wav";
 
 	// Basic Alien Art
 	private String basicAlienPathName = "data/spaceships/BasicEnemy.png";
@@ -28,8 +33,10 @@ public class Level1Assets {
 	private String basicAlienBulletPathName = "data/ammo/enemyBullet.png";
 
 	// Basic Alien and Boss Explosion Art
+	private String explosionArtPathName = "data/hit_and_explosions/explosion.png";
 
 	// Level 1 Boss Art
+	private String bossArtPathName = "data/spaceships/samushipboss.png";
 
 	public Level1Assets(Level1 level1) {
 		assetManager = level1.getAssetManager();
@@ -47,9 +54,14 @@ public class Level1Assets {
 		// Add Music
 		assetManager.load(level1MusicPathName, Music.class);
 		assetManager.load(victoryMusicPathName, Music.class);
+		assetManager.load(bossTheme, Music.class);
 
 		// Add Sound
 		assetManager.load(enemyBulletSoundPathname, Sound.class);
+		assetManager.load(explosionSoundPathName, Sound.class);
+		
+		// Add Boss Sounds
+		assetManager.load(bossAddSpawnName, Sound.class);
 		
 	}
 
@@ -59,6 +71,8 @@ public class Level1Assets {
 		// Add Graphics
 		assetManager.load(basicAlienPathName, Texture.class);
 		assetManager.load(basicAlienBulletPathName, Texture.class);
+		assetManager.load(explosionArtPathName, Texture.class);
+		assetManager.load(bossArtPathName, Texture.class);
 	}
 
 }
