@@ -83,9 +83,6 @@ public class Level1 extends Level {
 		level1Assets.loadLevel1Assets();
 		assetManager.finishLoading();
 
-		// Start Music
-		level1GameFlow.startMusic();
-
 		// Background
 		loadBackgrounds();
 

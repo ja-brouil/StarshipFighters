@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.jb.animation.Animator;
+import com.jb.gamestates.Transition.TransitionType;
 import com.jb.images.Background;
 import com.jb.input.GameKeys;
 import com.jb.main.Game;
@@ -133,8 +134,8 @@ public class MenuState extends GameState {
 		// play
 		if (currentOption == 0) {
 			menuMusic.stop();
-			gsm.setState(GameStateManager.PLAY);
-
+			//gsm.setState(GameStateManager.PLAY);
+			gsm.setState(new Transition(gsm, this, new PlayState(gsm), TransitionType.BLACK_FADE));
 		} else if (currentOption == 1) {
 			dispose();
 			Gdx.app.exit();
@@ -166,10 +167,6 @@ public class MenuState extends GameState {
 
 	@Override
 	public void render() {
-
-		// Clear Screen to Black Background
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// SpriteBatch
 		spriteBatch.setProjectionMatrix(cam.combined);

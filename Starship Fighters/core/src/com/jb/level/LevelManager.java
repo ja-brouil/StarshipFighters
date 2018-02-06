@@ -57,7 +57,7 @@ public class LevelManager {
 		worldLevels.push(getLevel(level));
 	}
 	
-	// Dipose of the level
+	// Dispose of the level
 	public void popLevel() {
 		worldLevels.pop();
 		System.gc();

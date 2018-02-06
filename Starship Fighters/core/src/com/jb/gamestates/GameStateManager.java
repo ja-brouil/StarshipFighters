@@ -1,7 +1,6 @@
 package com.jb.gamestates;
 
 import java.util.Stack;
-
 import com.jb.input.GameInputProcessor;
 import com.jb.main.Game;
 
@@ -12,19 +11,18 @@ public class GameStateManager {
 	
 	// Game States
 	private Stack<GameState> gameStates;
-	public static final int PLAY = 1;
-	public static final int MENU = 0;
-	public static final int GAMEOVER = 3;
-	public static final int VICTORY = 4;
 	
 	// Game Input
 	private GameInputProcessor input;
-
+	
+	// Tracking
+	private GameState currentGameState;
+	private GameState previousState;
 	
 	public GameStateManager(Game game) {
 		this.game = game;
 		gameStates = new Stack<GameState>();
-		pushState(MENU); 
+		pushState(new MenuState(this)); 
 		input = game.getInput();
 	}
 	
@@ -39,42 +37,28 @@ public class GameStateManager {
 	}
 	
 	// Get State
-	private GameState getState(int state) {
-		
-		if (state == MENU) {
-			return new MenuState(this);
-		}
-		
-		if (state == PLAY) {
-			return new PlayState(this);
-		}
-		
-		if (state == GAMEOVER) {
-			return new GameOverState(this);
-		}
-		
-		if (state == VICTORY) {
-			return new VictoryState(this);
-		}
-		
-		return null;
+	private GameState getState(GameState gameState) {
+		currentGameState = gameState;
+		return gameState;
 	}
 	
 	// Set State of the Game (pause, play, etc...) Replace at the top of the stack
 	// This will depose of the state first
-	public void setState(int state) {
+	public void setState(GameState gameState) {
 		popState();
-		pushState(state);
+		pushState(gameState);
 	}
+
 	
 	// Push new state to the top of the stack
-	public void pushState(int state) {
-		gameStates.push(getState(state));
+	public void pushState(GameState gameState) {
+		gameStates.push(getState(gameState));
 	}
 	
 	// Dispose of the top of the stack
 	public void popState(){
 		GameState gameState = gameStates.pop();
+		previousState = gameState;
 		gameState.dispose();
 		System.gc();
 	}
@@ -84,7 +68,17 @@ public class GameStateManager {
 		return game;
 	}
 	
+	// Get Input
 	public GameInputProcessor getInput() {
 		return input;
+	}
+	
+	// Returns current state
+	public GameState getCurrentState() {
+		return currentGameState;
+	}
+	
+	public GameState getPreviousState() {
+		return previousState;
 	}
 }

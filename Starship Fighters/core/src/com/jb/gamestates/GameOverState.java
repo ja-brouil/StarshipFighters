@@ -93,7 +93,7 @@ public class GameOverState extends GameState{
 	private void select() {
 		// Return to main menu
 		if (currentOption == 0) {
-			gsm.setState(GameStateManager.MENU);
+			//gsm.setState(GameStateManager.MENU);
 		} else if(currentOption == 1) { 
 			// exit
 			dispose();

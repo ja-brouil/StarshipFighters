@@ -1,5 +1,6 @@
 package com.jb.level.level1;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.Map;
@@ -86,6 +87,10 @@ public class Level1GameFlow {
 
 	// Check for next wave
 	public void updateLevel() {
+
+		// Update Music
+		updateMusic();
+
 		// Check if all enemies are dead
 		boolean areAllEnemiesDead = basicAlienList.size == 0 && kamikazeAlienList.size == 0;
 		if (areAllEnemiesDead) {
@@ -114,7 +119,7 @@ public class Level1GameFlow {
 			basicAlienList.add(
 					new BasicAlien(alienSpawnPoint.x, alienSpawnPoint.y, 0, -5, 1000L, -15, -20, level1, assetManager));
 		}
-		
+
 		// Spawn Kamikaze Alien
 		for (Vector2 kamikazeAlien: kamikazeSpawnPoints) {
 			kamikazeAlienList.add(new KamikazeAlien(kamikazeAlien.x, kamikazeAlien.y, 0, -8, -25, level1, assetManager));
@@ -132,7 +137,7 @@ public class Level1GameFlow {
 		// Clear Array
 		spawnPoints.clear();
 		kamikazeSpawnPoints.clear();
-		
+
 		// Get spawn Locations
 		for (MapObject mapObject : layer.getObjects()) {
 			if (mapObject.getName() != null && mapObject.getName().equalsIgnoreCase("Ka")) {
@@ -146,7 +151,7 @@ public class Level1GameFlow {
 
 	// Initial Enemies
 	public void loadInitialEnemies() {
-	// Get spawn Points
+		// Get spawn Points
 		getSpawnPoints(spawnLayer);
 
 		// Start Initial Enemies
@@ -169,12 +174,12 @@ public class Level1GameFlow {
 	}
 
 	// Play Music
-	public void startMusic() {
+	private void updateMusic() {
 		level1.setLevelMusic(assetManager.get("data/audio/music/level1.mp3", Music.class));
 		level1.getLevelMusic().setLooping(true);
-		level1.getLevelMusic().play();
+		level1.getLevelMusic().play();			
 	}
-	
+
 	// Getters
 	public SamusShipBoss getSamusBossShip() {
 		return samusShipBoss;
