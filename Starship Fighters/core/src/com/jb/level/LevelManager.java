@@ -12,11 +12,17 @@ public class LevelManager {
 	
 	// Levels
 	private Stack<Level> worldLevels;
+	public static int currentLEVEL = 1;
 	public static final int LEVEL1 = 1;
 	public static final int LEVEL2 = 2;
 
 	public LevelManager(PlayState playState) {
 		this.playState = playState;
+		// Level Stack
+		worldLevels = new Stack<Level>();
+		
+		// Start Level 1
+		pushLevel(currentLEVEL);
 	}
 	
 	// Update Level
@@ -26,13 +32,16 @@ public class LevelManager {
 	
 	// Render Level
 	public void render() {
-		worldLevels.peek().render(playState.getGSM().getGame().getSpriteBatch());
+		worldLevels.peek().render(playState.getSpriteBatch());
 	}
 	
 	// Get Level
 	private Level getLevel(int level) {
-		// Change Level
 		
+		// Change Level
+		if (level == LEVEL1) {
+			return new Level1(playState, playState.getAssetManager());
+		}
 		
 		return null;
 	}

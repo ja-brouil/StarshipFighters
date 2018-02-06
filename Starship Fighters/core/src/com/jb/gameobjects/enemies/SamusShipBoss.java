@@ -284,9 +284,9 @@ public class SamusShipBoss extends GameObjects {
 			listOfAliens.add(new BasicAlien(x + (width / 2), y + ( height / 2), -3, 0, 1000L, -15, -20, level1, assetManager));
 			listOfAliens.add(new BasicAlien(x + (width / 3), y + ( height / 2), 3, 0, 1000L, -15, -20, level1, assetManager));
 			listOfAliens.add(new BasicAlien(x + (width / 3), y + ( height / 2), -3, 0, 1000L, -15, -20, level1, assetManager));
+			assetManager.get("data/audio/sound/bossSpawnEnemies.wav", Sound.class).play(1.0f);
 			timeSinceBattleBegan = TimeUtils.millis();
 		}
-
 	}
 	
 	// Collision Check

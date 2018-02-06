@@ -15,6 +15,7 @@ public class Game extends ApplicationAdapter {
 	// Main Window Height
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 800;
+	public static String title = "Starship Fighters";
 	
 	// Graphics renderer and camera 
 	private SpriteBatch spriteBatch;
@@ -30,7 +31,6 @@ public class Game extends ApplicationAdapter {
 	
 	// DEBUG
 	private float dt;
-	
 	
 	@Override
 	public void create () {
@@ -63,11 +63,8 @@ public class Game extends ApplicationAdapter {
 	public void render() {
 		// DEBUG | FPS + Memory Usage
 		dt += Gdx.graphics.getDeltaTime();
-		if (dt >= 5) {
-			System.out.println("Memory Used: " + (Gdx.app.getJavaHeap() / 100000) + "mb");
-			System.out.println("Native Memory Used: " + (Gdx.app.getNativeHeap() / 100000) + "mb");
-			System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
-			dt = 0;
+		if (dt >= 1) {
+			Gdx.graphics.setTitle(title + " | Memory usage: " + (Gdx.app.getJavaHeap() / 100000) + "mb" + " | FPS: " + Gdx.graphics.getFramesPerSecond());
 		}
 		
 		// Update then Render | Update only only if enough time has passed

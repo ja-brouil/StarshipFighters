@@ -27,8 +27,7 @@ public abstract class Level {
 	// Asset Manager
 	protected AssetManager assetManager;
 	
-	public Level(String mapName, PlayState playState, AssetManager assetManager) {
-		this.mapName = mapName;
+	public Level(PlayState playState, AssetManager assetManager) {
 		this.playState = playState;
 		this.assetManager = assetManager;
 	}
@@ -37,4 +36,24 @@ public abstract class Level {
 	public abstract void update(float dt);
 	public abstract void render(SpriteBatch spriteBatch);
 	
+	// Getters | Setters
+	public Music getLevelMusic() {
+		return levelThemeSong;
+	}
+	
+	public void setLevelMusic(Music levelThemeSong) {
+		this.levelThemeSong = levelThemeSong;
+	}
+	
+	public MapLayer getSpawnLayer() {
+		return spawnLayer;
+	}
+	
+	public TiledMap getTiledMap() {
+		return tiledMap;
+	}
+	
+	public PlayState getPlayState() {
+		return playState;
+	}
 }

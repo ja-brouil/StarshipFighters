@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.gameobjects.player.Player;
 import com.jb.input.GameKeys;
+import com.jb.level.LevelManager;
 import com.jb.level.level1.Level1;
 
 public class PlayState extends GameState {
@@ -19,9 +21,8 @@ public class PlayState extends GameState {
 	// GamePlay
 	private boolean inputAllowed = true;
 
-	// Level Objects
-	private Level1 level1;
-
+	// Level Manager
+	private LevelManager levelManager;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -40,8 +41,7 @@ public class PlayState extends GameState {
 		player = new Player(300, 150, 0, 0, assetManager);
 
 		// Start Level
-		level1 = new Level1("data/levels/testmap.tmx", this, assetManager);
-		
+		levelManager = new LevelManager(this);
 	}
 
 	@Override
@@ -77,7 +77,9 @@ public class PlayState extends GameState {
 		player.update(dt);
 
 		// Update Level
-		level1.update(dt);
+		levelManager.update(dt);
+		
+		
 
 	}
 
@@ -96,31 +98,32 @@ public class PlayState extends GameState {
 		spriteBatch.begin();
 
 		// Level Render
-		level1.render(spriteBatch);
+		levelManager.render();
 
 		// Player Render
 		player.draw(spriteBatch);
 		
 		// Close SpriteBatch and Shape Renderer
 		spriteBatch.end();
-
 	}
 
 	@Override
 	public void dispose() {}
 	
-	public Level1 getLevel1() {
-		return level1;
-	}
-
-	public GameStateManager getGSM() {
-		return gsm;
+	public LevelManager getLevelManager() {
+		return levelManager;
 	}
 
 	public Player getPlayer() {
 		return player;
 	}
 
-
+	public AssetManager getAssetManager() {
+		return assetManager;
+	}
+	
+	public SpriteBatch getSpriteBatch() {
+		return spriteBatch;
+	}
 
 }

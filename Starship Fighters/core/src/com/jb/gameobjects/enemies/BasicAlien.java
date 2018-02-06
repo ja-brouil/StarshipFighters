@@ -18,11 +18,8 @@ import com.jb.main.Game;
 public class BasicAlien extends GameObjects {
 	
 	// Graphics
-	private TextureRegion[] rolls;
+	private TextureRegion[] sprite;
 	
-	// Sound
-	private Sound bulletSound;
-
 	// Physics
 	private float maxSpeed;
 	private float minimumSpeed;
@@ -75,7 +72,6 @@ public class BasicAlien extends GameObjects {
 	// Initial load
 	private void init() {
 
-
 		// Start Shooting
 		bulletCooldown = TimeUtils.millis();
 		enemyBulletSpeed = 5;
@@ -87,9 +83,9 @@ public class BasicAlien extends GameObjects {
 		// Get Sprites
 		Texture allTexture = assetManager.get("data/spaceships/BasicEnemy.png", Texture.class);
 		TextureRegion[][] tmp = TextureRegion.split(allTexture, allTexture.getWidth() / 3, allTexture.getHeight() / 1);
-		rolls = new TextureRegion[3];
-		for (int i = 0; i < rolls.length; i++) {
-			rolls[i] = tmp[0][i];
+		sprite = new TextureRegion[3];
+		for (int i = 0; i < sprite.length; i++) {
+			sprite[i] = tmp[0][i];
 		}
 
 		// Start rectangle
@@ -133,7 +129,7 @@ public class BasicAlien extends GameObjects {
 	// Draw Enemies
 	public void draw(SpriteBatch spriteBatch) {
 		// Draw Enemy
-		spriteBatch.draw(rolls[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
+		spriteBatch.draw(sprite[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
 	}
 
 
@@ -174,8 +170,7 @@ public class BasicAlien extends GameObjects {
 	private void addEnemyBullets(int xOffset, int yOffset) {
 		listofEnemyBullets
 				.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed, damageValue, playState, assetManager));
-		bulletSound = assetManager.get("data/audio/sound/bombLaunching.wav", Sound.class);
-		bulletSound.play(1.0f);
+		assetManager.get("data/audio/sound/bombLaunching.wav", Sound.class).play(1.0f);
 		bulletCooldown = TimeUtils.millis();
 		
 	}

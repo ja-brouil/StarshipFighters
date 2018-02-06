@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
+import com.jb.gameobjects.enemies.KamikazeAlien;
 import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
@@ -21,9 +22,7 @@ public class Level1CollisionDetection {
 	// Basic Aliens
 	private Array<BasicAlien> basicAlienList;
 	private Array<EnemyBullets> enemyBulletList;
-
-	// Explosion Array
-	private Array<Explosion> explosionList;
+	private Array<KamikazeAlien> kamikazeAlienList;
 
 	// Item List
 	private Array<EnergyTank> energyTankList;
@@ -32,8 +31,8 @@ public class Level1CollisionDetection {
 		// Load Array Lists
 		basicAlienList = level1.getBasicAlienList();
 		enemyBulletList = level1.getEnemyBulletList();
-		explosionList = level1.getExplosionList();
 		energyTankList = level1.getEnergyTankList();
+		kamikazeAlienList = level1.getKamikazeAlienList();
 		player = playState.getPlayer();
 		playerBulletList = player.getBulletList();
 	}
@@ -47,6 +46,7 @@ public class Level1CollisionDetection {
 
 	// Player Bullets with Enemies
 	private void playerBulletsWithEnemies() {
+
 		for (int i = 0; i < playerBulletList.size; i++) {
 			for (int j = 0; j < basicAlienList.size; j++) {
 				if (playerBulletList.get(i).getBoundingBox().contains(basicAlienList.get(j).getBoundingBox())
@@ -58,10 +58,26 @@ public class Level1CollisionDetection {
 				}
 			}
 		}
+
+
+		for (int i = 0; i < playerBulletList.size; i++) {
+			for (int j = 0; j < kamikazeAlienList.size; j++) {
+				if (playerBulletList.get(i).getBoundingBox().contains(kamikazeAlienList.get(j).getBoundingBox())
+						|| kamikazeAlienList.get(j).getBoundingBox().contains(playerBulletList.get(i).getBoundingBox())
+						|| playerBulletList.get(i).getBoundingBox().overlaps(kamikazeAlienList.get(j).getBoundingBox())
+						|| kamikazeAlienList.get(j).getBoundingBox().overlaps(playerBulletList.get(i).getBoundingBox())) {
+					kamikazeAlienList.get(j).setHP(playerBulletList.get(i).getDamageValue(), false);
+					playerBulletList.get(i).removeBullets();
+				}
+			}
+		}
+
+
 	}
 
 	// Player Collision with Enemies
 	private void playerCollisionWithEnemies() {
+
 		for (int i = 0; i < basicAlienList.size; i++) {
 			if (basicAlienList.get(i).getBoundingBox().contains(player.getBoundingBox())
 					|| basicAlienList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
@@ -71,10 +87,24 @@ public class Level1CollisionDetection {
 				// Add code to reduce player health here
 			}
 		}
+
+
+
+		for (int i = 0; i < kamikazeAlienList.size; i++) {
+			if (kamikazeAlienList.get(i).getBoundingBox().contains(player.getBoundingBox())
+					|| kamikazeAlienList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
+				kamikazeAlienList.get(i).setHP(-1, true);
+
+				// Add code to reduce player health here
+			}
+		}
+
+
 	}
 
 	// Enemy Bullets hitting Player
 	private void enemyBulletsWithPlayer() {
+
 		for (int i = 0; i < enemyBulletList.size; i++) {
 			if (enemyBulletList.get(i).getBoundingBox().contains(player.getBoundingBox())
 					|| player.getBoundingBox().contains(enemyBulletList.get(i).getBoundingBox())) {

@@ -11,9 +11,6 @@ import com.jb.gamestates.PlayState;
 
 public class Explosion extends GameObjects {
 	
-	// PlayState
-	private PlayState playState;
-	
 	// Asset Manager
 	private AssetManager assetManager;
 
@@ -35,9 +32,7 @@ public class Explosion extends GameObjects {
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
-		this.playState = playState;
 		this.assetManager = assetManager;
-
 
 		// Start Explosion
 		init();
