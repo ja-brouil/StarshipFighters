@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Starship Fighters-desktop</name>
+	<name>Starship Fighters-Starship Fighters</name>
 	<comment>Project Starship Fighters-desktop created by Buildship.</comment>
 	<projects>
 	</projects>
@@ -27,4 +27,10 @@
 			<locationURI>PARENT-1-PROJECT_LOC/core/assets</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-2-PROJECT_LOC%7D/Desktop/StarshipFighters/Starship%20Fighters</value>
+		</variable>
+	</variableList>
 </projectDescription>

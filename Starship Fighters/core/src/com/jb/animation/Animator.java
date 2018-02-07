@@ -40,7 +40,7 @@ public class Animator {
 		// Load SpriteSheet
 		if (!assetManager.isLoaded(filePath, Texture.class)) {
 			assetManager.load(filePath, Texture.class);
-			assetManager.update(5000);
+			assetManager.finishLoading();
 			spriteSheet = assetManager.get(filePath, Texture.class);
 		} else {
 			spriteSheet = assetManager.get(filePath, Texture.class);

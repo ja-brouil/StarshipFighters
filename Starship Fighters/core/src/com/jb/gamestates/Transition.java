@@ -85,13 +85,12 @@ public class Transition extends GameState{
 	public void render() {
 		// Black Type
 		if (transitionType == TransitionType.BLACK_FADE) {
-			
 			// Alpha Timer | Divided by two because we want half the time to fade in and half the time to fade out
 			if (timer < maxTime / 2) {
 				alpha = timer / (maxTime / 2);
 				previousState.render();
 			} else {
-				alpha = 1 - (timer / (maxTime / 2));
+				alpha = 2 - (timer / (maxTime / 2));
 				nextState.render();
 			}
 			
@@ -110,6 +109,9 @@ public class Transition extends GameState{
 	public void dispose() {
 		System.gc();
 	}
-
-
+	
+	// Getter
+	public float getAlpha() {
+		return alpha;
+	}
 }

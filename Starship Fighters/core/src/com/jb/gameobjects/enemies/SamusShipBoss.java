@@ -335,8 +335,6 @@ public class SamusShipBoss extends GameObjects {
 		spriteBatch.draw(enemyBossSprite.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
 	}
 	
-	
-	
 	// Add Boss Bullets
 	private void addBossBullets(float xOffset, float yOffset) {
 		enemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, 5, bossBulletDamage, playState, assetManager));

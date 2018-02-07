@@ -64,7 +64,7 @@ public class Background{
 	// Initialize Background Images
 	private void init() {
 		assetManager.load(pathName, Texture.class);
-		assetManager.finishLoading();
+		//assetManager.update(3000);
 	}
 	
 	// Limits

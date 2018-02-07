@@ -79,7 +79,7 @@ public class MenuState extends GameState {
 		openingSequence = new Animator(8, 10, "data/transitions/IntroAnimation.png", 8, 10, 1/10f, assetManager);
 		
 		// Update Asset Manager
-		assetManager.update(5000);
+		assetManager.finishLoading();
 		
 		// Play Music
 		menuMusic = assetManager.get(MenuMusicPathName, Music.class);
