@@ -46,7 +46,6 @@ public class Player extends GameObjects {
 	private float bulletSpeed;
 	private long bulletcooldown;
 	private long bulletShootSpeed;
-	private int healthPoints;
 	private boolean isDead;
 	
 	// Input
@@ -84,7 +83,7 @@ public class Player extends GameObjects {
 	public void init() {
 
 		// HealthPoints
-		healthPoints = 100;
+		healthbar = 100;
 		isDead = false;
 
 		// Note: Ship size is 64 x 64 pixels
@@ -255,22 +254,6 @@ public class Player extends GameObjects {
 	
 	public PlayerInput getPlayerInput() {
 		return playerInput;
-	}
-
-	public void setHP(int healthPoints) {
-		this.healthPoints = healthPoints;
-	}
-
-	public int getHP() {
-		return healthPoints;
-	}
-	
-	public float getDX() {
-		return dx;
-	}
-	
-	public float getDY() {
-		return dy;
 	}
 
 	public void setDX(float dx) {

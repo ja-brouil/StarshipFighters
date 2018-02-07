@@ -1,9 +1,7 @@
 package com.jb.level.level1;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -14,7 +12,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.KamikazeAlien;
 import com.jb.gameobjects.enemies.SamusShipBoss;
-import com.jb.level.Level;
 
 public class Level1GameFlow {
 

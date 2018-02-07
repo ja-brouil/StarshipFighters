@@ -3,17 +3,19 @@ package com.jb.gamestates;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.jb.HUD.HealthBar;
 import com.jb.gameobjects.player.Player;
 import com.jb.input.GameKeys;
 import com.jb.level.LevelManager;
-import com.jb.level.level1.Level1;
 
 public class PlayState extends GameState {
 
 	// Player
 	private Player player;
+	
+	// HUD
+	private HealthBar healthBar;
 	
 	// Asset Manager
 	private AssetManager assetManager;
@@ -38,6 +40,9 @@ public class PlayState extends GameState {
 
 		// Start Player
 		player = new Player(300, 150, 0, 0, assetManager);
+		
+		// Start HUD
+		healthBar = new HealthBar(this, 1, 1);
 
 		// Start Level
 		levelManager = new LevelManager(this);
@@ -53,12 +58,7 @@ public class PlayState extends GameState {
 
 		// Set Game Keys
 		if (inputAllowed) {
-			player.getPlayerInput().setLeft(GameKeys.isDown(GameKeys.LEFT));
-			player.getPlayerInput().setRight(GameKeys.isDown(GameKeys.RIGHT));
-			player.getPlayerInput().setUp(GameKeys.isDown(GameKeys.UP));
-			player.getPlayerInput().setDown(GameKeys.isDown(GameKeys.DOWN));
-			player.getPlayerInput().setShoot(GameKeys.isDown(GameKeys.SPACE));
-			player.getPlayerInput().setMissile(GameKeys.isPressed(GameKeys.SHIFT));
+			setPlayerInput();
 		}
 
 		// Update Keys
@@ -74,6 +74,9 @@ public class PlayState extends GameState {
 		
 		// Update Player
 		player.update(dt);
+		
+		// Update HUD
+		healthBar.update(dt);
 
 		// Update Level
 		levelManager.update(dt);
@@ -95,6 +98,9 @@ public class PlayState extends GameState {
 
 		// Level Render
 		levelManager.render();
+		
+		// Draw HUD
+		healthBar.render(spriteBatch);
 
 		// Player Render
 		player.draw(spriteBatch);
@@ -105,7 +111,18 @@ public class PlayState extends GameState {
 
 	@Override
 	public void dispose() {}
+	// Helper Methods
+	// Set Player Input
+	private void setPlayerInput() {
+		player.getPlayerInput().setLeft(GameKeys.isDown(GameKeys.LEFT));
+		player.getPlayerInput().setRight(GameKeys.isDown(GameKeys.RIGHT));
+		player.getPlayerInput().setUp(GameKeys.isDown(GameKeys.UP));
+		player.getPlayerInput().setDown(GameKeys.isDown(GameKeys.DOWN));
+		player.getPlayerInput().setShoot(GameKeys.isDown(GameKeys.SPACE));
+		player.getPlayerInput().setMissile(GameKeys.isPressed(GameKeys.SHIFT));
+	}
 	
+	// Getters
 	public LevelManager getLevelManager() {
 		return levelManager;
 	}

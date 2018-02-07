@@ -10,11 +10,8 @@ public class LevelManager {
 	// PlayState
 	private PlayState playState;
 	
-	// Levels
+	// Level Stack
 	private Stack<Level> worldLevels;
-	public static int currentLEVEL = 1;
-	public static final int LEVEL1 = 1;
-	public static final int LEVEL2 = 2;
 
 	public LevelManager(PlayState playState) {
 		this.playState = playState;
@@ -22,7 +19,7 @@ public class LevelManager {
 		worldLevels = new Stack<Level>();
 		
 		// Start Level 1
-		pushLevel(currentLEVEL);
+		pushLevel(new Level1(playState, playState.getAssetManager()));
 	}
 	
 	// Update Level
@@ -36,24 +33,18 @@ public class LevelManager {
 	}
 	
 	// Get Level
-	private Level getLevel(int level) {
-		
-		// Change Level
-		if (level == LEVEL1) {
-			return new Level1(playState, playState.getAssetManager());
-		}
-		
-		return null;
+	private Level getLevel(Level level) {
+		return level;
 	}
 	
 	// Set Level
-	public void setLevel(int level) {
+	public void setLevel(Level level) {
 		popLevel();
 		pushLevel(level);
 	}
 	
 	// Push new level
-	public void pushLevel(int level) {
+	public void pushLevel(Level level) {
 		worldLevels.push(getLevel(level));
 	}
 	

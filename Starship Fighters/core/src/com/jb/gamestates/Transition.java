@@ -101,8 +101,7 @@ public class Transition extends GameState{
 			spriteBatch.draw(blackFadeTexture, 0, 0, Game.WIDTH, Game.HEIGHT);
 			spriteBatch.end();
 			spriteBatch.setColor(1,1,1,1);
-		}
-		
+		}	
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import com.jb.gamestates.PlayState;
 
 public abstract class Item extends GameObjects {
 	
-	// Gameplay + Graphics
+	// GamePlay + Graphics
 	protected PlayState playState;
 	protected Animator itemAnimation;
 	protected String animationPathName;
@@ -19,8 +19,7 @@ public abstract class Item extends GameObjects {
 	protected boolean remove;
 	
 	public Item(float x, float y, float dx, float dy, PlayState playState, AssetManager assetManager) {
-		super(x, y, dx, dy, assetManager);
-		
+		super(x, y, dx, dy, assetManager);	
 	}
 
 	@Override

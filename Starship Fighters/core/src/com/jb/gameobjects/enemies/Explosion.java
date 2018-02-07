@@ -15,7 +15,7 @@ public class Explosion extends GameObjects {
 	private AssetManager assetManager;
 
 	// Graphics
-	private String explosionPathName = "data/hit_and_explosions/explosion.png";
+	private String explosionPathName = "data/hit_and_explosions/sethExplosion.png";
 	private Animator explosionAnimation;
 	private float animationTimer;
 	private boolean explosionIsDone;

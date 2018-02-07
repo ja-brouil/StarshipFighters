@@ -15,10 +15,6 @@ public class GameStateManager {
 	// Game Input
 	private GameInputProcessor input;
 	
-	// Tracking
-	private GameState currentGameState;
-	private GameState previousState;
-	
 	public GameStateManager(Game game) {
 		this.game = game;
 		gameStates = new Stack<GameState>();
@@ -38,7 +34,6 @@ public class GameStateManager {
 	
 	// Get State
 	private GameState getState(GameState gameState) {
-		currentGameState = gameState;
 		return gameState;
 	}
 	
@@ -58,7 +53,7 @@ public class GameStateManager {
 	// Dispose of the top of the stack
 	public void popState(){
 		GameState gameState = gameStates.pop();
-		previousState = gameState;
+		//previousState = gameState;
 		gameState.dispose();
 		System.gc();
 	}
@@ -73,12 +68,5 @@ public class GameStateManager {
 		return input;
 	}
 	
-	// Returns current state
-	public GameState getCurrentState() {
-		return currentGameState;
-	}
-	
-	public GameState getPreviousState() {
-		return previousState;
-	}
+
 }

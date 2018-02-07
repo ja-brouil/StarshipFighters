@@ -1,18 +1,12 @@
 package com.jb.level.level1;
 
-import javax.xml.soap.Text;
-
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 public class Level1Assets {
-
-	/*
-	 * Class loads assets for level 1
-	 */
-
+	
 	// Asset Manager
 	private AssetManager assetManager;
 
@@ -33,7 +27,7 @@ public class Level1Assets {
 	private String basicAlienBulletPathName = "data/ammo/enemyBullet.png";
 
 	// Basic Alien and Boss Explosion Art
-	private String explosionArtPathName = "data/hit_and_explosions/explosion.png";
+	private String explosionArtPathName = "data/hit_and_explosions/sethExplosion.png";
 
 	// Level 1 Boss Art
 	private String bossArtPathName = "data/spaceships/samushipboss.png";

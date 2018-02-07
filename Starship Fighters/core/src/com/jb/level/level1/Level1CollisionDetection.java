@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
-import com.jb.gameobjects.enemies.Explosion;
 import com.jb.gameobjects.enemies.KamikazeAlien;
 import com.jb.gameobjects.items.EnergyTank;
 import com.jb.gameobjects.player.Player;
@@ -58,8 +57,6 @@ public class Level1CollisionDetection {
 				}
 			}
 		}
-
-
 		for (int i = 0; i < playerBulletList.size; i++) {
 			for (int j = 0; j < kamikazeAlienList.size; j++) {
 				if (playerBulletList.get(i).getBoundingBox().contains(kamikazeAlienList.get(j).getBoundingBox())
@@ -71,35 +68,30 @@ public class Level1CollisionDetection {
 				}
 			}
 		}
-
-
 	}
 
 	// Player Collision with Enemies
 	private void playerCollisionWithEnemies() {
-
 		for (int i = 0; i < basicAlienList.size; i++) {
 			if (basicAlienList.get(i).getBoundingBox().contains(player.getBoundingBox())
 					|| basicAlienList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
 				basicAlienList.get(i).setDrop(1);
 				basicAlienList.get(i).setHP(-1, true);
 
-				// Add code to reduce player health here
+				// Player Damage
+				player.setHP(-25, false);
 			}
 		}
-
-
 
 		for (int i = 0; i < kamikazeAlienList.size; i++) {
 			if (kamikazeAlienList.get(i).getBoundingBox().contains(player.getBoundingBox())
 					|| kamikazeAlienList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
 				kamikazeAlienList.get(i).setHP(-1, true);
 
-				// Add code to reduce player health here
+				// Player Damage
+				player.setHP(-25, false);
 			}
 		}
-
-
 	}
 
 	// Enemy Bullets hitting Player
@@ -110,7 +102,8 @@ public class Level1CollisionDetection {
 					|| player.getBoundingBox().contains(enemyBulletList.get(i).getBoundingBox())) {
 				player.getPlayerHits().add(new PlayerHit(player.getX() + MathUtils.random(0, 32),
 						player.getY() + MathUtils.random(0, 32), 0, 0, 3, 1, 3, 1, 1f / 40f, player.getAssetManager()));
-				// Add Code to Reduce Player Health
+				// Player Damage
+				player.setHP(enemyBulletList.get(i).getDamageValue(), false);
 				// Remove Bullet
 				enemyBulletList.get(i).removeBullets();
 			}
