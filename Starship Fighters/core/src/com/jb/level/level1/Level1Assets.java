@@ -28,6 +28,9 @@ public class Level1Assets {
 
 	// Basic Alien and Boss Explosion Art
 	private String explosionArtPathName = "data/hit_and_explosions/sethExplosion.png";
+	
+	// Energy Tank Art
+	private String energyTankArt = "data/ammo/lifetank2.png"; 
 
 	// Level 1 Boss Art
 	private String bossArtPathName = "data/spaceships/samushipboss.png";
@@ -67,6 +70,7 @@ public class Level1Assets {
 		assetManager.load(basicAlienBulletPathName, Texture.class);
 		assetManager.load(explosionArtPathName, Texture.class);
 		assetManager.load(bossArtPathName, Texture.class);
+		assetManager.load(energyTankArt, Texture.class);
 	}
 
 }

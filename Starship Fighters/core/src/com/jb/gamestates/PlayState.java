@@ -67,7 +67,6 @@ public class PlayState extends GameState {
 
 	@Override
 	public void update(float dt) {
-
 		
 		// Check Input
 		handleInput();
@@ -84,14 +83,7 @@ public class PlayState extends GameState {
 
 	@Override
 	public void render() {
-		// NOTICE: ORDER HERE IS IMPORTANT. THINK OF THIS AS LAYERS
-
-		/* Clear screen to Black Background
-		 To use different color scales: modify the openGL state with c++
-		 Uncomment to clear screen with white. Can mess up transition states
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); */
-
+		
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();

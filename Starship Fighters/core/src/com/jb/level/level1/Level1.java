@@ -1,16 +1,9 @@
 package com.jb.level.level1;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapGroupLayer;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.gameobjects.enemies.BasicAlien;
 import com.jb.gameobjects.enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.Explosion;
@@ -134,6 +127,11 @@ public class Level1 extends Level {
 
 		// Draw Boss
 		samusShipBoss.draw(spriteBatch);
+		
+		// Draw Items
+		for (EnergyTank energyTank : energyTankList) {
+			energyTank.draw(spriteBatch);
+		}
 
 		// Draw Explosions
 		for (Explosion explosion : explosionList) {

@@ -80,8 +80,7 @@ public class Player extends GameObjects {
 
 	}
 
-	public void init() {
-
+	private void init() {
 		// HealthPoints
 		healthbar = 100;
 		isDead = false;
@@ -126,7 +125,6 @@ public class Player extends GameObjects {
 	public void update(float dt) {
 		
 		// Check if dead
-			// Code for dead
 		
 		// Player Input
 		playerInput.playerHandleInput(dt);
@@ -282,5 +280,9 @@ public class Player extends GameObjects {
 	
 	public AssetManager getAssetManager() {
 		return assetManager;
+	}
+	
+	public int getHealthBar() {
+		return healthbar;
 	}
 }

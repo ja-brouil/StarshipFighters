@@ -78,7 +78,8 @@ public class BasicAlien extends GameObjects {
 		randomAttackCooldown = MathUtils.random(200, 1000);
 		
 		// Drop Chance | 10% chance
-		dropChance = MathUtils.random(0, 9);
+		//dropChance = MathUtils.random(0, 9);
+		dropChance = 0;
 
 		// Get Sprites
 		Texture allTexture = assetManager.get("data/spaceships/BasicEnemy.png", Texture.class);
@@ -99,6 +100,7 @@ public class BasicAlien extends GameObjects {
 		// Check if dead
 		if (healthbar <= 0) {
 			isDead = true;
+			dropItems();
 			return;
 		}
 
@@ -120,10 +122,6 @@ public class BasicAlien extends GameObjects {
 			addEnemyBullets(16, 0);
 			randomAttackCooldown = MathUtils.random(1000, 2000);
 		}
-		
-		// Drop Items
-		dropItems();
-
 	}
 
 	// Draw Enemies
@@ -179,7 +177,7 @@ public class BasicAlien extends GameObjects {
 	private void dropItems() {
 		if (isDead) {
 			if (dropChance == 0) {
-				level1.getEnergyTankList().add(new EnergyTank(x, y, 0, -2, playState, 50, assetManager));
+				level1.getEnergyTankList().add(new EnergyTank(this.x, this.y, 0, -2, assetManager));
 			}
 		}
 	}

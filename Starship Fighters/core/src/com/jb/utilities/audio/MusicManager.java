@@ -1,4 +1,4 @@
-package com.jb.assetmanagers.audio;
+package com.jb.utilities.audio;
 
 import java.util.HashMap;
 

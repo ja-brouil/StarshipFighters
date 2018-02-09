@@ -28,7 +28,13 @@ public abstract class GameObjects {
 	protected AssetManager assetManager;
 	
 	// Constructor
-	public GameObjects(float x, float y, float dx, float dy, AssetManager assetManager) {}
+	public GameObjects(float x, float y, float dx, float dy, AssetManager assetManager) {
+		this.x = x;
+		this.y = y;
+		this.dx = dx;
+		this.dy = dy;
+		this.assetManager = assetManager;
+	}
 	
 	// Cast result to int if needed
 	public static float clamp(float max, float min, float value) {
@@ -47,13 +53,17 @@ public abstract class GameObjects {
 	public abstract void update(float dt);
 	public abstract void draw(SpriteBatch spriteBatch);
 	
-	// Use this to change HP
-	public void setHP(int hp, boolean replaceHP) {
-		if (replaceHP) {
-			healthbar = hp;
-		} else {
-			healthbar += hp;
-		}
+	// HP
+	public int getHealthBar() {
+		return healthbar;
+	}
+	
+	public void setHealthBar(int healthBar) {
+		this.healthbar = healthBar;
+	}
+	
+	public void changeHealthBar(int damageValue) {
+		healthbar += damageValue;
 	}
 	
 	// Setters | Getters
@@ -99,5 +109,9 @@ public abstract class GameObjects {
 
 	public boolean isDead() {
 		return isDead;
+	}
+	
+	public void setIsDead(boolean isDead) {
+		this.isDead = isDead;
 	}
 }

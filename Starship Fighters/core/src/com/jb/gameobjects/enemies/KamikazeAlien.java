@@ -1,6 +1,5 @@
 package com.jb.gameobjects.enemies;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.gameobjects.GameObjects;
-import com.jb.gamestates.PlayState;
 import com.jb.level.level1.Level1;
 
 public class KamikazeAlien extends GameObjects {
@@ -20,13 +18,6 @@ public class KamikazeAlien extends GameObjects {
 	private int damageValue;
 	private boolean isOffScreen;
 
-	// Physics
-	private float maxSpeed;
-
-	// Get Arrays
-	private PlayState playState;
-	private Level1 level1;
-
 	public KamikazeAlien(float x, float y, float dx, float dy, int damageValue, Level1 level1,
 			AssetManager assetManager) {
 		super(x, y, dx, dy, assetManager);
@@ -37,13 +28,9 @@ public class KamikazeAlien extends GameObjects {
 		this.dx = dx;
 		this.dy = dy;
 		this.damageValue = damageValue;
-		this.level1 = level1;
 		this.assetManager = assetManager;
 		healthbar = 100;
 		isDead = false;
-
-		// Limits
-		maxSpeed = 20;
 
 		// Load Initial enemy data
 		init();
@@ -102,6 +89,10 @@ public class KamikazeAlien extends GameObjects {
 	// Getter
 	public boolean isOffScreen() {
 		return isOffScreen;
+	}
+	
+	public int getDamageValue() {
+		return damageValue;
 	}
 
 }

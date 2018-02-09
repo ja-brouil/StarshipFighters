@@ -41,18 +41,18 @@ public class Level1CollisionDetection {
 		playerBulletsWithEnemies();
 		playerCollisionWithEnemies();
 		enemyBulletsWithPlayer();
+		playerWithEnergyTank();
 	}
 
 	// Player Bullets with Enemies
 	private void playerBulletsWithEnemies() {
-
 		for (int i = 0; i < playerBulletList.size; i++) {
 			for (int j = 0; j < basicAlienList.size; j++) {
 				if (playerBulletList.get(i).getBoundingBox().contains(basicAlienList.get(j).getBoundingBox())
 						|| basicAlienList.get(j).getBoundingBox().contains(playerBulletList.get(i).getBoundingBox())
 						|| playerBulletList.get(i).getBoundingBox().overlaps(basicAlienList.get(j).getBoundingBox())
 						|| basicAlienList.get(j).getBoundingBox().overlaps(playerBulletList.get(i).getBoundingBox())) {
-					basicAlienList.get(j).setHP(playerBulletList.get(i).getDamageValue(), false);
+					basicAlienList.get(j).changeHealthBar(playerBulletList.get(i).getDamageValue());
 					playerBulletList.get(i).removeBullets();
 				}
 			}
@@ -63,7 +63,7 @@ public class Level1CollisionDetection {
 						|| kamikazeAlienList.get(j).getBoundingBox().contains(playerBulletList.get(i).getBoundingBox())
 						|| playerBulletList.get(i).getBoundingBox().overlaps(kamikazeAlienList.get(j).getBoundingBox())
 						|| kamikazeAlienList.get(j).getBoundingBox().overlaps(playerBulletList.get(i).getBoundingBox())) {
-					kamikazeAlienList.get(j).setHP(playerBulletList.get(i).getDamageValue(), false);
+					kamikazeAlienList.get(j).changeHealthBar(playerBulletList.get(i).getDamageValue());
 					playerBulletList.get(i).removeBullets();
 				}
 			}
@@ -76,20 +76,20 @@ public class Level1CollisionDetection {
 			if (basicAlienList.get(i).getBoundingBox().contains(player.getBoundingBox())
 					|| basicAlienList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
 				basicAlienList.get(i).setDrop(1);
-				basicAlienList.get(i).setHP(-1, true);
+				basicAlienList.get(i).setHealthBar(-1);
 
 				// Player Damage
-				player.setHP(-25, false);
+				player.changeHealthBar(-25);
 			}
 		}
 
 		for (int i = 0; i < kamikazeAlienList.size; i++) {
 			if (kamikazeAlienList.get(i).getBoundingBox().contains(player.getBoundingBox())
 					|| kamikazeAlienList.get(i).getBoundingBox().overlaps(player.getBoundingBox())) {
-				kamikazeAlienList.get(i).setHP(-1, true);
+				kamikazeAlienList.get(i).setHealthBar(-1);
 
 				// Player Damage
-				player.setHP(-25, false);
+				player.changeHealthBar(-1 * kamikazeAlienList.get(i).getDamageValue());
 			}
 		}
 	}
@@ -103,7 +103,7 @@ public class Level1CollisionDetection {
 				player.getPlayerHits().add(new PlayerHit(player.getX() + MathUtils.random(0, 32),
 						player.getY() + MathUtils.random(0, 32), 0, 0, 3, 1, 3, 1, 1f / 40f, player.getAssetManager()));
 				// Player Damage
-				player.setHP(enemyBulletList.get(i).getDamageValue(), false);
+				player.changeHealthBar(enemyBulletList.get(i).getDamageValue());
 				// Remove Bullet
 				enemyBulletList.get(i).removeBullets();
 			}
@@ -112,7 +112,12 @@ public class Level1CollisionDetection {
 
 	// Energy Tank Hitting Player
 	private void playerWithEnergyTank() {
-
+		for (EnergyTank energyTank: energyTankList) {
+			if (energyTank.getBoundingBox().contains(player.getBoundingBox()) || energyTank.getBoundingBox().overlaps(player.getBoundingBox())){
+				player.changeHealthBar(energyTank.getHealthRegenValue());
+				energyTank.setIsDead(true);
+			}
+		}
 	}
 
 }

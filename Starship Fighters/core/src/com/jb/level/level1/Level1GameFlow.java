@@ -114,12 +114,12 @@ public class Level1GameFlow {
 		// Spawn Basic Alien
 		for (Vector2 alienSpawnPoint : spawnPoints) {
 			basicAlienList.add(
-					new BasicAlien(alienSpawnPoint.x, alienSpawnPoint.y, 0, -5, 1000L, -15, -20, level1, assetManager));
+					new BasicAlien(alienSpawnPoint.x, alienSpawnPoint.y, 0, -5, 1000L, -15, -25, level1, assetManager));
 		}
 
 		// Spawn Kamikaze Alien
 		for (Vector2 kamikazeAlien: kamikazeSpawnPoints) {
-			kamikazeAlienList.add(new KamikazeAlien(kamikazeAlien.x, kamikazeAlien.y, 0, -8, -25, level1, assetManager));
+			kamikazeAlienList.add(new KamikazeAlien(kamikazeAlien.x, kamikazeAlien.y, 0, -8, -100, level1, assetManager));
 		}
 
 		// Increase Spawn Counter

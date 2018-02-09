@@ -4,10 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.jb.assetmanagers.audio.MusicManager;
-import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.input.GameKeys;
 import com.jb.main.Game;
+import com.jb.utilities.audio.MusicManager;
+import com.jb.utilities.audio.SoundManager;
 
 public class GameOverState extends GameState{
 

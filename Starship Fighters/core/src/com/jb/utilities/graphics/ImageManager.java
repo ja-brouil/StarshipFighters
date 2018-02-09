@@ -1,4 +1,4 @@
-package com.jb.assetmanagers;
+package com.jb.utilities.graphics;
 
 import java.util.HashMap;
 

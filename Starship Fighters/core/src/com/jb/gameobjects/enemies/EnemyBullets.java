@@ -1,19 +1,14 @@
 package com.jb.gameobjects.enemies;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.jb.assetmanagers.audio.SoundManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gamestates.PlayState;
 
 public class EnemyBullets extends GameObjects{
-	
-	// PlayState Access
-	private PlayState playState;
 	
 	// Physics
 	private float minSpeed;
@@ -40,9 +35,6 @@ public class EnemyBullets extends GameObjects{
 		this.dx = dx;
 		this.dy = dy;
 		this.damageValue = damageValue;
-		
-		// PlayState Access
-		this.playState = playState;
 		
 		// Graphics
 		this.assetManager = assetManager;

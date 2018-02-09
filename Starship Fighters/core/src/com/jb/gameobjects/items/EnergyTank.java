@@ -2,55 +2,55 @@ package com.jb.gameobjects.items;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.animation.Animator;
-import com.jb.gamestates.PlayState;
+import com.jb.gameobjects.GameObjects;
 
-public class EnergyTank extends Item {
+public class EnergyTank extends GameObjects{
 
 	// Graphics
 	private int frameCols;
 	private int frameRows;
 	private float frameLengthTime;
 	private float animationTimer;
+	private String energyTankPathName = "data/ammo/lifetank2.png";
+	private Animator energyTankAnimatior;
 	
 	// Collision Box
 	private float width;
 	private float height;
 
 	// Gameplay
-	private float healthRegenValue;
+	private int healthRegenValue;
 
-	public EnergyTank(float x, float y, float dx, float dy, PlayState playState, float healthRegenValue, AssetManager assetManager) {
-		super(x, y, dx, dy, playState, assetManager);
-
-		this.x = x;
-		this.y = y;
-		this.dx = dx;
-		this.dy = dy;
-		this.playState = playState;
-		this.healthRegenValue = healthRegenValue;
-		this.assetManager = assetManager;
-
+	public EnergyTank(float x, float y, float dx, float dy, AssetManager assetManager) {
+		super(x, y, dx, dy, assetManager);
+		
+		isDead = false;
+		
 		init();
 	}
-
+	
+	// Initialization
 	private void init() {
 		// Variables for Animation
 		frameCols = 2;
 		frameRows = 1;
-		animationPathName = "data/ammo/lifetank2.png";
+		energyTankPathName = "data/ammo/lifetank2.png";
 		frameLengthTime = 1f / 5f;
 
 		// Start Animation
-		itemAnimation = new Animator(frameCols, frameRows, animationPathName, frameCols, frameRows, frameLengthTime, assetManager);
+		energyTankAnimatior = new Animator(frameCols, frameRows, energyTankPathName, frameCols, frameRows, frameLengthTime, assetManager);
 		
 		// Bounding Box for collision
 		width = 53f / 4f;
 		height = 30f;
 		collisionBounds = new Rectangle(x, y, width, height);
-
+		
+		// Health Regen Value
+		healthRegenValue = 50;
 	}
 
 	// Update Items
@@ -68,7 +68,7 @@ public class EnergyTank extends Item {
 	// Draw
 	public void draw(SpriteBatch spriteBatch) {
 		animationTimer += Gdx.graphics.getDeltaTime();
-		spriteBatch.draw(itemAnimation.getAnimationFrames().getKeyFrame(animationTimer, true), x, y);
+		spriteBatch.draw(energyTankAnimatior.getAnimationFrames().getKeyFrame(animationTimer, true), x, y);
 	}
 
 
@@ -93,14 +93,18 @@ public class EnergyTank extends Item {
 		}
 
 		// Remove if reached bottom of the screen
-		if (y < 0) {
-			remove = true;
+		if (y < -assetManager.get(energyTankPathName, Texture.class).getHeight()) {
+			isDead = true;
 		}
 
 	}
 	
-	public float getHealthRegenValue() {
+	public int getHealthRegenValue() {
 		return healthRegenValue;
+	}
+	
+	public boolean getRemovalStatus() {
+		return isDead;
 	}
 
 }

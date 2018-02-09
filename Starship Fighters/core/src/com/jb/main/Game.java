@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jb.gamestates.GameStateManager;
-import com.jb.gamestates.Transition;
 import com.jb.input.GameInputProcessor;
 
 public class Game extends ApplicationAdapter {
@@ -30,10 +29,7 @@ public class Game extends ApplicationAdapter {
 
 	// Asset Manager
 	private AssetManager assetManager;
-
-	// DEBUG
-	private float dt;
-
+	
 	@Override
 	public void create() {
 

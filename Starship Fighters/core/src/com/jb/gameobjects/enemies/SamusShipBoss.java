@@ -2,16 +2,13 @@ package com.jb.gameobjects.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
-import com.jb.assetmanagers.audio.MusicManager;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.gameobjects.player.PlayerHit;
@@ -306,7 +303,7 @@ public class SamusShipBoss extends GameObjects {
 						}
 						if (h == 1) {
 							if (!isMiddleInvincible) {
-								this.setHP(tmpShipBullets.getDamageValue(), false);
+								healthbar += tmpShipBullets.getDamageValue();
 							}
 							tmpShipBullets.removeBullets();
 							playState.getPlayer().getPlayerHits().add(new PlayerHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, 3, 1, 3, 1, 1f / 40f, assetManager));

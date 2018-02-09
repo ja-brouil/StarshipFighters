@@ -1,8 +1,7 @@
-package com.jb.assetmanagers.audio;
+package com.jb.utilities.audio;
 
 import java.util.HashMap;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 
