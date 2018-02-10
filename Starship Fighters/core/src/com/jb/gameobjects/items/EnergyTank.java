@@ -36,7 +36,7 @@ public class EnergyTank extends GameObjects{
 	// Initialization
 	private void init() {
 		// Variables for Animation
-		frameCols = 2;
+		frameCols = 4;
 		frameRows = 1;
 		energyTankPathName = "data/ammo/lifetank2.png";
 		frameLengthTime = 1f / 5f;
@@ -45,8 +45,8 @@ public class EnergyTank extends GameObjects{
 		energyTankAnimatior = new Animator(frameCols, frameRows, energyTankPathName, frameCols, frameRows, frameLengthTime, assetManager);
 		
 		// Bounding Box for collision
-		width = 53f / 4f;
-		height = 30f;
+		width = 56f / 4f;
+		height = 18f;
 		collisionBounds = new Rectangle(x, y, width, height);
 		
 		// Health Regen Value
@@ -68,7 +68,7 @@ public class EnergyTank extends GameObjects{
 	// Draw
 	public void draw(SpriteBatch spriteBatch) {
 		animationTimer += Gdx.graphics.getDeltaTime();
-		spriteBatch.draw(energyTankAnimatior.getAnimationFrames().getKeyFrame(animationTimer, true), x, y);
+		spriteBatch.draw(energyTankAnimatior.getAnimationFrames().getKeyFrame(animationTimer, true), x, y, 56f / 4f, 18f);
 	}
 
 

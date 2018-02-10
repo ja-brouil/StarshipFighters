@@ -78,8 +78,7 @@ public class BasicAlien extends GameObjects {
 		randomAttackCooldown = MathUtils.random(200, 1000);
 		
 		// Drop Chance | 10% chance
-		//dropChance = MathUtils.random(0, 9);
-		dropChance = 0;
+		dropChance = MathUtils.random(0, 9);
 
 		// Get Sprites
 		Texture allTexture = assetManager.get("data/spaceships/BasicEnemy.png", Texture.class);

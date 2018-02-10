@@ -126,6 +126,11 @@ public class Player extends GameObjects {
 		
 		// Check if dead
 		
+		// Set Health Limit
+		if (healthbar > 100) {
+			healthbar = 100;
+		}
+		
 		// Player Input
 		playerInput.playerHandleInput(dt);
 
