@@ -133,7 +133,6 @@ public class MenuState extends GameState {
 		// play
 		if (currentOption == 0) {
 			menuMusic.stop();
-			//gsm.setState(GameStateManager.PLAY);
 			gsm.setState(new Transition(gsm, this, new PlayState(gsm), TransitionType.BLACK_FADE));
 		} else if (currentOption == 1) {
 			dispose();

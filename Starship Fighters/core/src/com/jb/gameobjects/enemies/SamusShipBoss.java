@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.player.PlayerBullets;
-import com.jb.gameobjects.player.PlayerHit;
 import com.jb.gamestates.PlayState;
 import com.jb.level.level1.Level1;
 import com.jb.main.Game;
@@ -56,9 +55,11 @@ public class SamusShipBoss extends GameObjects {
 	private Array<EnemyBullets> enemyBullets;
 	private Array<Explosion> explosionList;
 	private Array<BasicAlien> listOfAliens;
+	private Array<SamusShipBossHit> bossHitArray;
 	private Level1 level1;
 
 	// timers
+	private float spawnDelayTimer;
 	private long timeSinceBattleBegan;
 	private long rightWingExplosionTimer, leftWingExplosionTimer, bossDeathExplosionTimer;
 	private long bulletCooldown, bulletCooldownRight, bulletCooldownLeft;
@@ -136,14 +137,22 @@ public class SamusShipBoss extends GameObjects {
 		enemyBullets = level1.getEnemyBulletList();
 		explosionList = level1.getExplosionList();
 		listOfAliens = level1.getBasicAlienList();
+		bossHitArray = new Array<SamusShipBossHit>();
 	}
 
 	// Update the Boss
 	@Override
 	public void update(float dt) {
+		
+		// Check if active
 		if (!isActive) {
+			spawnDelayTimer = 0;
+			return;
+		} else if (isActive && spawnDelayTimer < 4) {
+			spawnDelayTimer += Gdx.graphics.getDeltaTime();
 			return;
 		}
+		
 
 		// Update Boss Position
 		x += dx;
@@ -164,11 +173,20 @@ public class SamusShipBoss extends GameObjects {
 		// Shoot check
 		shootBullets();
 
-		// Spawn Small Enemies every 15 seconds
+		// Spawn Small Enemies every 5 seconds
 		spawnEnemies();
+		
+		// Update Hit Animations
+		for (int i = 0; i < bossHitArray.size; i++) {
+			bossHitArray.get(i).update(dt);
+			if (bossHitArray.get(i).isBossHitAnimationDone()){
+				bossHitArray.removeIndex(i);
+			}
+		}
 
 		// Check Boss Death
 		checkMiddleHP();
+		
 	}
 
 	// Movement Limits
@@ -269,19 +287,29 @@ public class SamusShipBoss extends GameObjects {
 				bossDeathExplosionTimer = TimeUtils.millis();
 				bossDeathExplosionCounter++;
 				isDead = true;
+				
+				// Destroy all other enemies on the screen
+				for (BasicAlien basicAlien: listOfAliens) {
+					basicAlien.setIsDead(true);
+				}
 			}
 		}
 	}
 
 	// Spawn Enemies
 	private void spawnEnemies() {
+		// Do not spawn if off screen
+		if (x > Game.WIDTH || x < 0 || y > Game.HEIGHT || y < 0) {
+			return;
+		}
+		
 		// Check if its been 5 seconds
 		if (TimeUtils.timeSinceMillis(timeSinceBattleBegan) > 5000 && healthbar > 0) {
 			listOfAliens.add(new BasicAlien(x + (width / 2), y + ( height / 2), 3, 0, 1000L, -15, -20, level1, assetManager));
 			listOfAliens.add(new BasicAlien(x + (width / 2), y + ( height / 2), -3, 0, 1000L, -15, -20, level1, assetManager));
 			listOfAliens.add(new BasicAlien(x + (width / 3), y + ( height / 2), 3, 0, 1000L, -15, -20, level1, assetManager));
 			listOfAliens.add(new BasicAlien(x + (width / 3), y + ( height / 2), -3, 0, 1000L, -15, -20, level1, assetManager));
-			assetManager.get("data/audio/sound/bossSpawnEnemies.wav", Sound.class).play(1.0f);
+			assetManager.get(bossSpawnSoundFilePath, Sound.class).play(1.0f);
 			timeSinceBattleBegan = TimeUtils.millis();
 		}
 	}
@@ -298,7 +326,7 @@ public class SamusShipBoss extends GameObjects {
 							if (!isLeftWingDead) {
 								leftWingHealth += tmpShipBullets.getDamageValue();
 							}
-							playState.getPlayer().getPlayerHits().add(new PlayerHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, 3, 1, 3, 1, 1f / 40f, assetManager));
+							bossHitArray.add(new SamusShipBossHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, assetManager));
 							tmpShipBullets.removeBullets();
 						}
 						if (h == 1) {
@@ -306,13 +334,13 @@ public class SamusShipBoss extends GameObjects {
 								healthbar += tmpShipBullets.getDamageValue();
 							}
 							tmpShipBullets.removeBullets();
-							playState.getPlayer().getPlayerHits().add(new PlayerHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, 3, 1, 3, 1, 1f / 40f, assetManager));
+							bossHitArray.add(new SamusShipBossHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, assetManager));
 						}
 						if (h == 2) {
 							if (!isRightWingDead) {
 								rightWingHealth += tmpShipBullets.getDamageValue();
 							}
-							playState.getPlayer().getPlayerHits().add(new PlayerHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, 3, 1, 3, 1, 1f / 40f, assetManager));
+							bossHitArray.add(new SamusShipBossHit(tmpShipBullets.getX(), tmpShipBullets.getY(), 0, 0, assetManager));
 							tmpShipBullets.removeBullets();
 						}
 					}
@@ -330,6 +358,11 @@ public class SamusShipBoss extends GameObjects {
 		// Get Time for animation
 		animationTime += Gdx.graphics.getDeltaTime();
 		spriteBatch.draw(enemyBossSprite.getAnimationFrames().getKeyFrame(animationTime, true), x, y);
+		
+		// Draw Explosions
+		for (SamusShipBossHit samusShipBossHit : bossHitArray) {
+			samusShipBossHit.draw(spriteBatch);
+		}
 	}
 	
 	// Add Boss Bullets

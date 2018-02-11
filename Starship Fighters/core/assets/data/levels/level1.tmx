@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="20" height="25" tilewidth="32" tileheight="32" infinite="0" nextobjectid="105">
- <group name="Boss" visible="0">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="20" height="25" tilewidth="32" tileheight="32" nextobjectid="116">
+ <group name="Boss">
   <objectgroup name="BossSpawn" visible="0">
    <object id="69" name="Boss" x="0" y="-128" width="32" height="32"/>
   </objectgroup>
@@ -87,6 +87,19 @@
    <object id="102" x="192" y="-128" width="32" height="32"/>
    <object id="103" x="480" y="-128" width="32" height="32"/>
    <object id="104" x="576" y="-128" width="32" height="32"/>
+  </objectgroup>
+  <objectgroup name="Level10" visible="0">
+   <object id="105" x="32" y="-64" width="32" height="32"/>
+   <object id="106" x="128" y="-64" width="32" height="32"/>
+   <object id="107" x="224" y="-64" width="32" height="32"/>
+   <object id="108" x="320" y="-64" width="32" height="32"/>
+   <object id="109" x="416" y="-64" width="32" height="32"/>
+   <object id="110" x="512" y="-64" width="32" height="32"/>
+   <object id="111" x="608" y="-64" width="32" height="32"/>
+   <object id="112" name="KA" x="96" y="-128" width="32" height="32"/>
+   <object id="113" name="KA" x="192" y="-128" width="32" height="32"/>
+   <object id="114" name="KA" x="480" y="-128" width="32" height="32"/>
+   <object id="115" name="KA" x="576" y="-128" width="32" height="32"/>
   </objectgroup>
  </group>
 </map>

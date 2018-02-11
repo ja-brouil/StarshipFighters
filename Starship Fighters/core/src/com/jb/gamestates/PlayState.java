@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jb.HUD.HealthBar;
 import com.jb.gameobjects.player.Player;
+import com.jb.gamestates.Transition.TransitionType;
 import com.jb.input.GameKeys;
 import com.jb.level.LevelManager;
 
@@ -79,6 +80,13 @@ public class PlayState extends GameState {
 
 		// Update Level
 		levelManager.update(dt);
+		
+
+		// Check for Game Over
+		if (player.isDead()) {
+			levelManager.getCurrentLevel().getLevelMusic().stop();
+			gsm.setState(new Transition(gsm, this, new GameOverState(gsm), TransitionType.BLACK_FADE));
+		}
 	}
 
 	@Override
@@ -112,6 +120,7 @@ public class PlayState extends GameState {
 		player.getPlayerInput().setDown(GameKeys.isDown(GameKeys.DOWN));
 		player.getPlayerInput().setShoot(GameKeys.isDown(GameKeys.SPACE));
 		player.getPlayerInput().setMissile(GameKeys.isPressed(GameKeys.SHIFT));
+
 	}
 	
 	// Getters

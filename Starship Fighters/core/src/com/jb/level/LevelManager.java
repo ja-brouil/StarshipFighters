@@ -12,6 +12,9 @@ public class LevelManager {
 	
 	// Level Stack
 	private Stack<Level> worldLevels;
+	
+	// Current Level
+	private Level currentLevel;
 
 	public LevelManager(PlayState playState) {
 		this.playState = playState;
@@ -32,11 +35,6 @@ public class LevelManager {
 		worldLevels.peek().render(playState.getSpriteBatch());
 	}
 	
-	// Get Level
-	private Level getLevel(Level level) {
-		return level;
-	}
-	
 	// Set Level
 	public void setLevel(Level level) {
 		popLevel();
@@ -45,7 +43,8 @@ public class LevelManager {
 	
 	// Push new level
 	public void pushLevel(Level level) {
-		worldLevels.push(getLevel(level));
+		currentLevel = level;
+		worldLevels.push(level);
 	}
 	
 	// Dispose of the level
@@ -53,5 +52,9 @@ public class LevelManager {
 		worldLevels.pop();
 		System.gc();
 	}
-
+	
+	// Get Level
+	public Level getCurrentLevel() {
+		return currentLevel;
+	}
 }

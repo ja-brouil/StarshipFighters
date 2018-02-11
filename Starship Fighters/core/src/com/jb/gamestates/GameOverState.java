@@ -1,13 +1,14 @@
 package com.jb.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.jb.gamestates.Transition.TransitionType;
 import com.jb.input.GameKeys;
 import com.jb.main.Game;
-import com.jb.utilities.audio.MusicManager;
-import com.jb.utilities.audio.SoundManager;
 
 public class GameOverState extends GameState{
 
@@ -18,15 +19,14 @@ public class GameOverState extends GameState{
 	private int currentOption;
 	
 	// SFX
-	private SoundManager soundManager;
 	private String selectSound = "data/audio/sound/Menu Select.wav";
-	private String choiceOptionName = "Choice Sound";
 	
 	// Bitmap Font
 	private BitmapFont bitmapFont;
 	
-	// Music Disposal
-	private MusicManager musicManager;
+	// Asset Manager
+	private AssetManager assetManager;
+	
 
 	public GameOverState(GameStateManager gsm) {
 		super(gsm);
@@ -35,22 +35,18 @@ public class GameOverState extends GameState{
 
 	@Override
 	public void init() {
-		
-		// Start Sound and Music
-		soundManager.addSound(selectSound, choiceOptionName);
+		// Asset Manager
+		assetManager = gsm.getGame().getAssetManager();
 		
 		// Start Bitmap Font
 		bitmapFont = new BitmapFont();
-		//bitmapFont.getData().setScale(3);
-		
-		// Spritebatch start
-		spriteBatch = game.getSpriteBatch();
 		
 		// Current Option Start
 		currentOption = 0;
 		
-		// Add Sound effect
-		soundManager.addSound(selectSound, choiceOptionName);
+		// Add Sound effects
+		assetManager.load(selectSound, Sound.class);
+		assetManager.finishLoading();
 		
 	}
 	
@@ -59,18 +55,16 @@ public class GameOverState extends GameState{
 	public void handleInput() {
 		// Up/Down
 		if (GameKeys.isPressed(GameKeys.UP)) {
-			System.out.println("UP");
 			if (currentOption > 0) {
 				currentOption--;
-				soundManager.playSound(choiceOptionName, 1f);
+				assetManager.get(selectSound, Sound.class).play();
 			}
 		}
 		
 		if (GameKeys.isPressed(GameKeys.DOWN)) {
-			System.out.println("DOWN");
 			if (currentOption < choices.length - 1) {
 				currentOption++;
-				soundManager.playSound(choiceOptionName, 1.0f);
+				assetManager.get(selectSound, Sound.class).play();
 			}
 		}
 		
@@ -93,7 +87,7 @@ public class GameOverState extends GameState{
 	private void select() {
 		// Return to main menu
 		if (currentOption == 0) {
-			//gsm.setState(GameStateManager.MENU);
+			gsm.setState(new Transition(gsm, this, new MenuState(gsm), TransitionType.BLACK_FADE));
 		} else if(currentOption == 1) { 
 			// exit
 			dispose();
@@ -106,8 +100,6 @@ public class GameOverState extends GameState{
 		
 		// Handle input
 		handleInput();
-	
-		// Don't need anything else here
 		
 	}
 
@@ -141,8 +133,6 @@ public class GameOverState extends GameState{
 	@Override
 	public void dispose() {
 		bitmapFont.dispose();
-		soundManager.disposeAllSound();
-		musicManager.disposeAllMusic();
 	}
 	
 }

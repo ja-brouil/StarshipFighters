@@ -18,7 +18,7 @@ import com.jb.main.Game;
 public class Level1 extends Level {
 
 	// Map
-	private String mapName = "data/levels/testmap.tmx";
+	private String mapName = "data/levels/level1.tmx";
 	
 	// Level 1 Game Flow
 	private Level1GameFlow level1GameFlow;
@@ -60,6 +60,11 @@ public class Level1 extends Level {
 
 		// Load TMX Map
 		tiledMap = new TmxMapLoader().load(mapName);
+		
+		// Load Assets
+		level1Assets = new Level1Assets(this);
+		level1Assets.loadLevel1Assets();
+		assetManager.finishLoading();
 	
 		// Start Game Flow
 		level1GameFlow = new Level1GameFlow(this, tiledMap);
@@ -70,11 +75,6 @@ public class Level1 extends Level {
 
 		// Start Collision Handler
 		level1CollisionDetection = new Level1CollisionDetection(playState, this);
-
-		// Load Assets
-		level1Assets = new Level1Assets(this);
-		level1Assets.loadLevel1Assets();
-		assetManager.finishLoading();
 
 		// Background
 		loadBackgrounds();

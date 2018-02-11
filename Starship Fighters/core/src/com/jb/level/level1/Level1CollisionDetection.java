@@ -89,7 +89,7 @@ public class Level1CollisionDetection {
 				kamikazeAlienList.get(i).setHealthBar(-1);
 
 				// Player Damage
-				player.changeHealthBar(-1 * kamikazeAlienList.get(i).getDamageValue());
+				player.changeHealthBar(kamikazeAlienList.get(i).getDamageValue());
 			}
 		}
 	}

@@ -46,7 +46,7 @@ public class Player extends GameObjects {
 	private float bulletSpeed;
 	private long bulletcooldown;
 	private long bulletShootSpeed;
-	private boolean isDead;
+	private float maxHealth;
 	
 	// Input
 	private PlayerInput playerInput;
@@ -82,7 +82,8 @@ public class Player extends GameObjects {
 
 	private void init() {
 		// HealthPoints
-		healthbar = 100;
+		healthbar = 200;
+		maxHealth = 200;
 		isDead = false;
 
 		// Note: Ship size is 64 x 64 pixels
@@ -125,10 +126,14 @@ public class Player extends GameObjects {
 	public void update(float dt) {
 		
 		// Check if dead
+		if (healthbar <= 0) {
+			isDead = true;
+			return;
+		}
 		
 		// Set Health Limit
-		if (healthbar > 100) {
-			healthbar = 100;
+		if (healthbar > maxHealth) {
+			healthbar = (int) maxHealth;
 		}
 		
 		// Player Input
@@ -266,11 +271,7 @@ public class Player extends GameObjects {
 	public void setDY(float dy) {
 		this.dy = dy;
 	}
-
-	public boolean getDeathStatus() {
-		return isDead;
-	}
-
+	
 	public void setDeathStatus(boolean isDead) {
 		this.isDead = isDead;
 	}

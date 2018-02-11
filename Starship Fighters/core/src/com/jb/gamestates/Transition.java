@@ -48,6 +48,8 @@ public class Transition extends GameState{
 		// Black Fade
 		if (transitionType == TransitionType.BLACK_FADE) {
 			maxTime = 3;
+		} else if (transitionType == TransitionType.WHITE_FADE) {
+			maxTime = 3;
 		}
 		
 		// Asset Manager
@@ -101,7 +103,7 @@ public class Transition extends GameState{
 			spriteBatch.draw(blackFadeTexture, 0, 0, Game.WIDTH, Game.HEIGHT);
 			spriteBatch.end();
 			spriteBatch.setColor(1,1,1,1);
-		}	
+		}
 	}
 
 	@Override
