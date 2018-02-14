@@ -12,9 +12,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.jb.gameobjects.enemies.BasicAlien;
-import com.jb.gameobjects.enemies.KamikazeAlien;
-import com.jb.gameobjects.enemies.SamusShipBoss;
+import com.jb.gameobjects.GameObjects;
+import com.jb.gameobjects.enemies.level1enemies.BasicAlien;
+import com.jb.gameobjects.enemies.level1enemies.KamikazeAlien;
+import com.jb.gameobjects.enemies.level1enemies.SamusShipBoss;
+import com.jb.gamestates.PlayState;
 
 public class Level1GameFlow {
 
@@ -39,8 +41,7 @@ public class Level1GameFlow {
 	private MapLayer spawnLayer;
 
 	// ArrayList Access
-	private Array<BasicAlien> basicAlienList;
-	private Array<KamikazeAlien> kamikazeAlienList;
+	private Array<GameObjects> allEnemies;
 
 	// Map Layers
 	private MapGroupLayer mapGroupLayer;
@@ -50,6 +51,9 @@ public class Level1GameFlow {
 
 	// Asset Manager
 	private AssetManager assetManager;
+	
+	// PlayState Access
+	private PlayState playState;
 
 	// Boss Music
 	private float musicVolumeChange = 0.4f;
@@ -63,9 +67,9 @@ public class Level1GameFlow {
 	public Level1GameFlow(Level1 level1, TiledMap tiledMap) {
 		this.level1 = level1;
 		this.tiledMap = tiledMap;
+		allEnemies = level1.getAllGameObjects();
 		assetManager = level1.getAssetManager();
-		basicAlienList = level1.getBasicAlienList();
-		kamikazeAlienList = level1.getKamikazeAlienList();
+		playState = level1.getPlayState();
 	}
 
 	// Init
@@ -83,7 +87,7 @@ public class Level1GameFlow {
 		kamikazeSpawnPoints = new Array<Vector2>();
 
 		// Get Basic Enemies Spawn points
-		spawnNumber = 8;
+		spawnNumber = 0;
 		mapGroupLayer = (MapGroupLayer) tiledMap.getLayers().get("EnemySpawn");
 		spawnLayer = mapGroupLayer.getLayers().get(spawnNumber);
 
@@ -92,7 +96,7 @@ public class Level1GameFlow {
 		MapLayer bossSpawnLayer = bossSpawnGroupLayer.getLayers().get("BossSpawn");
 		bossSpawnPoint = new Vector2(bossSpawnLayer.getObjects().get("Boss").getProperties().get("x", Float.class),
 				bossSpawnLayer.getObjects().get("Boss").getProperties().get("y", Float.class));
-		samusShipBoss = new SamusShipBoss(-100, -100, 0, 0, level1, level1.getPlayState(), assetManager);
+		samusShipBoss = new SamusShipBoss(-100, -100, 0, 0, level1.getPlayState(), assetManager);
 
 		// Get Boss Music
 		bossMusic = assetManager.get("data/audio/music/bossbattle.mp3", Music.class);
@@ -100,9 +104,8 @@ public class Level1GameFlow {
 
 	// Check for next wave
 	public void updateLevel() {
-
 		// Start Boss
-		if (spawnBoss && basicAlienList.size != 0) {
+		if (spawnBoss && allEnemies.size != 0) {
 			return;
 		} else if (spawnBoss) {
 			startBoss();
@@ -125,7 +128,7 @@ public class Level1GameFlow {
 
 
 		// Check if all enemies are dead
-		boolean areAllEnemiesDead = basicAlienList.size == 0 && kamikazeAlienList.size == 0;
+		boolean areAllEnemiesDead = allEnemies.size == 0;
 		if (areAllEnemiesDead && !spawnBoss && !noMoreEnemies) {
 			// Start Delay
 			if (!isDelayOn) {
@@ -148,14 +151,14 @@ public class Level1GameFlow {
 
 		// Spawn Basic Alien
 		for (Vector2 alienSpawnPoint : spawnPoints) {
-			basicAlienList.add(
-					new BasicAlien(alienSpawnPoint.x, alienSpawnPoint.y, 0, -5, 1000L, -15, -25, level1, assetManager));
+			allEnemies.add(
+					new BasicAlien(alienSpawnPoint.x, alienSpawnPoint.y, 0, -5, 1000L, -15, -25, assetManager, playState));
 		}
 
 		// Spawn Kamikaze Alien
 		for (Vector2 kamikazeAlien : kamikazeSpawnPoints) {
-			kamikazeAlienList
-					.add(new KamikazeAlien(kamikazeAlien.x, kamikazeAlien.y, 0, -8, -40, level1, assetManager));
+			allEnemies
+					.add(new KamikazeAlien(kamikazeAlien.x, kamikazeAlien.y, 0, -8, -40, assetManager, playState));
 		}
 
 		// Increase Spawn Counter
@@ -197,8 +200,8 @@ public class Level1GameFlow {
 
 		// Start Initial Enemies
 		for (int i = 0; i < spawnPoints.size; i++) {
-			basicAlienList.add(new BasicAlien(spawnPoints.get(i).x, spawnPoints.get(i).y, 0, -5, 1000L, -15, -20,
-					level1, assetManager));
+			allEnemies.add(new BasicAlien(spawnPoints.get(i).x, spawnPoints.get(i).y, 0, -5, 1000L, -15, -20,
+					assetManager, playState));
 		}
 	}
 
@@ -246,7 +249,6 @@ public class Level1GameFlow {
 		
 	}
 	
-
 	// Getters
 	public SamusShipBoss getSamusBossShip() {
 		return samusShipBoss;

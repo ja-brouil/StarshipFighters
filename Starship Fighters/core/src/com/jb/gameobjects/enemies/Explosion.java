@@ -35,12 +35,10 @@ public class Explosion extends GameObjects {
 
 		// Start Explosion
 		init();
-
 	}
 
 	// Initialize
 	private void init() {		
-
 		// Start explosion animation
 		explosionAnimation = new Animator(4, 2, explosionPathName, 4, 2, 1f / 40f, assetManager);
 

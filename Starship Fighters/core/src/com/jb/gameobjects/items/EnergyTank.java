@@ -6,9 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.jb.animation.Animator;
-import com.jb.gameobjects.GameObjects;
 
-public class EnergyTank extends GameObjects{
+public class EnergyTank extends Item{
 
 	// Graphics
 	private int frameCols;
@@ -47,7 +46,7 @@ public class EnergyTank extends GameObjects{
 		// Bounding Box for collision
 		width = 56f / 4f;
 		height = 18f;
-		collisionBounds = new Rectangle(x, y, width, height);
+		hitBox = new Rectangle(x, y, width, height);
 		
 		// Health Regen Value
 		healthRegenValue = 50;
@@ -60,7 +59,7 @@ public class EnergyTank extends GameObjects{
 		y += dy;
 		
 		// Update Collision Bounds
-		collisionBounds.setPosition(x, y);
+		hitBox.setPosition(x, y);
 		setLimits();
 
 	}
@@ -99,6 +98,10 @@ public class EnergyTank extends GameObjects{
 
 	}
 	
+	// Item Effect
+	@Override
+	public void itemEffect() {}
+	
 	public int getHealthRegenValue() {
 		return healthRegenValue;
 	}
@@ -106,5 +109,4 @@ public class EnergyTank extends GameObjects{
 	public boolean getRemovalStatus() {
 		return isDead;
 	}
-
 }

@@ -18,8 +18,12 @@ public abstract class GameObjects {
 	// Health
 	protected int healthbar;
 	
+	// Damage Value
+	protected int damageValue;
+	
 	// Dead status
 	protected boolean isDead;
+	protected boolean removeFromArray;
 	
 	// HitBox
 	protected Rectangle collisionBounds;
@@ -114,4 +118,13 @@ public abstract class GameObjects {
 	public void setIsDead(boolean isDead) {
 		this.isDead = isDead;
 	}
+	
+	public boolean isRemoved() {
+		return removeFromArray;
+	}
+
+	public int getDamageValue() {
+		return damageValue;
+	}
+
 }

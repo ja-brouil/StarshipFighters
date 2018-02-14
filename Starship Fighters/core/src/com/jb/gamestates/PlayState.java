@@ -4,7 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.jb.HUD.HealthBar;
+import com.jb.gameobjects.GameObjects;
+import com.jb.gameobjects.enemies.Explosion;
+import com.jb.gameobjects.enemies.level1enemies.EnemyBullets;
+import com.jb.gameobjects.items.Item;
 import com.jb.gameobjects.player.Player;
 import com.jb.gamestates.Transition.TransitionType;
 import com.jb.input.GameKeys;
@@ -14,6 +19,16 @@ public class PlayState extends GameState {
 
 	// Player
 	private Player player;
+	
+	// All Enemies
+	private Array<GameObjects> allEnemies;
+	private Array<EnemyBullets> enemyBulletList;
+	
+	// Explosion
+	private Array<Explosion> explosionList;
+	
+	// All Items
+	private Array<Item> allItems;
 	
 	// HUD
 	private HealthBar healthBar;
@@ -32,7 +47,6 @@ public class PlayState extends GameState {
 		
 		// Start Asset Manager
 		assetManager = game.getAssetManager();
-		
 		init();
 	}
 
@@ -44,6 +58,18 @@ public class PlayState extends GameState {
 		
 		// Start HUD
 		healthBar = new HealthBar(this, 1, 1);
+		
+		// Start Enemy Array
+		allEnemies = new Array<GameObjects>();
+		
+		// Start all Items
+		allItems = new Array<Item>();
+		
+		// Start Enemy Bullet List
+		enemyBulletList = new Array<EnemyBullets>();
+		
+		// Start Explosion List
+		explosionList = new Array<Explosion>();
 
 		// Start Level
 		levelManager = new LevelManager(this);
@@ -80,7 +106,6 @@ public class PlayState extends GameState {
 
 		// Update Level
 		levelManager.update(dt);
-		
 
 		// Check for Game Over
 		if (player.isDead()) {
@@ -139,5 +164,20 @@ public class PlayState extends GameState {
 	public SpriteBatch getSpriteBatch() {
 		return spriteBatch;
 	}
-
+	
+	public Array<GameObjects> getAllEnemies(){
+		return allEnemies;
+	}
+	
+	public Array<Item> getAllItems(){
+		return allItems;
+	}
+	
+	public Array<EnemyBullets> getEnemyBulletList(){
+		return enemyBulletList;
+	}
+	
+	public Array<Explosion> getExplosionList(){
+		return explosionList;
+	}
 }

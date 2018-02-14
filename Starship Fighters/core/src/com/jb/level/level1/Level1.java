@@ -4,12 +4,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.Array;
-import com.jb.gameobjects.enemies.BasicAlien;
-import com.jb.gameobjects.enemies.EnemyBullets;
+import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.Explosion;
-import com.jb.gameobjects.enemies.KamikazeAlien;
-import com.jb.gameobjects.enemies.SamusShipBoss;
-import com.jb.gameobjects.items.EnergyTank;
+import com.jb.gameobjects.enemies.level1enemies.EnemyBullets;
+import com.jb.gameobjects.enemies.level1enemies.SamusShipBoss;
+import com.jb.gameobjects.items.Item;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
 import com.jb.level.Level;
@@ -24,9 +23,8 @@ public class Level1 extends Level {
 	private Level1GameFlow level1GameFlow;
 
 	// Basic Aliens
-	private Array<BasicAlien> basicAlienList;
-	private Array<KamikazeAlien> kamikazeAlienList;
 	private Array<EnemyBullets> enemyBulletList;
+	private Array<GameObjects> allEnemies;
 
 	// Boss
 	private SamusShipBoss samusShipBoss;
@@ -35,7 +33,7 @@ public class Level1 extends Level {
 	private Array<Explosion> explosionList;
 
 	// Item List
-	private Array<EnergyTank> energyTankList;
+	private Array<Item> energyTankList;
 
 	// Background
 	private Background bg1;
@@ -111,13 +109,8 @@ public class Level1 extends Level {
 		bg1.draw(spriteBatch);
 
 		// Draw Enemies
-		for (BasicAlien basicAlien : basicAlienList) {
-			basicAlien.draw(spriteBatch);
-		}
-		
-		// Draw Kamikaze Aliens
-		for (KamikazeAlien kamikazeAlien: kamikazeAlienList) {
-			kamikazeAlien.draw(spriteBatch);
+		for (GameObjects enemy: allEnemies) {
+			enemy.draw(spriteBatch);
 		}
 
 		// Draw Enemy Bullets
@@ -129,7 +122,7 @@ public class Level1 extends Level {
 		samusShipBoss.draw(spriteBatch);
 		
 		// Draw Items
-		for (EnergyTank energyTank : energyTankList) {
+		for (Item energyTank : energyTankList) {
 			energyTank.draw(spriteBatch);
 		}
 
@@ -138,7 +131,8 @@ public class Level1 extends Level {
 			explosion.draw(spriteBatch);
 		}
 	}
-
+	
+	// HELPER METHODS
 	// Update all Game Objects
 	private void updateGameObjects(float dt) {
 
@@ -148,27 +142,11 @@ public class Level1 extends Level {
 		bg2.update(dt);
 		bg2.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
 
-		// Update Enemies
-		for (int i = 0; i < basicAlienList.size; i++) {
-			basicAlienList.get(i).update(dt);
-			if (basicAlienList.get(i).isDead()) {
-				explosionList.add(new Explosion(basicAlienList.get(i).getX(), basicAlienList.get(i).getY(), 0, 0,
-						playState, assetManager));
-				basicAlienList.removeIndex(i);
-				i--;
-			}
-		}
-		
-		// Update Kamikaze Aliens
-		for (int i = 0; i < kamikazeAlienList.size; i++) {
-			kamikazeAlienList.get(i).update(dt);
-			if (kamikazeAlienList.get(i).isDead()) {
-				explosionList.add(new Explosion(kamikazeAlienList.get(i).getX(), kamikazeAlienList.get(i).getY(), 0, 0,
-						playState, assetManager));
-				kamikazeAlienList.removeIndex(i);
-				i--;
-			} else if(kamikazeAlienList.get(i).isOffScreen()) {
-				kamikazeAlienList.removeIndex(i);
+		// Update all Enemies
+		for (int i = 0; i < allEnemies.size; i++) {
+			allEnemies.get(i).update(dt);
+			if (allEnemies.get(i).isDead()) {
+				allEnemies.removeIndex(i);
 				i--;
 			}
 		}
@@ -186,7 +164,7 @@ public class Level1 extends Level {
 		// Update Items
 		for (int i = 0; i < energyTankList.size; i++) {
 			energyTankList.get(i).update(dt);
-			if (energyTankList.get(i).getRemovalStatus()) {
+			if (energyTankList.get(i).isDead()) {
 				energyTankList.removeIndex(i);
 				i--;
 			}
@@ -209,11 +187,10 @@ public class Level1 extends Level {
 
 	// Start Array lists
 	private void startArrayLists() {
-		basicAlienList = new Array<BasicAlien>();
-		kamikazeAlienList = new Array<KamikazeAlien>();
-		enemyBulletList = new Array<EnemyBullets>();
-		explosionList = new Array<Explosion>();
-		energyTankList = new Array<EnergyTank>();
+		energyTankList = playState.getAllItems();
+		allEnemies = playState.getAllEnemies();
+		enemyBulletList = playState.getEnemyBulletList();
+		explosionList = playState.getExplosionList();
 	}
 
 	// Getters
@@ -221,26 +198,18 @@ public class Level1 extends Level {
 		return assetManager;
 	}
 
-	public Array<EnergyTank> getEnergyTankList() {
-		return energyTankList;
-	}
-
 	public Array<EnemyBullets> getEnemyBulletList() {
 		return enemyBulletList;
-	}
-
-	public Array<BasicAlien> getBasicAlienList() {
-		return basicAlienList;
 	}
 
 	public Array<Explosion> getExplosionList() {
 		return explosionList;
 	}
-
-	public Array<KamikazeAlien> getKamikazeAlienList(){
-		return kamikazeAlienList;
-	}
 	
+	public Array<GameObjects> getAllGameObjects(){
+		return allEnemies;
+	}
+
 	public SamusShipBoss getSamueShipBoss() {
 		return samusShipBoss;
 	}
