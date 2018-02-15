@@ -53,7 +53,7 @@ public class PlayerBullets extends GameObjects{
 		tripleBullets = false;
 		
 		// GamePlay
-		damageValue = -100;
+		damageValue = -1000;
 		
 		// Rectangle
 		collisionBounds = new Rectangle();

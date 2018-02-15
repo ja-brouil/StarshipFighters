@@ -12,6 +12,7 @@ import com.jb.gameobjects.items.Item;
 import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
 import com.jb.level.Level;
+import com.jb.level.LevelTransition;
 import com.jb.main.Game;
 
 public class Level1 extends Level {
@@ -44,6 +45,9 @@ public class Level1 extends Level {
 
 	// Asset Loader
 	private Level1Assets level1Assets;
+	
+	// Next Level
+	private boolean nextLevel;
 
 	public Level1(PlayState playState, AssetManager assetManager) {
 		super(playState, assetManager);
@@ -98,6 +102,11 @@ public class Level1 extends Level {
 		
 		// Update Level
 		level1GameFlow.updateLevel();
+		
+		// Check for next Level
+		if (nextLevel) {
+			playState.getLevelManager().setLevel(new LevelTransition(playState, assetManager, this, new Level1(playState, assetManager)));
+		}
 
 	}
 
@@ -212,5 +221,13 @@ public class Level1 extends Level {
 
 	public SamusShipBoss getSamueShipBoss() {
 		return samusShipBoss;
+	}
+	
+	public void setNextLevelActive(boolean nextLevel) {
+		this.nextLevel = nextLevel;
+	}
+	
+	public boolean getNextLevelStatus() {
+		return nextLevel;
 	}
 }

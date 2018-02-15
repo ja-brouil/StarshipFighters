@@ -10,13 +10,21 @@ public class PlayerInput {
 	
 	// Player
 	private Player player;
+	
+	// Allow Input
+	private boolean allowInput;
 
 	public PlayerInput(Player player) {
 		this.player = player;
+		allowInput = true;
 	}
 	
 	// Handle input
 	public void playerHandleInput(float dt) {
+			if (!allowInput) {
+				return;
+			}
+		
 			// Left | Right | Up | Down
 			if (left) {
 				player.setDX(player.getDX() -4);
@@ -80,5 +88,13 @@ public class PlayerInput {
 
 	public void setMissile(boolean b) {
 		missile = b;
+	}
+	
+	public boolean getAllowedInput() {
+		return allowInput;
+	}
+	
+	public void setAllowedInput(boolean allowInput) {
+		this.allowInput = allowInput;
 	}
 }

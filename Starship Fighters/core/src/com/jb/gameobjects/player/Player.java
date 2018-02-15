@@ -48,6 +48,9 @@ public class Player extends GameObjects {
 	private long bulletShootSpeed;
 	private float maxHealth;
 	
+	// Cutscene
+	private boolean outOfBoundsAllowed = false;
+	
 	// Input
 	private PlayerInput playerInput;
 
@@ -194,7 +197,12 @@ public class Player extends GameObjects {
 	}
 
 	// Prevent Out of Bounds
-	private void wrap() {
+	private void wrap() { 
+		// Allow out of bounds
+		if (outOfBoundsAllowed) {
+			return;
+		}
+		
 		// Wrap Around for X Coordinate
 		if (x > Game.WIDTH - 64) {
 			x = Game.WIDTH - 64;
@@ -290,5 +298,9 @@ public class Player extends GameObjects {
 	
 	public int getHealthBar() {
 		return healthbar;
+	}
+	
+	public void setAllowedOutOfBounds(boolean outOfBoundsAllowed) {
+		this.outOfBoundsAllowed = outOfBoundsAllowed;
 	}
 }

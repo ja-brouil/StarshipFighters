@@ -87,7 +87,7 @@ public class Level1GameFlow {
 		kamikazeSpawnPoints = new Array<Vector2>();
 
 		// Get Basic Enemies Spawn points
-		spawnNumber = 0;
+		spawnNumber = 9;
 		mapGroupLayer = (MapGroupLayer) tiledMap.getLayers().get("EnemySpawn");
 		spawnLayer = mapGroupLayer.getLayers().get(spawnNumber);
 
@@ -104,6 +104,12 @@ public class Level1GameFlow {
 
 	// Check for next wave
 	public void updateLevel() {
+		
+		// If boss is dead, move to the next level
+		if (samusShipBoss.getDeathStatus()) {
+			level1.setNextLevelActive(true);
+		}
+		
 		// Start Boss
 		if (spawnBoss && allEnemies.size != 0) {
 			return;

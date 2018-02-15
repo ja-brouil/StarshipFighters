@@ -36,7 +36,6 @@ public class Transition extends GameState{
 		this.transitionType = transitionType;
 		this.nextState = nextState;
 		this.previousState = previousState;
-		this.transitionType = transitionType;
 		
 		// Start Transition
 		init();
@@ -44,7 +43,6 @@ public class Transition extends GameState{
 
 	@Override
 	public void init() {
-		
 		// Black Fade
 		if (transitionType == TransitionType.BLACK_FADE) {
 			maxTime = 3;

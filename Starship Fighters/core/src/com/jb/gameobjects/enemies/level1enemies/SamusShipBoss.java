@@ -2,6 +2,7 @@ package com.jb.gameobjects.enemies.level1enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -11,21 +12,23 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.Explosion;
+import com.jb.gameobjects.player.Player;
 import com.jb.gameobjects.player.PlayerBullets;
 import com.jb.gamestates.PlayState;
-import com.jb.level.level1.Level1;
 import com.jb.main.Game;
 
 public class SamusShipBoss extends GameObjects {
 	
 	// PlayState Access
 	private PlayState playState;
+	
+	// Player access
+	private Player player;
 
 	// Right and Left Wing
 	private boolean isLeftWingDead;
 	private boolean isRightWingDead;
 	private boolean isMiddleInvincible;
-	private boolean isDead;
 
 	// GamePlay
 	private int leftWingHealth;
@@ -74,6 +77,7 @@ public class SamusShipBoss extends GameObjects {
 		this.dy = dy;
 		this.assetManager = assetManager;
 		this.playState = playState;
+		player = playState.getPlayer();
 		
 		// Start Boss
 		init();
@@ -280,6 +284,7 @@ public class SamusShipBoss extends GameObjects {
 		if (healthbar < 0) {
 			dx = 0;
 			dy = 0;
+			// Start Death Animations
 			if (TimeUtils.timeSinceMillis(bossDeathExplosionTimer) > 200 && bossDeathExplosionCounter < 15) {
 				// Add delayed explosions
 				explosionList.add(new Explosion(x + (0.5f * MathUtils.random(0, width)), (y + (0.5f * MathUtils.random(0, height))), 0, 0, playState, assetManager));
@@ -291,6 +296,18 @@ public class SamusShipBoss extends GameObjects {
 				for (GameObjects basicAlien : listOfEnemies) {
 					basicAlien.setIsDead(true);
 				}
+			} else if (bossDeathExplosionCounter == 15) {
+				// End Level and move to the next one
+				setActive(false);
+				player.setAllowedOutOfBounds(true);
+				player.getPlayerInput().setAllowedInput(false);
+				player.setDX(0);
+				player.setDY(0);
+				playState.getLevelManager().getCurrentLevel().getLevelMusic().stop();
+				Music music = assetManager.get("data/audio/music/victorytheme.mp3", Music.class);
+				playState.getLevelManager().getCurrentLevel().setLevelMusic(music);
+				playState.getLevelManager().getCurrentLevel().getLevelMusic().play();
+				isDead = true;
 			}
 		}
 	}
@@ -347,6 +364,7 @@ public class SamusShipBoss extends GameObjects {
 			}
 		}
 	}
+	
 	
 	// Render Method
 	@Override

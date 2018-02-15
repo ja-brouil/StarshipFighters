@@ -53,7 +53,6 @@ public class GameStateManager {
 	// Dispose of the top of the stack
 	public void popState(){
 		GameState gameState = gameStates.pop();
-		//previousState = gameState;
 		gameState.dispose();
 		System.gc();
 	}

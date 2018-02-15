@@ -31,8 +31,7 @@ public class Level1CollisionDetection {
 		allItems = playState.getAllItems();
 		player = playState.getPlayer();
 		playerBulletList = player.getBulletList();
-		allEnemiesList = playState.getAllEnemies();
-				
+		allEnemiesList = playState.getAllEnemies();		
 	}
 
 	// Collision Handling
@@ -54,8 +53,6 @@ public class Level1CollisionDetection {
 			}
 		}
 	}
-	
-
 
 	// Player Collision with Enemies
 	private void playerCollisionWithEnemies() {
