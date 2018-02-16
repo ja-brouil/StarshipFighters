@@ -1,6 +1,8 @@
 package com.jb.level.level1;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.Array;
@@ -105,7 +107,16 @@ public class Level1 extends Level {
 		
 		// Check for next Level
 		if (nextLevel) {
-			playState.getLevelManager().setLevel(new LevelTransition(playState, assetManager, this, new Level1(playState, assetManager)));
+			LevelTransition transition = new LevelTransition(playState, assetManager, this, this);
+			getLevelMusic().setOnCompletionListener(new OnCompletionListener() {
+				
+				@Override
+				public void onCompletion(Music music) {
+					playState.getPlayer().setDY(8);
+					playState.getLevelManager().setLevel(transition);
+				}
+			});
+			nextLevel = false;
 		}
 
 	}

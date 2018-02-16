@@ -48,8 +48,8 @@ public class LevelTransition extends Level{
 		
 		// Timers
 		timer = 0;
-		maxTime = 4;
-		drawingSpeed = 75;
+		maxTime = 14;
+		drawingSpeed = 150;
 	}
 
 	@Override
@@ -60,8 +60,13 @@ public class LevelTransition extends Level{
 			playState.getLevelManager().setLevel(nextLevel);
 		}
 		
-		width += drawingSpeed * Gdx.graphics.getDeltaTime();
-		height += drawingSpeed * Gdx.graphics.getDeltaTime();
+		if (timer < maxTime / 2) {
+			width += drawingSpeed * Gdx.graphics.getDeltaTime();
+			height += drawingSpeed * Gdx.graphics.getDeltaTime();
+		} else {
+			width -= drawingSpeed * Gdx.graphics.getDeltaTime();
+			height -= drawingSpeed * Gdx.graphics.getDeltaTime();
+		}
 		
 		if (width >= Game.WIDTH) {
 			width = Game.WIDTH;
@@ -74,6 +79,11 @@ public class LevelTransition extends Level{
 
 	@Override
 	public void render(SpriteBatch spriteBatch) {
+		if (timer < maxTime / 2) {
+			previousLevel.render(spriteBatch);
+		} else {
+			nextLevel.render(spriteBatch);
+		}
 		spriteBatch.draw(transitionTexture, 0, 0, width, height);
 	}
 	
