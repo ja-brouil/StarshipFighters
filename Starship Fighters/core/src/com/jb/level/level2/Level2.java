@@ -1,6 +1,8 @@
 package com.jb.level.level2;
 
 import com.jb.main.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -62,7 +64,7 @@ public class Level2 extends Level {
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		
 		// Camera
-		orthographicCamera = playState.getGSM().getGame().getCamera();	
+		orthographicCamera = playState.getGSM().getGame().getCamera();
 	}
 	
 	
@@ -73,6 +75,21 @@ public class Level2 extends Level {
 		updateGameObjects(dt);
 		
 		// Collision
+		if (Gdx.input.isKeyPressed(Keys.UP)) {
+			orthographicCamera.position.y += 100 * dt;
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.DOWN)) {
+			orthographicCamera.position.y -= 100 * dt;
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+			orthographicCamera.position.x += 100 * dt;
+		}
+		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			orthographicCamera.position.x -= 100 * dt;
+		}
+		orthographicCamera.update();
 		
 		// Game Flow
 		

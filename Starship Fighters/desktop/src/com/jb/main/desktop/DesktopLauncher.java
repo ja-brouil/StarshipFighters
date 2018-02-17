@@ -6,6 +6,7 @@ import com.jb.main.Game;
 
 public class DesktopLauncher {
 	
+	
 	// Window + Application
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 800;
