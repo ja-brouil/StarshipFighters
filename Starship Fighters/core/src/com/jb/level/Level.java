@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.jb.gamestates.PlayState;
 
 public abstract class Level {
@@ -17,6 +18,9 @@ public abstract class Level {
 
 	// Map Location
 	protected String mapName;
+	
+	// Map Renderer
+	protected OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 	
 	// PlayState
 	protected PlayState playState;
@@ -30,6 +34,12 @@ public abstract class Level {
 	public Level(PlayState playState, AssetManager assetManager) {
 		this.playState = playState;
 		this.assetManager = assetManager;
+	}
+	
+	public Level(PlayState playState, AssetManager assetManager, OrthogonalTiledMapRenderer orthogonalTiledMapRenderer) {
+		this.playState = playState;
+		this.assetManager = assetManager;
+		this.orthogonalTiledMapRenderer = orthogonalTiledMapRenderer;
 	}
 
 	// Methods
@@ -55,5 +65,9 @@ public abstract class Level {
 	
 	public PlayState getPlayState() {
 		return playState;
+	}
+	
+	public AssetManager getAssetManager() {
+		return assetManager;
 	}
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.Explosion;
@@ -15,6 +16,7 @@ import com.jb.gamestates.PlayState;
 import com.jb.images.Background;
 import com.jb.level.Level;
 import com.jb.level.LevelTransition;
+import com.jb.level.level2.Level2;
 import com.jb.main.Game;
 
 public class Level1 extends Level {
@@ -107,7 +109,7 @@ public class Level1 extends Level {
 		
 		// Check for next Level
 		if (nextLevel) {
-			LevelTransition transition = new LevelTransition(playState, assetManager, this, this);
+			LevelTransition transition = new LevelTransition(playState, assetManager, this, new Level2(playState, assetManager, new OrthogonalTiledMapRenderer(null)));
 			getLevelMusic().setOnCompletionListener(new OnCompletionListener() {
 				
 				@Override
@@ -117,6 +119,7 @@ public class Level1 extends Level {
 				}
 			});
 			nextLevel = false;
+			tiledMap.dispose();
 		}
 
 	}
@@ -167,7 +170,6 @@ public class Level1 extends Level {
 			allEnemies.get(i).update(dt);
 			if (allEnemies.get(i).isDead()) {
 				allEnemies.removeIndex(i);
-				i--;
 			}
 		}
 
@@ -177,7 +179,6 @@ public class Level1 extends Level {
 			// Remove Bullets
 			if (enemyBulletList.get(i).getRemovalStatus()) {
 				enemyBulletList.removeIndex(i);
-				i--;
 			}
 		}
 
@@ -186,7 +187,6 @@ public class Level1 extends Level {
 			energyTankList.get(i).update(dt);
 			if (energyTankList.get(i).isDead()) {
 				energyTankList.removeIndex(i);
-				i--;
 			}
 		}
 
@@ -196,7 +196,6 @@ public class Level1 extends Level {
 			// Remove Explosion
 			if (explosionList.get(i).getExplosionStatus()) {
 				explosionList.removeIndex(i);
-				i--;
 			}
 		}
 
