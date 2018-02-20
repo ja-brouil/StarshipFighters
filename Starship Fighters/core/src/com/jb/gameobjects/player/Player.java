@@ -11,10 +11,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jb.animation.Animator;
 import com.jb.gameobjects.GameObjects;
+import com.jb.gamestates.PlayState;
 import com.jb.main.Game;
 
 public class Player extends GameObjects {
-
+	
+	// PlayState Access
+	private PlayState playState;
+	
 	// Physics
 	private float maxSpeed;
 	private float minimumSpeed;
@@ -54,7 +58,7 @@ public class Player extends GameObjects {
 	// Input
 	private PlayerInput playerInput;
 
-	public Player(float x, float y, float dx, float dy, AssetManager assetManager) {
+	public Player(float x, float y, float dx, float dy, AssetManager assetManager, PlayState playState) {
 		super(x, y, dx, dy, assetManager);
 
 		// GamePlay
@@ -63,7 +67,9 @@ public class Player extends GameObjects {
 		this.dx = dx;
 		this.dy = dy;
 		bulletcooldown = TimeUtils.millis();
+		this.playState = playState;
 		this.assetManager = assetManager;
+		
 
 		// Graphics
 		pathname = "data/spaceships/ship1.png";
@@ -210,13 +216,13 @@ public class Player extends GameObjects {
 		if (x < 0) {
 			x = 0;
 		}
-
+		
 		// Wrap Around for Y Coordinate
-		if (y > Game.HEIGHT - 64) {
-			y = Game.HEIGHT - 64;
+		if (y > playState.getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2) - 64) {
+			y = playState.getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2) - 64;
 		}
-		if (y < 0) {
-			y = 0;
+		if (y < 0 + playState.getGSM().getGame().getCamera().position.y - 400) {
+			y = 0 + playState.getGSM().getGame().getCamera().position.y - 400;
 		}
 
 	}
@@ -298,6 +304,10 @@ public class Player extends GameObjects {
 	
 	public int getHealthBar() {
 		return healthbar;
+	}
+	
+	public PlayState getPlayState() {
+		return playState;
 	}
 	
 	public void setAllowedOutOfBounds(boolean outOfBoundsAllowed) {

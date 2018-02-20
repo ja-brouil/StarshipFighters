@@ -98,7 +98,7 @@ public class PlayerBullets extends GameObjects{
 			dy = maxSpeed;
 		}
 		
-		if (y > Game.HEIGHT) {
+		if (y > player.getPlayState().getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2)) {
 			removeBullets();
 		}
 		

@@ -3,6 +3,7 @@ package com.jb.level;
 import java.util.Stack;
 
 import com.jb.gamestates.PlayState;
+import com.jb.level.level1.Level1;
 import com.jb.level.level2.Level2;
 
 public class LevelManager {

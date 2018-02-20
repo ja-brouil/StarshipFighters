@@ -18,6 +18,7 @@ import com.jb.gameobjects.player.Player;
 import com.jb.gamestates.Transition.TransitionType;
 import com.jb.input.GameKeys;
 import com.jb.level.LevelManager;
+import com.jb.level.level1.Level1;
 
 public class PlayState extends GameState {
 
@@ -59,7 +60,7 @@ public class PlayState extends GameState {
 	public void init() {
 
 		// Start Player
-		player = new Player(300, 150, 0, 0, assetManager);
+		player = new Player(300, 150, 0, 0, assetManager, this);
 		
 		// Start HUD
 		healthBar = new HealthBar(this, 1, 1);
@@ -128,10 +129,18 @@ public class PlayState extends GameState {
 		
 		// Play State Draw
 		spriteBatch.setProjectionMatrix(cam.combined);
+		
+		// Render Non Level 1
+		if (!(levelManager.getCurrentLevel() instanceof Level1)){
+			levelManager.render();
+		}
+		
 		spriteBatch.begin();
 
-		// Level Render
-		levelManager.render();
+		// Level Render for level 1
+		if (levelManager.getCurrentLevel() instanceof Level1) {
+			levelManager.render();
+		}
 		
 		// Draw HUD
 		healthBar.render(spriteBatch);

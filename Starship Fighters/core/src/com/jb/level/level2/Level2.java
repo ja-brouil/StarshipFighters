@@ -1,6 +1,5 @@
 package com.jb.level.level2;
 
-import com.jb.main.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
@@ -74,21 +73,8 @@ public class Level2 extends Level {
 		// Update Game Objects
 		updateGameObjects(dt);
 		
-		// Collision
-		if (Gdx.input.isKeyPressed(Keys.UP)) {
-			orthographicCamera.position.y += 100 * dt;
-		}
-		
-		if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-			orthographicCamera.position.y -= 100 * dt;
-		}
-		
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-			orthographicCamera.position.x += 100 * dt;
-		}
-		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			orthographicCamera.position.x -= 100 * dt;
-		}
+		// Camera
+		orthographicCamera.position.y += 0.3f;
 		orthographicCamera.update();
 		
 		// Game Flow

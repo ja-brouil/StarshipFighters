@@ -18,6 +18,8 @@ public class DesktopLauncher {
 		config.title = title;
 		config.width = WIDTH;
 		config.height = HEIGHT;
+		config.vSyncEnabled = false;
+		config.useHDPI = true;
 	
 		// Start Game 
 		new LwjglApplication(new Game(), config);

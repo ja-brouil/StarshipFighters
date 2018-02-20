@@ -58,6 +58,9 @@ public class HealthBar {
 
 	// Update
 	public void update(float dt) {
+		
+		// Update Camera
+		y += 0.3f;
 
 		// Check for change in HP
 		destinationHealth = player.getHealthBar();
