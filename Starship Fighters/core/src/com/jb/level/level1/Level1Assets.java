@@ -4,11 +4,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public class Level1Assets {
 	
 	// Asset Manager
 	private AssetManager assetManager;
+	
+	// Map
+	private String mapFilePath = "data/levels/level1.tmx";
 
 	// Music
 	private String level1MusicPathName = "data/audio/music/level1.mp3";
@@ -47,7 +51,6 @@ public class Level1Assets {
 
 	// Load Audio
 	private void loadAudio() {
-		
 		// Add Music
 		assetManager.load(level1MusicPathName, Music.class);
 		assetManager.load(victoryMusicPathName, Music.class);
@@ -66,6 +69,7 @@ public class Level1Assets {
 	private void loadTextures() {
 
 		// Add Graphics
+		assetManager.load(mapFilePath, TiledMap.class);
 		assetManager.load(basicAlienPathName, Texture.class);
 		assetManager.load(basicAlienBulletPathName, Texture.class);
 		assetManager.load(explosionArtPathName, Texture.class);

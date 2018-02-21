@@ -4,7 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.jb.gameobjects.GameObjects;
@@ -13,11 +13,9 @@ import com.jb.gameobjects.enemies.level1enemies.EnemyBullets;
 import com.jb.gameobjects.enemies.level1enemies.SamusShipBoss;
 import com.jb.gameobjects.items.Item;
 import com.jb.gamestates.PlayState;
-import com.jb.images.Background;
 import com.jb.level.Level;
 import com.jb.level.LevelTransition;
 import com.jb.level.level2.Level2;
-import com.jb.main.Game;
 
 public class Level1 extends Level {
 
@@ -40,10 +38,6 @@ public class Level1 extends Level {
 	// Item List
 	private Array<Item> energyTankList;
 
-	// Background
-	private Background bg1;
-	private Background bg2;
-
 	// Collision Handling
 	private Level1CollisionDetection level1CollisionDetection;
 
@@ -63,14 +57,18 @@ public class Level1 extends Level {
 		
 		// Start Arraylists
 		startArrayLists();
-
-		// Load TMX Map
-		tiledMap = new TmxMapLoader().load(mapName);
 		
 		// Load Assets
 		level1Assets = new Level1Assets(this);
 		level1Assets.loadLevel1Assets();
 		assetManager.finishLoading();
+
+		// Load TMX Map
+		tiledMap = assetManager.get(mapName, TiledMap.class);
+		
+		// Map Renderer
+		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+		orthogonalTiledMapRenderer.setView(camera);
 	
 		// Start Game Flow
 		level1GameFlow = new Level1GameFlow(this, tiledMap);
@@ -82,17 +80,8 @@ public class Level1 extends Level {
 		// Start Collision Handler
 		level1CollisionDetection = new Level1CollisionDetection(playState, this);
 
-		// Background
-		loadBackgrounds();
-
 		// Load Initial Enemies
 		level1GameFlow.loadInitialEnemies();
-	}
-
-	// Load Backgrounds
-	private void loadBackgrounds() {
-		bg1 = new Background(0, 0, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg", assetManager);
-		bg2 = new Background(0, -800, 0, -0.25f, 640, 805, true, "data/background/level1background.jpg", assetManager);
 	}
 
 	// Level Mechanics
@@ -109,7 +98,7 @@ public class Level1 extends Level {
 		
 		// Check for next Level
 		if (nextLevel) {
-			LevelTransition transition = new LevelTransition(playState, assetManager, this, new Level2(playState, assetManager, new OrthogonalTiledMapRenderer(null)));
+			LevelTransition transition = new LevelTransition(playState, assetManager, this, new Level2(playState, assetManager, orthogonalTiledMapRenderer));
 			getLevelMusic().setOnCompletionListener(new OnCompletionListener() {
 				
 				@Override
@@ -119,7 +108,6 @@ public class Level1 extends Level {
 				}
 			});
 			nextLevel = false;
-			tiledMap.dispose();
 		}
 
 	}
@@ -127,10 +115,10 @@ public class Level1 extends Level {
 	// Draw Level Elements
 	public void render(SpriteBatch spriteBatch) {
 
-		// Draw Background
-		bg2.drawInverted(spriteBatch, false, true);
-		bg1.draw(spriteBatch);
-
+		// Render Level
+		orthogonalTiledMapRenderer.render();
+		
+		spriteBatch.begin();
 		// Draw Enemies
 		for (GameObjects enemy: allEnemies) {
 			enemy.draw(spriteBatch);
@@ -158,12 +146,6 @@ public class Level1 extends Level {
 	// HELPER METHODS
 	// Update all Game Objects
 	private void updateGameObjects(float dt) {
-
-		// Update Background
-		bg1.update(dt);
-		bg1.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
-		bg2.update(dt);
-		bg2.checkLimits(1, Game.HEIGHT, -1, -800, 0, 0);
 
 		// Update all Enemies
 		for (int i = 0; i < allEnemies.size; i++) {
@@ -240,4 +222,5 @@ public class Level1 extends Level {
 	public boolean getNextLevelStatus() {
 		return nextLevel;
 	}
+
 }

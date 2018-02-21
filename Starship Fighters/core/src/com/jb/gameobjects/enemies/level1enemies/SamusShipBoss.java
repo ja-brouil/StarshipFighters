@@ -308,6 +308,7 @@ public class SamusShipBoss extends GameObjects {
 				playState.getLevelManager().getCurrentLevel().setLevelMusic(music);
 				playState.getLevelManager().getCurrentLevel().getLevelMusic().play();
 				isDead = true;
+				bossDeathExplosionCounter++;
 			}
 		}
 	}

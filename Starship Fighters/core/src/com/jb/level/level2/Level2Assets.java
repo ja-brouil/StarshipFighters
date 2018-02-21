@@ -31,5 +31,8 @@ public class Level2Assets {
 		assetManager.load(mapFilePath, TiledMap.class);
 		
 		assetManager.finishLoading();
+		
 	}
+	
+	
 }

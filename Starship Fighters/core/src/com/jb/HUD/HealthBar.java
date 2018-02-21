@@ -21,6 +21,9 @@ public class HealthBar {
 
 	// Position
 	private float x, y;
+	
+	// Movement
+	private float dx, dy;
 
 	// Math
 	private float angle;
@@ -34,9 +37,11 @@ public class HealthBar {
 	// Player Access
 	private Player player;
 
-	public HealthBar(PlayState playState, float x, float y) {
+	public HealthBar(PlayState playState, float x, float y, float dx, float dy) {
 		this.x = x;
 		this.y = y;
+		this.dx = dx;
+		this.dy = dy;
 		player = playState.getPlayer();
 		assetManager = playState.getAssetManager();
 
@@ -60,7 +65,8 @@ public class HealthBar {
 	public void update(float dt) {
 		
 		// Update Camera
-		y += 0.3f;
+		y += dy;
+		x += dx;
 
 		// Check for change in HP
 		destinationHealth = player.getHealthBar();
@@ -90,5 +96,13 @@ public class HealthBar {
 	// Render
 	public void render(SpriteBatch spriteBatch) {
 		radialSprite.draw(spriteBatch, x, y, angle);
+	}
+	
+	public void setDX(float dx) {
+		this.dx = dx;
+	}
+	
+	public void setDY(float dy) {
+		this.dy = dy;
 	}
 }

@@ -1,9 +1,6 @@
 package com.jb.level.level2;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -16,9 +13,6 @@ import com.jb.gamestates.PlayState;
 import com.jb.level.Level;
 
 public class Level2 extends Level {
-	
-	// Camera + Map
-	private OrthographicCamera orthographicCamera;
 	
 	// Enemy List
 	private Array<EnemyBullets> enemyBulletList;
@@ -43,7 +37,6 @@ public class Level2 extends Level {
 	
 	public Level2(PlayState playState, AssetManager assetManager, OrthogonalTiledMapRenderer orthogonalTiledMapRenderer) {
 		super(playState, assetManager, orthogonalTiledMapRenderer);
-		
 		initialize();
 	}
 	
@@ -59,11 +52,7 @@ public class Level2 extends Level {
 		tiledMap = assetManager.get("data/levels/Level2/level2.tmx", TiledMap.class);
 		
 		// Map Renderer
-		float unitScale = 1 / 32f;
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-		
-		// Camera
-		orthographicCamera = playState.getGSM().getGame().getCamera();
 	}
 	
 	
@@ -74,8 +63,8 @@ public class Level2 extends Level {
 		updateGameObjects(dt);
 		
 		// Camera
-		orthographicCamera.position.y += 0.3f;
-		orthographicCamera.update();
+		camera.position.y += 0.3f;
+		camera.update();
 		
 		// Game Flow
 		
@@ -83,7 +72,7 @@ public class Level2 extends Level {
 
 	@Override
 	public void render(SpriteBatch spriteBatch) {
-		orthogonalTiledMapRenderer.setView(orthographicCamera);
+		orthogonalTiledMapRenderer.setView(camera);
 		orthogonalTiledMapRenderer.render();
 	}
 	

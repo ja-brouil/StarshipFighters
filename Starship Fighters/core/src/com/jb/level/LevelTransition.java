@@ -84,7 +84,9 @@ public class LevelTransition extends Level{
 		} else {
 			nextLevel.render(spriteBatch);
 		}
+		spriteBatch.begin();
 		spriteBatch.draw(transitionTexture, 0, 0, width, height);
+		spriteBatch.end();
 	}
 	
 	public void setActiveStatus(boolean active) {
