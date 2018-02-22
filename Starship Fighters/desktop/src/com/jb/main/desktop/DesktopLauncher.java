@@ -21,7 +21,8 @@ public class DesktopLauncher {
 		config.vSyncEnabled = false;
 		config.useHDPI = true;
 	
-		// Start Game 
+		// Start Game
 		new LwjglApplication(new Game(), config);
 	}	
 } 
+

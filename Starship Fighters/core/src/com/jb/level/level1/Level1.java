@@ -98,11 +98,12 @@ public class Level1 extends Level {
 		
 		// Check for next Level
 		if (nextLevel) {
-			LevelTransition transition = new LevelTransition(playState, assetManager, this, new Level2(playState, assetManager, orthogonalTiledMapRenderer));
+			
 			getLevelMusic().setOnCompletionListener(new OnCompletionListener() {
 				
 				@Override
 				public void onCompletion(Music music) {
+					LevelTransition transition = new LevelTransition(playState, assetManager, Level1.this, new Level2(playState, assetManager, orthogonalTiledMapRenderer));
 					playState.getPlayer().setDY(8);
 					playState.getLevelManager().setLevel(transition);
 				}
@@ -141,6 +142,7 @@ public class Level1 extends Level {
 		for (Explosion explosion : explosionList) {
 			explosion.draw(spriteBatch);
 		}
+		spriteBatch.end();
 	}
 	
 	// HELPER METHODS

@@ -132,7 +132,8 @@ public class PlayState extends GameState {
 		// Level Draw
 		levelManager.render();
 		
-		// Player and HUD Objects
+		// Player and HUD Object
+		spriteBatch.begin();
 		healthBar.render(spriteBatch);
 
 		// Player Render
@@ -151,7 +152,6 @@ public class PlayState extends GameState {
 		player.getPlayerInput().setDown(GameKeys.isDown(GameKeys.DOWN));
 		player.getPlayerInput().setShoot(GameKeys.isDown(GameKeys.SPACE));
 		player.getPlayerInput().setMissile(GameKeys.isPressed(GameKeys.SHIFT));
-
 	}
 	
 	// Getters

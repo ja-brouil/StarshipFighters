@@ -290,12 +290,12 @@ public class SamusShipBoss extends GameObjects {
 				explosionList.add(new Explosion(x + (0.5f * MathUtils.random(0, width)), (y + (0.5f * MathUtils.random(0, height))), 0, 0, playState, assetManager));
 				bossDeathExplosionTimer = TimeUtils.millis();
 				bossDeathExplosionCounter++;
-				isDead = true;
 				
 				// Destroy all other enemies on the screen
 				for (GameObjects basicAlien : listOfEnemies) {
 					basicAlien.setIsDead(true);
 				}
+				
 			} else if (bossDeathExplosionCounter == 15) {
 				// End Level and move to the next one
 				setActive(false);
@@ -308,7 +308,7 @@ public class SamusShipBoss extends GameObjects {
 				playState.getLevelManager().getCurrentLevel().setLevelMusic(music);
 				playState.getLevelManager().getCurrentLevel().getLevelMusic().play();
 				isDead = true;
-				bossDeathExplosionCounter++;
+				bossDeathExplosionCounter = 17;
 			}
 		}
 	}
@@ -322,10 +322,18 @@ public class SamusShipBoss extends GameObjects {
 		
 		// Check if its been 5 seconds
 		if (TimeUtils.timeSinceMillis(timeSinceBattleBegan) > 5000 && healthbar > 0) {
+			
+			// Spawn Regular Enemies
 			listOfEnemies.add(new BasicAlien(x + (width / 2), y + ( height / 2), 3, 0, 1000L, -15, -20, assetManager, playState));
 			listOfEnemies.add(new BasicAlien(x + (width / 2), y + ( height / 2), -3, 0, 1000L, -15, -20, assetManager, playState));
 			listOfEnemies.add(new BasicAlien(x + (width / 3), y + ( height / 2), 3, 0, 1000L, -15, -20, assetManager, playState));
 			listOfEnemies.add(new BasicAlien(x + (width / 3), y + ( height / 2), -3, 0, 1000L, -15, -20, assetManager, playState));
+			
+			// Stop and Shoot Kamikaze Aliens
+			listOfEnemies.add(new KamikazeAlien(x + 20, y, 0, -10, -25, assetManager, playState));
+			listOfEnemies.add(new KamikazeAlien(x + 175, y, 0, -10, -25, assetManager, playState));
+			
+			// Play Spawning Sound
 			assetManager.get(bossSpawnSoundFilePath, Sound.class).play(1.0f);
 			timeSinceBattleBegan = TimeUtils.millis();
 		}

@@ -169,7 +169,7 @@ public class MenuState extends GameState {
 		// SpriteBatch
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-
+		
 		// Draw Background
 		menuBackground.draw(spriteBatch);
 		menuBackground2.draw(spriteBatch);
@@ -196,7 +196,6 @@ public class MenuState extends GameState {
 
 		// End SpriteBatch drawing
 		spriteBatch.end();
-
 	}
 
 	// Additional dispose if needed

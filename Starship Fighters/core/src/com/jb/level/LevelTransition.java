@@ -14,7 +14,7 @@ public class LevelTransition extends Level{
 	private Level nextLevel;
 	
 	// Graphics
-	private String blackArtPath = "data/transitions/BlackTransitionSquare.png";
+	private String blackArtPath = "data/transitions/blacktransition.png";
 	private Texture transitionTexture;
 
 	// Timers
@@ -22,11 +22,10 @@ public class LevelTransition extends Level{
 	private float maxTime;
 	
 	// Size
-	private float width;
-	private float height;
+	private float x, y;
 	
 	// Speed
-	private float drawingSpeed;
+	private float alpha;
 	
 	// Boolean
 	private boolean active;
@@ -49,44 +48,38 @@ public class LevelTransition extends Level{
 		// Timers
 		timer = 0;
 		maxTime = 14;
-		drawingSpeed = 150;
 	}
 
 	@Override
 	public void update(float dt) {
+		// Timer
 		timer += Gdx.graphics.getDeltaTime();
 		
 		if (timer >= maxTime) {
 			playState.getLevelManager().setLevel(nextLevel);
 		}
 		
+		// Set Alpha
 		if (timer < maxTime / 2) {
-			width += drawingSpeed * Gdx.graphics.getDeltaTime();
-			height += drawingSpeed * Gdx.graphics.getDeltaTime();
+			alpha = timer / (maxTime / 2);
 		} else {
-			width -= drawingSpeed * Gdx.graphics.getDeltaTime();
-			height -= drawingSpeed * Gdx.graphics.getDeltaTime();
+			alpha = 2 - (timer / (maxTime / 2));
 		}
 		
-		if (width >= Game.WIDTH) {
-			width = Game.WIDTH;
-		}
-		
-		if (height >= Game.HEIGHT) {
-			height = Game.HEIGHT;
-		}
 	}
 
 	@Override
-	public void render(SpriteBatch spriteBatch) {
+	public void render(SpriteBatch spriteBatch) {	
 		if (timer < maxTime / 2) {
 			previousLevel.render(spriteBatch);
 		} else {
 			nextLevel.render(spriteBatch);
 		}
+		spriteBatch.setColor(0,0,0,alpha);
 		spriteBatch.begin();
-		spriteBatch.draw(transitionTexture, 0, 0, width, height);
+		spriteBatch.draw(transitionTexture, x, y, Game.WIDTH, Game.HEIGHT);
 		spriteBatch.end();
+		spriteBatch.setColor(1,1,1,1);
 	}
 	
 	public void setActiveStatus(boolean active) {

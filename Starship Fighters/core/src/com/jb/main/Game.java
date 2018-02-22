@@ -65,11 +65,10 @@ public class Game extends ApplicationAdapter {
 		// Clear Screen
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		
 		// Update then Render | Update only only if enough time has passed
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render();
-
 	}
 
 	// Dispose

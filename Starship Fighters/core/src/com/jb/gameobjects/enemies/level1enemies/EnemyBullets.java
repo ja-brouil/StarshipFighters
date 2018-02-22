@@ -21,6 +21,9 @@ public class EnemyBullets extends GameObjects{
 	// Game Mechanics
 	private int damageValue;
 	
+	// PlayState Access
+	private PlayState playState;
+	
 	// Standard Constructor
 	public EnemyBullets(float x, float y, float dx, float dy, int damageValue, PlayState playState, AssetManager assetManager) {
 		super(x, y, dx, dy, assetManager);
@@ -31,6 +34,7 @@ public class EnemyBullets extends GameObjects{
 		this.dx = dx;
 		this.dy = dy;
 		this.damageValue = damageValue;
+		this.playState = playState;
 		
 		// Graphics
 		this.assetManager = assetManager;
@@ -84,7 +88,7 @@ public class EnemyBullets extends GameObjects{
 			dy = minSpeed;
 		}
 		
-		if (y < 0 - 11) {
+		if (y < 0 + playState.getGSM().getGame().getCamera().position.y - 400) {
 			isDead = true;
 		}
 	}

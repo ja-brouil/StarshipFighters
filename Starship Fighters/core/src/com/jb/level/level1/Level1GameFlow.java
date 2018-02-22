@@ -108,6 +108,7 @@ public class Level1GameFlow {
 		// If boss is dead, move to the next level
 		if (samusShipBoss.getDeathStatus()) {
 			level1.setNextLevelActive(true);
+			return;
 		}
 		
 		// Start Boss
@@ -134,8 +135,7 @@ public class Level1GameFlow {
 
 
 		// Check if all enemies are dead
-		boolean areAllEnemiesDead = allEnemies.size == 0;
-		if (areAllEnemiesDead && !spawnBoss && !noMoreEnemies) {
+		if (allEnemies.size == 0 && !spawnBoss && !noMoreEnemies) {
 			// Start Delay
 			if (!isDelayOn) {
 				spawnTimerElapsedTime = TimeUtils.millis();

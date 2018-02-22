@@ -42,6 +42,7 @@ public class Level2 extends Level {
 	
 	// Initialize
 	public void initialize() {
+		// Load Arrays and clear them
 		startArrays();
 		
 		// Load Level Assets
@@ -67,6 +68,7 @@ public class Level2 extends Level {
 		camera.update();
 		
 		// Game Flow
+		
 		
 	}
 
