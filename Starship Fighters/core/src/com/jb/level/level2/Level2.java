@@ -69,7 +69,6 @@ public class Level2 extends Level {
 		
 		// Game Flow
 		
-		
 	}
 
 	@Override

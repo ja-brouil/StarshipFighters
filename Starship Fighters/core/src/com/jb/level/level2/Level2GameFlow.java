@@ -6,6 +6,4 @@ public class Level2GameFlow {
 	private Level2 level2;
 	
 	// Spawn Points
-	
-	
 }
