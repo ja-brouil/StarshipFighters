@@ -57,6 +57,7 @@ public class LevelTransition extends Level{
 		
 		if (timer >= maxTime) {
 			playState.getLevelManager().setLevel(nextLevel);
+			playState.getLevelManager().getCurrentLevel().setActiveLevel(true);
 		}
 		
 		// Set Alpha

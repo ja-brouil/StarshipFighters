@@ -1,6 +1,8 @@
 package com.jb.level.level2;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -29,11 +31,14 @@ public class Level2 extends Level {
 	// Collision Handling
 	private Level2CollisionDetection level2CollisionDetection;
 	
+	// Level Flow
+	private Level2GameFlow level2GameFlow;
+	
 	// Load Assets
 	private Level2Assets level2Assets;
-
-	// Next Level
-	private boolean nextLevel;
+	
+	// Boolean switches
+	private boolean gameFlowStart = true;
 	
 	public Level2(PlayState playState, AssetManager assetManager, OrthogonalTiledMapRenderer orthogonalTiledMapRenderer) {
 		super(playState, assetManager, orthogonalTiledMapRenderer);
@@ -54,11 +59,25 @@ public class Level2 extends Level {
 		
 		// Map Renderer
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+		
+		// Game Flow
+		levelActive = false;
+		level2GameFlow = new Level2GameFlow(this, playState);
+		
+		// Music
+		levelThemeSong = assetManager.get("data/audio/music/desertTheme.mp3", Music.class);
 	}
 	
 	
 	@Override
 	public void update(float dt) {
+		// Check if level should start
+		if (!levelActive) { return; }
+		if (gameFlowStart) {
+			level2GameFlow.initialize(Gdx.graphics.getDeltaTime());
+			gameFlowStart = false;
+		}
+		
 		
 		// Update Game Objects
 		updateGameObjects(dt);
@@ -68,6 +87,7 @@ public class Level2 extends Level {
 		camera.update();
 		
 		// Game Flow
+		level2GameFlow.update(dt);
 		
 	}
 
@@ -92,7 +112,9 @@ public class Level2 extends Level {
 	private void updateGameObjects(float dt) {
 		// All Enemies
 		for (int i = 0; i < allEnemies.size; i++) {
-			allEnemies.get(i).update(dt);
+			if (allEnemies.get(i).isActive()) {
+				allEnemies.get(i).update(dt);
+			}
 			if (allEnemies.get(i).isDead()) {
 				allEnemies.removeIndex(i);
 			}
@@ -129,5 +151,8 @@ public class Level2 extends Level {
 	}
 	
 	// Getters
-
+	public Array<GameObjects> getAllEnemies(){
+		return allEnemies;
+	}
+	
 }

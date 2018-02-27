@@ -91,12 +91,19 @@ public class BasicAlien2 extends GameObjects {
 		listOfExplosion = playState.getExplosionList();
 
 		// Start rectangle
-		collisionBounds = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());
+		collisionBounds = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());	
+		
+		// Active Status
+		isActive = false;
 	}
 
 
 	// Update
 	public void update(float dt) {
+		// Set to active if within camera
+		if (y < playState.getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2) - 32) {
+			isActive = true;
+		}
 		
 		// Check if dead
 		if (healthbar <= 0) {
@@ -119,8 +126,7 @@ public class BasicAlien2 extends GameObjects {
 		wrapXBound();
 
 		// Update Shoot | Don't shoot if out of the screen
-		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < Game.WIDTH && x > 0
-				&& y < Game.HEIGHT && y > 0) {
+		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < 0 && y > 0 && x > Game.WIDTH - 32 && y < playState.getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2) - 32) {
 			addEnemyBullets(16, 0);
 			randomAttackCooldown = MathUtils.random(1000, 2000);
 		}
@@ -150,7 +156,7 @@ public class BasicAlien2 extends GameObjects {
 	private void moveDownward() {
 		if (getY() <= getInitialY() - 200 && getDY() < 0) {
 			setVelX(4);
-			setVelY(0);
+			setVelY(0.3f);
 		}
 	}
 

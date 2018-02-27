@@ -190,4 +190,16 @@ public class PlayState extends GameState {
 	public GameStateManager getGSM() {
 		return gsm;
 	}
+	
+	public HealthBar getHealthBar() {
+		return healthBar;
+	}
+	
+	public void setInputAllowed(boolean inputAllowed) {
+		this.inputAllowed = inputAllowed;
+	}
+	
+	public boolean getInputAllowed() {
+		return inputAllowed;
+	}
 }

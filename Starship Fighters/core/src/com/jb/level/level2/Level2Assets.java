@@ -1,6 +1,7 @@
 package com.jb.level.level2;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public class Level2Assets {
@@ -13,6 +14,7 @@ public class Level2Assets {
 	private String mapFilePath = "data/levels/Level2/level2.tmx"; 
 	
 	// Music
+	private String level2ThemeSongPath = "data/audio/music/desertTheme.mp3";
 	
 	// SFX
 	
@@ -29,10 +31,8 @@ public class Level2Assets {
 	// Initialize
 	public void loadAllAssets() {
 		assetManager.load(mapFilePath, TiledMap.class);
-		
+		assetManager.load(level2ThemeSongPath, Music.class);
 		assetManager.finishLoading();
 		
 	}
-	
-	
 }

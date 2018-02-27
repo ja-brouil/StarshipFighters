@@ -34,6 +34,9 @@ public abstract class Level {
 	
 	// Asset Manager
 	protected AssetManager assetManager;
+	
+	// Level active and next level
+	protected boolean nextLevel, levelActive;
 
 	public Level(PlayState playState, AssetManager assetManager) {
 		this.playState = playState;
@@ -75,5 +78,9 @@ public abstract class Level {
 	
 	public AssetManager getAssetManager() {
 		return assetManager;
+	}
+	
+	public void setActiveLevel(boolean activeLevel) {
+		this.levelActive = activeLevel;
 	}
 }

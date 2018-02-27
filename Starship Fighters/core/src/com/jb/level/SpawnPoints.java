@@ -43,6 +43,11 @@ public class SpawnPoints extends Vector2{
 		assetManager = level.getAssetManager();
 	}
 	
+	
+	/**
+	 * Spawn Enemies based on the enumerator
+	 * @return new Enemy
+	 */
 	public Object spawnEnemy() {
 		if (enemyType == EnemyTypes.BasicAlien) {
 			return new BasicAlien2(x, y, 0, -5, 1000L, -15, -25, assetManager , playState);

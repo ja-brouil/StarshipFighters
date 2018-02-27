@@ -31,6 +31,9 @@ public abstract class GameObjects {
 	// Asset Manager
 	protected AssetManager assetManager;
 	
+	// Activate Object
+	protected boolean isActive;
+	
 	// Constructor
 	public GameObjects(float x, float y, float dx, float dy, AssetManager assetManager) {
 		this.x = x;
@@ -38,6 +41,7 @@ public abstract class GameObjects {
 		this.dx = dx;
 		this.dy = dy;
 		this.assetManager = assetManager;
+		isActive = false;
 	}
 	
 	// Cast result to int if needed
@@ -125,6 +129,14 @@ public abstract class GameObjects {
 
 	public int getDamageValue() {
 		return damageValue;
+	}
+	
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	public boolean isActive() {
+		return isActive;
 	}
 
 }
