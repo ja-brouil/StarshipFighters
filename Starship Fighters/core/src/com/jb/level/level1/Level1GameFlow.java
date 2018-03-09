@@ -87,7 +87,7 @@ public class Level1GameFlow {
 		kamikazeSpawnPoints = new Array<Vector2>();
 
 		// Get Basic Enemies Spawn points
-		spawnNumber = 9;
+		spawnNumber = 0;
 		mapGroupLayer = (MapGroupLayer) tiledMap.getLayers().get("EnemySpawn");
 		spawnLayer = mapGroupLayer.getLayers().get(spawnNumber);
 

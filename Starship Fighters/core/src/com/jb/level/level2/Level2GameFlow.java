@@ -3,6 +3,7 @@ package com.jb.level.level2;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.utils.Array;
+import com.jb.gameobjects.GameObjects;
 import com.jb.gameobjects.enemies.EnemyTypes;
 import com.jb.gameobjects.player.Player;
 import com.jb.gamestates.PlayState;
@@ -57,7 +58,7 @@ public class Level2GameFlow {
 		
 		// Spawn all enemies
 		for (SpawnPoints allEnemySpawnPoint : enemySpawnPoints) {
-			allEnemySpawnPoint.spawnEnemy();
+			level2.getAllEnemies().add((GameObjects) allEnemySpawnPoint.spawnEnemy());
 		}
 		
 	}
@@ -77,6 +78,9 @@ public class Level2GameFlow {
 			// Release Control change
 			releaseControl = true;
 		}
+		
+		System.out.println("Enemy 0: " + level2.getAllEnemies().get(0).getY());
+		System.out.println("Enemy 0 Y diff location: " + (playState.getGSM().getGame().getCamera().position.y * 2 - enemySpawnPoints.get(0).y));
 		
 	}
 	

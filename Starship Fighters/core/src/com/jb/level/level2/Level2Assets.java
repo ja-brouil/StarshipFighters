@@ -2,6 +2,7 @@ package com.jb.level.level2;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public class Level2Assets {
@@ -19,6 +20,7 @@ public class Level2Assets {
 	// SFX
 	
 	// Enemies
+	private String basicAlien2 = "data/spaceships/BasicEnemy.png";
 	
 	// Items
 	
@@ -30,8 +32,16 @@ public class Level2Assets {
 	
 	// Initialize
 	public void loadAllAssets() {
+		// Map
 		assetManager.load(mapFilePath, TiledMap.class);
+		
+		// Music
 		assetManager.load(level2ThemeSongPath, Music.class);
+		
+		// Enemies
+		assetManager.load(basicAlien2, Texture.class);
+		
+		// Load Everything
 		assetManager.finishLoading();
 		
 	}

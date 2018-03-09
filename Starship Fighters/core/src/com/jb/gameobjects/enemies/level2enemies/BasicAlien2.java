@@ -17,10 +17,10 @@ import com.jb.gamestates.PlayState;
 import com.jb.main.Game;
 
 public class BasicAlien2 extends GameObjects {
-	
+
 	// Graphics
 	private TextureRegion[] sprite;
-	
+
 	// Physics
 	private float maxSpeed;
 	private float minimumSpeed;
@@ -33,6 +33,7 @@ public class BasicAlien2 extends GameObjects {
 	private long randomAttackCooldown;
 	private float initialX, initialY;
 	private int dropChance;
+	private boolean stopDownwardMovement = false;
 
 	// Get Arrays
 	private PlayState playState;
@@ -74,7 +75,7 @@ public class BasicAlien2 extends GameObjects {
 		bulletCooldown = TimeUtils.millis();
 		enemyBulletSpeed = 5;
 		randomAttackCooldown = MathUtils.random(200, 1000);
-		
+
 		// Drop Chance | 10% chance
 		dropChance = MathUtils.random(0, 9);
 
@@ -85,26 +86,28 @@ public class BasicAlien2 extends GameObjects {
 		for (int i = 0; i < sprite.length; i++) {
 			sprite[i] = tmp[0][i];
 		}
-		
+
 		// Get Bullet list
 		listofEnemyBullets = playState.getEnemyBulletList();
 		listOfExplosion = playState.getExplosionList();
 
 		// Start rectangle
-		collisionBounds = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());	
-		
+		collisionBounds = new Rectangle(x, y, allTexture.getWidth() / 3, allTexture.getHeight());
+
 		// Active Status
 		isActive = false;
 	}
 
-
 	// Update
 	public void update(float dt) {
+
 		// Set to active if within camera
-		if (y < playState.getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2) - 32) {
+		if (y - (playState.getGSM().getGame().getCamera().position.y * 2) < 100) {
 			isActive = true;
+		} else {
+			return;
 		}
-		
+
 		// Check if dead
 		if (healthbar <= 0) {
 			isDead = true;
@@ -126,7 +129,8 @@ public class BasicAlien2 extends GameObjects {
 		wrapXBound();
 
 		// Update Shoot | Don't shoot if out of the screen
-		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < 0 && y > 0 && x > Game.WIDTH - 32 && y < playState.getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2) - 32) {
+		if (TimeUtils.timeSinceMillis(bulletCooldown) > randomAttackCooldown && x < 0 && y > 0 && x > Game.WIDTH - 32
+				&& y < playState.getGSM().getGame().getCamera().position.y + (Game.HEIGHT / 2) - 32) {
 			addEnemyBullets(16, 0);
 			randomAttackCooldown = MathUtils.random(1000, 2000);
 		}
@@ -134,29 +138,21 @@ public class BasicAlien2 extends GameObjects {
 
 	// Draw Enemies
 	public void draw(SpriteBatch spriteBatch) {
+
+		if (!isActive) {
+			return;
+		}
+
 		// Draw Enemy
 		spriteBatch.draw(sprite[0].getTexture(), x, y, 32, 33, 0, 0, 32, 33, false, true);
 	}
 
-
-	// Prevent out of bounds
-	private void wrapXBound() {
-		// Flip speed if reached the end of the screen
-		if (x > (Game.WIDTH - 32)) {
-			dx *= -1;
-		}
-
-		if (x < 0) {
-			dx *= -1;
-		}
-	}
-
-
 	// Drop Enemies down if they are above the screen
 	private void moveDownward() {
-		if (getY() <= getInitialY() - 200 && getDY() < 0) {
+		if ((playState.getGSM().getGame().getCamera().position.y) - y > 50 && !stopDownwardMovement) {
 			setVelX(4);
 			setVelY(0.3f);
+			stopDownwardMovement = true;
 		}
 	}
 
@@ -172,13 +168,25 @@ public class BasicAlien2 extends GameObjects {
 		}
 	}
 
+	// Prevent out of bounds
+	private void wrapXBound() {
+		// Flip speed if reached the end of the screen
+		if (x > (Game.WIDTH - 32)) {
+			dx *= -1;
+		}
+
+		if (x < 0) {
+			dx *= -1;
+		}
+	}
+
 	// Add Bullets from enemies
 	private void addEnemyBullets(int xOffset, int yOffset) {
-		listofEnemyBullets
-				.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed, damageValue, playState, assetManager));
+		listofEnemyBullets.add(new EnemyBullets(getX() + xOffset, getY() + yOffset, 0, enemyBulletSpeed, damageValue,
+				playState, assetManager));
 		assetManager.get("data/audio/sound/bombLaunching.wav", Sound.class).play(1.0f);
 		bulletCooldown = TimeUtils.millis();
-		
+
 	}
 
 	// Drop Chance
@@ -189,7 +197,7 @@ public class BasicAlien2 extends GameObjects {
 			}
 		}
 	}
-	
+
 	// Get initial starting x and y
 	public float getInitialX() {
 		return initialX;
@@ -198,7 +206,7 @@ public class BasicAlien2 extends GameObjects {
 	public float getInitialY() {
 		return initialY;
 	}
-	
+
 	public void setDrop(int dropChance) {
 		this.dropChance = dropChance;
 	}

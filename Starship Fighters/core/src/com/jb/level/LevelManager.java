@@ -4,6 +4,7 @@ import java.util.Stack;
 
 import com.jb.gamestates.PlayState;
 import com.jb.level.level1.Level1;
+import com.jb.level.level2.Level2;
 
 public class LevelManager {
 	
@@ -23,6 +24,7 @@ public class LevelManager {
 		
 		// Start Level 1
 		pushLevel(new Level1(playState, playState.getAssetManager()));
+		//pushLevel(new Level2(playState, playState.getAssetManager(), null));
 	}
 	
 	// Update Level

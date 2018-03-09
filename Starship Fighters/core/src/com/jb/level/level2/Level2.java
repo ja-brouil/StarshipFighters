@@ -61,7 +61,7 @@ public class Level2 extends Level {
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		
 		// Game Flow
-		levelActive = false;
+		levelActive = true;
 		level2GameFlow = new Level2GameFlow(this, playState);
 		
 		// Music
@@ -78,6 +78,7 @@ public class Level2 extends Level {
 			gameFlowStart = false;
 		}
 		
+		System.out.println("Camera Y: " + playState.getGSM().getGame().getCamera().position.y);
 		
 		// Update Game Objects
 		updateGameObjects(dt);
@@ -95,6 +96,14 @@ public class Level2 extends Level {
 	public void render(SpriteBatch spriteBatch) {
 		orthogonalTiledMapRenderer.setView(camera);
 		orthogonalTiledMapRenderer.render();
+		
+		spriteBatch.begin();
+		// Render Enemies
+		for (GameObjects enemies : allEnemies) {
+			enemies.draw(spriteBatch);
+		}
+		
+		spriteBatch.end();
 	}
 	
 	// Helper Methods
@@ -112,9 +121,7 @@ public class Level2 extends Level {
 	private void updateGameObjects(float dt) {
 		// All Enemies
 		for (int i = 0; i < allEnemies.size; i++) {
-			if (allEnemies.get(i).isActive()) {
-				allEnemies.get(i).update(dt);
-			}
+			allEnemies.get(i).update(dt);	
 			if (allEnemies.get(i).isDead()) {
 				allEnemies.removeIndex(i);
 			}
